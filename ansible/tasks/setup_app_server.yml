@@ -1,0 +1,16 @@
+# Include generic packages:
+- include: "{{ ANSIBLE_ROOT }}/tasks/setup_server.yml"
+
+- name: Install web-server specific packages
+  apt: pkg={{ item }} state=present update_cache=yes
+  with_items:
+    - apache2
+    - libapache2-mod-wsgi
+
+- name: Set Up Apache2 Log Directories
+  file: path=/var/log/apache2/{{ item }} state=directory owner=www-data group=adm mode=755
+  with_items:
+    - myautota
+    - api
+
+- include: "{{ ANSIBLE_ROOT }}/tasks/update_apache2.yml"

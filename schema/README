@@ -1,0 +1,1 @@
+This folder contains schema files for the database, which, applied in order (s0.sql, s1.sql, etc), can create a blank database that runs the current website, api, software.

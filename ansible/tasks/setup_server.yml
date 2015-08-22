@@ -1,0 +1,21 @@
+# Install generic packages that all servers should have:
+- name: Install Packages
+  apt:  pkg={{ item }} state=present update-cache=yes
+  with_items:
+    - cups
+    - elinks
+    - ethtool
+    - htop
+    - iftop
+    - iotop
+    - less
+    - links
+    - python
+    - python-openssl
+    - python-simplejson
+    - rsync
+    - smbclient
+    - unzip
+    - wget
+    - zip
+

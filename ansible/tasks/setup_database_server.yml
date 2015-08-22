@@ -1,0 +1,8 @@
+# Include generic packages:
+- include: "{{ ANSIBLE_ROOT }}/tasks/setup_server.yml"
+
+- name: Install database-specific packages
+  apt: pkg={{ item }} state=present update_cache=yes
+  with_items:
+    - postgresql
+
