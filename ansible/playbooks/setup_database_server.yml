@@ -1,6 +1,6 @@
 #!/usr/bin/env ansible-playbook
-# This playbook calls in to setup_web_server, which calls in into setup_server.yml.
-# It'll install all base packages, set up apache2, etc.
+# This playbook calls in to setup_database_server.yml task, which calls in into setup_server.yml.
+# It'll install all base packages, set up postgresql, etc.
 
 - name: Setup base database server
   hosts: "{{ hosts }}"
