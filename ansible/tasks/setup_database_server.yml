@@ -6,3 +6,21 @@
   with_items:
     - postgresql
 
+#### Ensure users exist:
+- name: Set up admin database user
+  postgresql_user: name={{ mat_db_admin_username }} password={{ mat_db_admin_password }} role_attr_flags=CREATEDB,SUPERUSER,CREATEROLE,LOGIN,NOINHERIT
+  sudo: yes
+  sudo_user: postgres
+
+- name: Set up regular database user
+  postgresql_user: name={{ mat_db_username }} password={{ mat_db_password }} role_attr_flags=NOSUPERUSER,INHERIT,NOCREATEDB,NOCREATEROLE
+  sudo: yes
+  sudo_user: postgres
+
+#### Ensure database exists:
+- name: Ensure myautota database exists and belongs to proper user
+  postgresql_db: db=myautota encoding=utf-8 owner={{ mat_db_username }}
+  sudo: yes
+  sudo_user: postgres
+  notify:
+    - reload postgresql

@@ -1,0 +1,24 @@
+- name: reload apache2
+  service: name=apache2 state=reloaded
+
+- name: restart apache2
+  service: name=apache2 state=restarted
+
+- name: reload firewall rules
+  shell: iptables-restore < /etc/iptables.rules
+
+- name: reload openssh
+  service: name=ssh state=reloaded
+
+- name: restart openssh
+  service: name=ssh state=restarted
+
+- name: restart postgresql
+  service: name=postgresql state=restarted
+
+- name: reload postgresql
+  service: name=postgresql state=reloaded
+
+- name: reconfigure grub
+  shell: /usr/sbin/update-grub
+

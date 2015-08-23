@@ -9,5 +9,8 @@
   vars_files:
     - ../global_vars.yml
 
+  handlers:
+    - include: "{{ ANSIBLE_ROOT }}/handlers/main.yml"
+
   tasks:
     - include: "{{ ANSIBLE_ROOT }}/tasks/setup_database_server.yml"

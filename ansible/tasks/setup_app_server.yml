@@ -6,11 +6,14 @@
   with_items:
     - apache2
     - libapache2-mod-wsgi
+    - postgresql-client
+    - python-flask
+    - python-jinja2
 
 - name: Set Up Apache2 Log Directories
   file: path=/var/log/apache2/{{ item }} state=directory owner=www-data group=adm mode=755
   with_items:
-    - myautota
     - api
+    - myautota
 
 - include: "{{ ANSIBLE_ROOT }}/tasks/update_apache2.yml"
