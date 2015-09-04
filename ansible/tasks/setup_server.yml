@@ -1,6 +1,9 @@
+- name: Upgrade Ubuntu Packages
+  apt: upgrade=dist update_cache=yes
+
 # Install generic packages that all servers should have:
 - name: Install Packages
-  apt:  pkg={{ item }} state=present update-cache=yes
+  apt:  pkg={{ item }} state=present
   with_items:
     - bpython
     - cups
