@@ -1,0 +1,8 @@
+---
+matadmins:
+  - username: treece
+    ssh_keys:
+      - keys/treece/chromebook.pub
+      - keys/treece/desktop.pub
+      - keys/treece/mat_dev_0.pub
+      - keys/treece/work.pub

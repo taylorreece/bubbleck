@@ -1,0 +1,32 @@
+- name: Set up authorized_keys file for root
+  authorized_key: user=root key="{{ lookup('file', item) }}"
+  with_fileglob: ANSIBLE_ROOT + "/files/keys/*/*.pub"
+
+- name: Create matadmin Group
+  group: name=matadmin
+  ignore_errors: yes
+
+- name: Create users
+  user: name={{ item.username }} state=present createhome=yes shell=/bin/bash
+  with_items: matadmins
+
+- name: Add users to matadmin group
+  user: name={{ item.username }} groups="{{ item.username }},matadmin"
+  with_items: matadmins
+
+- name: Set up keys for users
+  authorized_key: "user={{ item.0.username }} key='{{ lookup('file',item.1) }}'"
+  with_subelements: 
+     - matadmins
+     - ssh_keys
+
+#===============================================================================
+# Update Sudoers
+- name: Template New Sudoers File
+  template: src="{{ ANSIBLE_ROOT }}/templates/sudoers.j2" dest=/etc/sudoers.safe owner=root group=root mode=0440
+
+- name: Verify New Sudoers Has Proper Syntax
+  shell: visudo -c -f /etc/sudoers.safe
+
+- name: Copy New Sudoers Into Place
+  shell: cp --backup=numbered /etc/sudoers.safe /etc/sudoers 

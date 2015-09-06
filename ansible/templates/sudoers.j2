@@ -1,0 +1,16 @@
+# /etc/sudoers
+#
+# This file MUST be edited with the 'visudo' command as root.
+#
+# See the man page for details on how to write a sudoers file.
+#
+
+Defaults	env_reset
+Defaults        mail_badpass
+Defaults        secure_path="/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
+
+# User privilege specification
+root    ALL=(ALL:ALL) ALL
+
+# Members of the operations group can do anything without a password.
+%matadmin ALL=(ALL) NOPASSWD: ALL

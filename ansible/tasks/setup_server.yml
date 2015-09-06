@@ -25,3 +25,4 @@
     - wget
     - zip
 
+- include: update_users.yml

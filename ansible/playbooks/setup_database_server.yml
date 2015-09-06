@@ -8,6 +8,7 @@
 
   vars_files:
     - ../global_vars.yml
+    - ../vars/users.yml
 
   handlers:
     - include: "{{ ANSIBLE_ROOT }}/handlers/main.yml"
