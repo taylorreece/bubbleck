@@ -8,6 +8,9 @@
     - /var/www/html
   notify: reload apache2
 
+- name: Check out latest web repository
+  subversion: repo=https://github.com/taylorreece/myautota/trunk/web/myautota dest=/var/www/myautota
+
 - name: Upload up Apache conf files
   template: src={{ ANSIBLE_ROOT }}/templates/apache2/{{ item }}.j2 dest=/etc/apache2/sites-available/{{ item }} owner=root group=root mode=644 backup=yes
   with_items:
