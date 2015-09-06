@@ -1,0 +1,13 @@
+<VirtualHost *>
+    ServerName api.myautota.com
+
+    WSGIDaemonProcess api user=www-data group=www-data threads=5
+    WSGIScriptAlias / /var/www/myautota/api.wsgi
+
+    <Directory /var/www/myautota>
+        WSGIProcessGroup api
+        WSGIApplicationGroup %{GLOBAL}
+        Order deny,allow
+        Allow from all
+    </Directory>
+</VirtualHost>

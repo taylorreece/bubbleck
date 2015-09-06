@@ -1,1 +1,24 @@
-# TODO: Update sites-available, sites-enabled, etc.
+- name: Get rid of old sites-enabled files
+  file: name={{ item }} state=absent
+  with_items:
+    - /etc/apache2/sites-available/default-ssl.conf
+    - /etc/apache2/sites-available/000-default.conf
+    - /etc/apache2/sites-enabled/default-ssl.conf
+    - /etc/apache2/sites-enabled/000-default.conf
+    - /var/www/html
+  notify: reload apache2
+
+- name: Upload up Apache conf files
+  template: src={{ ANSIBLE_ROOT }}/templates/apache2/{{ item }}.j2 dest=/etc/apache2/sites-available/{{ item }} owner=root group=root mode=644 backup=yes
+  with_items:
+    - 000-myautota.conf
+    - 001-api.conf
+  notify: reload apache2
+
+- name: Create symbolic links in sites-enabled
+  file: src=/etc/apache2/sites-available/{{ item }} dest=/etc/apache2/sites-enabled/{{ item }} state='link' owner=root group=root mode=777
+  with_items:
+    - 000-myautota.conf
+    - 001-api.conf
+  notify: reload apache2
+
