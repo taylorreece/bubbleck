@@ -1,0 +1,16 @@
+#!/usr/bin/env ansible-playbook
+# This playbook updates users
+
+- name: Update Users
+  hosts: "{{ hosts }}"
+  remote_user: root
+
+  vars_files:
+    - ../global_vars.yml
+    - ../vars/users.yml
+
+  handlers:
+    - include: "{{ ANSIBLE_ROOT }}/handlers/main.yml"
+
+  tasks:
+    - include: "{{ ANSIBLE_ROOT }}/tasks/update_apache2.yml"

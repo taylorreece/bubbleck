@@ -1,5 +1,6 @@
 -- s0.sql - Initial Database schema
 
+BEGIN;
 --
 -- Function for updating updated_at columns; generic for all tables.
 CREATE OR REPLACE FUNCTION update_updated_at_column()	
@@ -22,6 +23,7 @@ CREATE TABLE settings (
 	updated_at	TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 CREATE TRIGGER update_settings_updated_at BEFORE UPDATE ON settings FOR EACH ROW EXECUTE PROCEDURE update_updated_at_column();
+ALTER TABLE settings ADD UNIQUE (category, name);
 
 --
 -- Stores simple users data; login data, etc, will be in another table
@@ -118,16 +120,44 @@ CREATE TABLE studentexams (
 );
 CREATE TRIGGER update_studentexams_updated_at BEFORE UPDATE ON studentexams FOR EACH ROW EXECUTE PROCEDURE update_updated_at_column();
 
+--
+-- Keeps track of users' sessions.  Designed so that one user can have multiple sessions.
+CREATE TABLE sessions (
+	usersid		INTEGER REFERENCES users(usersid),
+	sessionid	INTEGER NOT NULL,
+	created_at	TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+	updated_at	TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+ALTER TABLE sessions ADD UNIQUE (usersid, sessionid);
+
+-- This function returns true if a userid/sessionid pair exists, and false otherwise.
+-- If true, it updates the updated_at timestamp.  This will be helpful later as a cron job will delete
+-- sessions that haven't been touched in X time.
+-- Note: as such, no updated_at function need exist.
+CREATE OR REPLACE FUNCTION check_user_session(u INTEGER, s INTEGER)
+RETURNS BOOLEAN AS $$
+BEGIN
+	IF EXISTS (SELECT 1 FROM sessions WHERE usersid=u AND sessionid=s) THEN
+		UPDATE sessions SET updated_at=NOW() WHERE usersid=u AND sessionid=s;
+		RETURN TRUE;
+	END IF;
+	RETURN FALSE;
+END;
+$$ LANGUAGE plpgsql;
+
 -- 
 -- Clears out old settings, creates new with given category,name,value
 CREATE OR REPLACE FUNCTION update_setting(c TEXT, n TEXT, v TEXT)
 RETURNS VOID AS $$
 BEGIN
-	DELETE FROM settings s WHERE s.category=c AND s.name=n;  
+	IF EXISTS (SELECT 1 FROM settings WHERE category=c AND name=n) THEN
+		UPDATE settings SET value=v WHERE category=c AND name=n;
+		RETURN;	
+	END IF;
 	INSERT INTO settings (category,name,value) VALUES (c,n,v);
 END;
 $$ LANGUAGE plpgsql;
 
 -- SET SCHEMA VERSION:
 SELECT update_setting('schema','version','0');
-
+COMMIT;
