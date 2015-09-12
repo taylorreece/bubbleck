@@ -29,7 +29,7 @@ ALTER TABLE settings ADD UNIQUE (category, name);
 -- Stores simple users data; login data, etc, will be in another table
 CREATE TABLE users (
 	usersid 	SERIAL PRIMARY KEY,
-	email		TEXT NOT NULL,
+	email		TEXT NOT NULL UNIQUE,
 	password	TEXT NOT NULL,
 	name		TEXT NOT NULL,
 	teachername	TEXT NOT NULL,

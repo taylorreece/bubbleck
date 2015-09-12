@@ -1,5 +1,6 @@
 ansible/global_vars.yml
 website/myautota/config.py
+*.swp
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
