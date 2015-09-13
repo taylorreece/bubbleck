@@ -1,5 +1,5 @@
 #!/usr/bin/python
-from mat import exam
+from mat import exam, section
 from mat.database import MatDB
 from mat.matobject import MatObject
 db = MatDB()
@@ -88,4 +88,13 @@ class Course(MatObject):
 		exams = db.queryDictList(query,(self.coursesid,))
 		for e in exams:
 			ret.append(exam.Exam(**e))
+		return ret
+	
+	# ===========================================================
+	def getSections(self):
+		ret = []
+		query = 'SELECT * FROM sections WHERE coursesid=%s AND active'
+		sections = db.queryDictList(query,(self.coursesid,))
+		for e in sections:
+			ret.append(section.Section(**e))
 		return ret

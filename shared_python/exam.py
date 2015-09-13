@@ -1,4 +1,5 @@
 #!/usr/bin/python
+import random
 from mat.database import MatDB
 from mat.matobject import MatObject
 db = MatDB()
@@ -76,4 +77,36 @@ class Exam(MatObject):
 							self.show_teachername)
 			)
 			self.setAttributes(result)
+
+	# ===========================================================
+	def getShareKeys(self):
+		query = 'SELECT key FROM examshares WHERE examsid=%s AND active'
+		return db.queryOneValList(query,(self.examsid,))
+
+	# ===========================================================
+	def getDeactivatedKeys(self):
+		query = 'SELECT key FROM examshares WHERE examsid=%s AND NOT active'
+		return db.queryOneValList(query,(self.examsid,))
+	
+	# ===========================================================
+	def addShareKey(self):
+		ALPHABET = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
+		# a key is comprised of the examsid, with leading zeros to make it 10 digits
+		# plus a jumble of 16 random figures.  In theory, there'll never be collision.
+		# Is this right way to do it?  Hell no.  Is it the fast way?  Yeah....
+		sharekey = '%010d' % self.examsid + ''.join(random.choice(ALPHABET) for i in range(16))
+		query = 'INSERT INTO examshares (examsid, key) VALUES (%s,%s)'
+		db.queryNoResults(query,(self.examsid,sharekey))
+		return sharekey
+
+	# ===========================================================
+	def deactivateShareKey(self,key):
+		query = 'UPDATE examshares SET active=False WHERE key=%s AND examsid=%s'
+		db.queryNoResults(query,(key, self.examsid))
+
+	# ===========================================================
+	def activateShareKey(self,key):
+		query = 'UPDATE examshares SET active=True WHERE key=%s AND examsid=%s'
+		db.queryNoResults(query,(key, self.examsid))
+
 

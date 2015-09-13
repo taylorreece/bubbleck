@@ -6,10 +6,12 @@ if raw_input("Do you understand that this script will clear all data tables and 
 import sys
 import matconfig
 import hashlib
-from mat import course, database, exam, user, matconfig
+from mat import course, database, exam, matconfig, section, user
 db = database.MatDB()
 
 # Clear data tables
+db.queryNoResults('DELETE FROM sections')
+db.queryNoResults('DELETE FROM examshares')
 db.queryNoResults('DELETE FROM exams')
 db.queryNoResults('DELETE FROM courses_users')
 db.queryNoResults('DELETE FROM courses')
@@ -62,3 +64,25 @@ e2.save()
 e3.save()
 e3.save() # yes, twice: should run an UPDATE the second time
 assert exam.getExamByID(e1.examsid).name == 'Exam 1'
+
+# Add a few shares
+key1 = e1.addShareKey()
+key2 = e1.addShareKey()
+assert key1 != key2
+assert key1 in e1.getShareKeys()
+assert len(e1.getShareKeys()) == 2
+e1.deactivateShareKey(key1)
+assert key1 not in e1.getShareKeys()
+assert key1 in e1.getDeactivatedKeys()
+assert key2 in e1.getShareKeys()
+
+# Add a few sections
+s1 = section.Section(name='Section 1', coursesid=c1.coursesid)
+s2 = section.Section(name='Section 2', coursesid=c1.coursesid)
+s3 = section.Section(name='Section 3', coursesid=c2.coursesid)
+s1.save()
+s2.save()
+s3.save()
+s3.save() # yes, twice: should run an UPDATE the second time.
+assert len(c1.getSections()) == 2
+assert c2.getSections()[0].name == 'Section 3'

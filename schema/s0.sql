@@ -87,7 +87,7 @@ CREATE TRIGGER update_exams_updated_at BEFORE UPDATE ON exams FOR EACH ROW EXECU
 CREATE TABLE examshares (
 	examsharesid	SERIAL PRIMARY KEY,
 	examsid		INTEGER NOT NULL REFERENCES exams(examsid),
-	key		text,
+	key		text NOT NULL,
 	active		BOOLEAN NOT NULL DEFAULT TRUE,
 	created_at	TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
 	updated_at	TIMESTAMP DEFAULT CURRENT_TIMESTAMP
@@ -98,7 +98,7 @@ CREATE TRIGGER update_examshares_updated_at BEFORE UPDATE ON examshares FOR EACH
 -- Courses can have multiple sections
 CREATE TABLE sections (
 	sectionsid	SERIAL PRIMARY KEY,
-	examsid		INTEGER NOT NULL REFERENCES exams(examsid),
+	coursesid	INTEGER NOT NULL REFERENCES courses(coursesid),
 	name		text NOT NULL,
 	active		BOOLEAN NOT NULL DEFAULT TRUE,
 	created_at	TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
