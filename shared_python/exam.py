@@ -1,5 +1,6 @@
 #!/usr/bin/python
 import random
+from mat import studentexam
 from mat.database import MatDB
 from mat.matobject import MatObject
 db = MatDB()
@@ -109,4 +110,11 @@ class Exam(MatObject):
 		query = 'UPDATE examshares SET active=True WHERE key=%s AND examsid=%s'
 		db.queryNoResults(query,(key, self.examsid))
 
-
+	# ===========================================================
+	def getStudentExams(self):
+		ret = []
+		query = 'SELECT * FROM studentexams WHERE examsid=%s AND active'
+		studentexams = db.queryDictList(query,(self.examsid,))
+		for s in studentexams:
+			ret.append(studentexam.StudentExam(**s))
+		return ret

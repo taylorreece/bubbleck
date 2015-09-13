@@ -6,10 +6,11 @@ if raw_input("Do you understand that this script will clear all data tables and 
 import sys
 import matconfig
 import hashlib
-from mat import course, database, exam, matconfig, section, user
+from mat import course, database, exam, matconfig, section, studentexam, user
 db = database.MatDB()
 
 # Clear data tables
+db.queryNoResults('DELETE FROM studentexams')
 db.queryNoResults('DELETE FROM sections')
 db.queryNoResults('DELETE FROM examshares')
 db.queryNoResults('DELETE FROM exams')
@@ -86,3 +87,17 @@ s3.save()
 s3.save() # yes, twice: should run an UPDATE the second time.
 assert len(c1.getSections()) == 2
 assert c2.getSections()[0].name == 'Section 3'
+
+# Add a few student exams
+se1 = studentexam.StudentExam(examsid=e1.examsid, sectionsid=s1.sectionsid, answers='ABCD')
+se2 = studentexam.StudentExam(examsid=e1.examsid, sectionsid=s1.sectionsid, answers='BBBB')
+se3 = studentexam.StudentExam(examsid=e1.examsid, sectionsid=s2.sectionsid, answers='CCCC')
+se4 = studentexam.StudentExam(examsid=e1.examsid, sectionsid=s2.sectionsid, answers='DDDD')
+se1.save()
+se2.save()
+se3.save()
+se4.save()
+se4.save()
+assert len(e1.getStudentExams()) == 4
+assert e1.getStudentExams()[0].answers == 'ABCD'
+assert e1.getStudentExams()[0].examsid == e1.examsid
