@@ -1,0 +1,53 @@
+#!/bin/bash
+
+usage() {
+	echo
+	echo "usage: psre regex [--kill] [--kill9]"
+	echo
+	echo "List all processes with command lines matching the regex, and optionally kill"
+	echo "them"
+	echo
+}
+
+TEST=true
+SIG_OPT=""
+
+REPARTS=
+for ARG in $@; do
+	case $ARG in
+		--help) 
+			usage;
+			exit 1;;
+		--kill)
+			TEST=false;;
+		--kill9)
+			TEST=false;
+			SIG_OPT="-9";;
+		*)
+			if [ "$REPARTS" = "" ]; then
+				REPARTS="$ARG"
+			else
+				REPARTS="$REPARTS $ARG"
+			fi
+	esac
+done
+
+if [ "$REPARTS" = "" ]; then
+	usage
+	exit 1
+fi	
+
+ps -Afww | grep -v grep | grep -v psre | grep --color=always "$REPARTS" | perl -lane 'print $F[1] . " " . join(" ", @F[7..$#F]);'
+
+if [ "$TEST" = "false" ]; then
+	IDS=$(ps -Afww | grep -v grep | grep -v psre | grep --color=always "$REPARTS" | awk '{ printf "%s ", $2  }')
+
+	echo
+	if [ "$IDS" = "" ]; then
+		echo "No processes found"
+	else
+		echo "kill $SIG_OPT $IDS"
+		kill $SIG_OPT $IDS
+	fi
+fi
+

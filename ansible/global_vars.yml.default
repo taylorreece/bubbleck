@@ -1,0 +1,6 @@
+ANSIBLE_ROOT: [[pwd RIGHT NOW]]
+mat_db_username: mat
+mat_db_password: [[INSERT PASSWORD HERE]]
+mat_db_admin_username: matadmin
+mat_db_admin_password: [[INSERT PASSWORD HERE]]
+password_salt: [[INSERT SALT HERE]] 

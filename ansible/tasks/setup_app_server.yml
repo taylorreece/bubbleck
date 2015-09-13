@@ -1,6 +1,4 @@
 # Include generic packages:
-- include: "{{ ANSIBLE_ROOT }}/tasks/setup_server.yml"
-
 - name: Install web-server specific packages
   apt: pkg={{ item }} state=present
   with_items:

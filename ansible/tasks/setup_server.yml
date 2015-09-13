@@ -16,6 +16,7 @@
     - less
     - links
     - python
+    - python-bcrypt
     - python-openssl
     - python-psycopg2
     - python-simplejson
@@ -26,4 +27,11 @@
     - wget
     - zip
 
+- name: Upload some helpful scripts
+  copy: "src={{ ANSIBLE_ROOT }}/files/{{ item }} dest=/usr/local/bin/"
+  with_items:
+    - psre
+
 - include: update_users.yml
+
+- include: update_shared_python.yml

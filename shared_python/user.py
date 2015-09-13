@@ -1,7 +1,13 @@
 #!/usr/bin/python
-from database import mat_db
-import course
+import sys
+sys.path.insert(1,"/var/www/myautota")
+
+from mat.database import mat_db
+from mat import course
+import mat_config
+
 db = mat_db()
+
 
 def getUsers():
 	''' Get all users '''
@@ -68,7 +74,11 @@ class User(object):
 						'''UPDATE users SET email=%s, name=%s, teachername=%s, password=MD5(%s)
 							WHERE usersid=%s
 							RETURNING updated_at, password''',
-						(self.email, self.name, self.teachername, self.password_plaintext, self.usersid)
+						(self.email, 
+						 self.name, 
+						 self.teachername, 
+						 self.password_plaintext + mat_config.password_salt, 
+						 self.usersid)
 					)
 				self.password = result['password']
 				self.updated_at = result['updated_at']
@@ -87,7 +97,10 @@ class User(object):
 					'''INSERT INTO users (email,name,teachername,password) 
 						VALUES (%s,%s,%s,MD5(%s))
 						RETURNING usersid,created_at,updated_at,password''',
-					(self.email,self.name,self.teachername,self.password_plaintext)
+					(self.email,
+					 self.name,
+					 self.teachername,
+					 self.password_plaintext + mat_config.password_salt)
 				)
 			self.created_at = result['created_at']
 			self.password = result['password']

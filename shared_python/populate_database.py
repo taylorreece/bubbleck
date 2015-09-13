@@ -1,5 +1,21 @@
-import user
-import course
+#!/usr/bin/python
+
+if raw_input("Do you understand that this script will clear all data tables and run a series of unit tests? (y/N) ").lower() != 'y':
+	exit()
+
+import sys
+sys.path.insert(1,"/var/www/myautota")
+import mat_config
+import hashlib
+from mat import user
+from mat import course
+from mat import database
+db = database.mat_db()
+
+# Clear data tables
+db.queryNoResults('DELETE FROM courses_users')
+db.queryNoResults('DELETE FROM courses')
+db.queryNoResults('DELETE FROM users')
 
 # Create some users
 u1 = user.User(email='test1@test.com',name='First1 Last',teachername='Mr. First1',password_plaintext='1234')
@@ -10,6 +26,7 @@ u1.save()
 u2.save()
 u3.save()
 u4.save()
+assert hashlib.md5('1234' + mat_config.password_salt).hexdigest() == u1.password
 
 # Create some courses
 c1 = course.Course(name='Math 1')
@@ -20,6 +37,7 @@ c1.save()
 c2.save()
 c3.save()
 c4.save()
+assert c1.coursesid
 
 # Tie users to courses:
 c1.addOrUpdateRole(u1.usersid, 'own')
@@ -31,4 +49,4 @@ c3.addOrUpdateRole(u1.usersid, 'own')
 c3.addOrUpdateRole(u1.usersid, 'edit')
 c3.addOrUpdateRole(u1.usersid, 'edit')
 c4.addOrUpdateRole(u2.usersid, 'own')
-
+assert c4.getRole(u2.usersid) == 'own'

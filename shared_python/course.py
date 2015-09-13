@@ -1,5 +1,5 @@
 #!/usr/bin/python
-from database import mat_db
+from mat.database import mat_db
 
 db = mat_db()
 
