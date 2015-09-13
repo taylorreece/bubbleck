@@ -30,8 +30,8 @@ ALTER TABLE settings ADD UNIQUE (category, name);
 CREATE TABLE users (
 	usersid 	SERIAL PRIMARY KEY,
 	email		TEXT NOT NULL UNIQUE,
-	password	TEXT NOT NULL,
 	name		TEXT NOT NULL,
+	password	TEXT NOT NULL,
 	teachername	TEXT NOT NULL,
 	active		BOOLEAN NOT NULL DEFAULT TRUE,
 	created_at	TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
@@ -70,13 +70,13 @@ CREATE TRIGGER update_courses_users_updated_at BEFORE UPDATE ON courses_users FO
 CREATE TABLE exams (
 	examsid		SERIAL PRIMARY KEY,
 	coursesid	INTEGER REFERENCES courses(coursesid),
-	name		TEXT NOT NULL,
-	layout		TEXT NOT NULL,
 	answers		TEXT,
-	show_directions	BOOLEAN NOT NULL DEFAULT TRUE,
-	show_teachername BOOLEAN NOT NULL DEFAULT TRUE,
-	show_points	BOOLEAN NOT NULL DEFAULT TRUE,
+	layout		TEXT NOT NULL,
+	name		TEXT NOT NULL,
 	show_coursename	BOOLEAN NOT NULL DEFAULT TRUE,
+	show_directions	BOOLEAN NOT NULL DEFAULT TRUE,
+	show_points	BOOLEAN NOT NULL DEFAULT TRUE,
+	show_teachername BOOLEAN NOT NULL DEFAULT TRUE,
 	active		BOOLEAN NOT NULL DEFAULT TRUE,
 	created_at	TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
 	updated_at	TIMESTAMP DEFAULT CURRENT_TIMESTAMP

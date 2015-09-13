@@ -1,7 +1,7 @@
 #!/usr/bin/python
-from mat.database import mat_db
-
-db = mat_db()
+from mat.database import MatDB
+from mat.matobject import MatObject
+db = MatDB()
 
 def getAllCourses():
 	''' Get all course objects, return them in a list '''
@@ -15,7 +15,7 @@ def getAllCourses():
 def getCourseByID(coursesid):
 	return Course.getCourseByID(Course(),coursesid)
 
-class Course(object):
+class Course(MatObject):
 	active = None
 	coursesid = None
 	created_at = None
@@ -25,22 +25,14 @@ class Course(object):
 	
 	# ===========================================================
 	def __init__(self, *args, **kwargs):
-		self.active = kwargs.get('active')
-		self.coursesid = kwargs.get('coursesid')
-		self.created_at = kwargs.get('created_at')
-		self.name = kwargs.get('name')
-		self.role = kwargs.get('role')
-		self.updated_at = kwargs.get('updated_at')	
+		self.setAttributes(kwargs)
 		
 	# ===========================================================
 	def getCourseByID(self,coursesid):
 		self.coursesid = coursesid
 		result = db.queryOneRec('SELECT * FROM courses WHERE coursesid=%s',(self.coursesid,))
 		if result:
-			self.active = result['active']
-			self.created_at = result['created_at']
-			self.name = result['name']
-			self.updated_at = result['updated_at']
+			self.setAttributes(result)
 			return self
 		else:
 			return None
@@ -53,16 +45,13 @@ class Course(object):
 					WHERE coursesid=%s 
 					RETURNING updated_at'''
 			result = db.queryOneRec(query, (self.coursesid,))
-			self.updated_at = result['updated_at'] 
+			self.setAttributes(result)
 		else:
 			query = ''' INSERT INTO courses (name)
 					VALUES (%s)
 					RETURNING created_at, updated_at, coursesid, active'''
 			result = db.queryOneRec(query,(self.name,))
-			self.active = result['active']
-			self.coursesid = result['coursesid']
-			self.created_at = result['created_at']
-			self.updated_at = result['updated_at']
+			self.setAttributes(result)
 
 	# ===========================================================
 	def removeRoles(self,usersid):

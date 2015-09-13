@@ -7,7 +7,7 @@ import sys
 import matconfig
 import hashlib
 from mat import course, database, user, matconfig
-db = database.mat_db()
+db = database.MatDB()
 
 # Clear data tables
 db.queryNoResults('DELETE FROM courses_users')

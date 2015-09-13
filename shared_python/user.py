@@ -1,9 +1,8 @@
 #!/usr/bin/python
-from mat.database import mat_db
-from mat import course
-from mat import matconfig
-
-db = mat_db()
+from mat import course, matconfig
+from mat.database import MatDB
+from mat.matobject import MatObject
+db = MatDB()
 
 
 def getUsers():
@@ -26,7 +25,7 @@ def getUsersByID(usersids=None):
 def getUserByID(usersid):
 	return User.getUserByID(User(),usersid)
 
-class User(object):
+class User(MatObject):
 	created_at = None
 	email = None
 	name = None
@@ -38,26 +37,14 @@ class User(object):
 
 	# ===========================================================
 	def __init__(self, *args, **kwargs):
-		self.created_at = kwargs.get('created_at')
-		self.email = kwargs.get('email')
-		self.name = kwargs.get('name')
-		self.password = kwargs.get('password')
-		self.password_plaintext = kwargs.get('password_plaintext')
-		self.teachername = kwargs.get('teachername')
-		self.updated_at = kwargs.get('updated_at')
-		self.usersid = kwargs.get('usersid')
+		self.setAttributes(kwargs)
 		
 	# ===========================================================
 	def getUserByID(self,usersid):
 		self.usersid = usersid
 		result = db.queryOneRec('SELECT * FROM users WHERE usersid=%s',(self.usersid,))
 		if result:
-			self.created_at = result['created_at']
-			self.email = result['email']
-			self.name = result['name']
-			self.password = result['password']
-			self.teachername = result['teachername']
-			self.updated_at = result['updated_at']
+			self.setAttributes(result)
 			return self
 		else:
 			return None
@@ -77,7 +64,7 @@ class User(object):
 						 self.password_plaintext + matconfig.password_salt, 
 						 self.usersid)
 					)
-				self.password = result['password']
+				self.setAttributes(result)
 				self.updated_at = result['updated_at']
 			else:
 				result = db.queryOneRec(
@@ -86,7 +73,7 @@ class User(object):
 							RETURNING updated_at''',
 						(self.email, self.name, self.teachername, self.usersid)
 					)
-				self.updated_at = result['updated_at']
+				self.setAttributes(result)
 				
 		else: 
 			# It's a new users; insert it
@@ -99,10 +86,7 @@ class User(object):
 					 self.teachername,
 					 self.password_plaintext + matconfig.password_salt)
 				)
-			self.created_at = result['created_at']
-			self.password = result['password']
-			self.updated_at = result['updated_at']
-			self.usersid = result['usersid']
+			self.setAttributes(result)
 
 	# ===========================================================
 	def setPassword(self,password_plaintext):

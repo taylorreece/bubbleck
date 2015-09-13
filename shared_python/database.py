@@ -2,7 +2,7 @@ import psycopg2
 import psycopg2.extras
 from mat.matconfig import dbname, dbuser, dbhost
 
-class mat_db:
+class MatDB:
 	_db_conn = None
 	_db_cur = None
 
