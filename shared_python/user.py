@@ -26,6 +26,7 @@ def getUserByID(usersid):
 	return User.getUserByID(User(),usersid)
 
 class User(MatObject):
+	active = True
 	created_at = None
 	email = None
 	name = None
@@ -53,25 +54,26 @@ class User(MatObject):
 	def save(self):
 		if self.usersid:
 			# A user already exists; we're updating it.
-			if password_plaintext:
+			if self.password_plaintext:
 				result = db.queryOneRec(
-						'''UPDATE users SET email=%s, name=%s, teachername=%s, password=MD5(%s)
+						'''UPDATE users SET email=%s, name=%s, teachername=%s, password=MD5(%s), active=%s
 							WHERE usersid=%s
 							RETURNING updated_at, password''',
 						(self.email, 
 						 self.name, 
 						 self.teachername, 
 						 self.password_plaintext + matconfig.password_salt, 
+						 self.active,
 						 self.usersid)
 					)
 				self.setAttributes(result)
 				self.updated_at = result['updated_at']
 			else:
 				result = db.queryOneRec(
-						'''UPDATE users SET email=%s, name=%s, teachername=%s
+						'''UPDATE users SET email=%s, name=%s, teachername=%s, active=%s
 							WHERE usersid=%s
 							RETURNING updated_at''',
-						(self.email, self.name, self.teachername, self.usersid)
+						(self.email, self.name, self.teachername, self.active, self.usersid)
 					)
 				self.setAttributes(result)
 				
@@ -80,7 +82,7 @@ class User(MatObject):
 			result = db.queryOneRec(
 					'''INSERT INTO users (email,name,teachername,password) 
 						VALUES (%s,%s,%s,MD5(%s))
-						RETURNING usersid,created_at,updated_at,password''',
+						RETURNING usersid,created_at,updated_at,password,active''',
 					(self.email,
 					 self.name,
 					 self.teachername,
@@ -100,7 +102,7 @@ class User(MatObject):
 				FROM courses c 
 				JOIN courses_users cu 
 					ON c.coursesid = cu.coursesid 
-				WHERE cu.usersid=%s AND cu.active AND c.active
+				WHERE cu.usersid=%s AND c.active
 				ORDER BY c.coursesid;'''
 		courses = db.queryDictList(query,(self.usersid,))
 		for c in courses:

@@ -1,4 +1,5 @@
 #!/usr/bin/python
+from mat import exam
 from mat.database import MatDB
 from mat.matobject import MatObject
 db = MatDB()
@@ -16,7 +17,7 @@ def getCourseByID(coursesid):
 	return Course.getCourseByID(Course(),coursesid)
 
 class Course(MatObject):
-	active = None
+	active = True
 	coursesid = None
 	created_at = None
 	name = None
@@ -41,10 +42,10 @@ class Course(MatObject):
 	def save(self):
 		if self.coursesid:
 			# It already has an ID; update it
-			query = ''' UPDATE courses SET name=%s 
+			query = ''' UPDATE courses SET name=%s, active=%s
 					WHERE coursesid=%s 
 					RETURNING updated_at'''
-			result = db.queryOneRec(query, (self.coursesid,))
+			result = db.queryOneRec(query, (self.name, self.active, self.coursesid))
 			self.setAttributes(result)
 		else:
 			query = ''' INSERT INTO courses (name)
@@ -79,4 +80,12 @@ class Course(MatObject):
 		'''
 		query = 'SELECT usersid,role FROM courses_users WHERE coursesid=%s'
 		return db.queryDictList(query,(self.coursesid,))
-	
+
+	# ===========================================================
+	def getExams(self):
+		ret = []
+		query = 'SELECT * FROM exams WHERE coursesid=%s AND active'
+		exams = db.queryDictList(query,(self.coursesid,))
+		for e in exams:
+			ret.append(exam.Exam(**e))
+		return ret

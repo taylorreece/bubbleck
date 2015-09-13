@@ -6,10 +6,11 @@ if raw_input("Do you understand that this script will clear all data tables and 
 import sys
 import matconfig
 import hashlib
-from mat import course, database, user, matconfig
+from mat import course, database, exam, user, matconfig
 db = database.MatDB()
 
 # Clear data tables
+db.queryNoResults('DELETE FROM exams')
 db.queryNoResults('DELETE FROM courses_users')
 db.queryNoResults('DELETE FROM courses')
 db.queryNoResults('DELETE FROM users')
@@ -23,7 +24,9 @@ u1.save()
 u2.save()
 u3.save()
 u4.save()
+u4.save() # Yes, twice: should run an update the second time.
 assert hashlib.md5('1234' + matconfig.password_salt).hexdigest() == u1.password
+assert user.getUserByID(u1.usersid).teachername == 'Mr. First1'
 
 # Create some courses
 c1 = course.Course(name='Math 1')
@@ -34,7 +37,9 @@ c1.save()
 c2.save()
 c3.save()
 c4.save()
+c4.save() # Yes, twice; should run an update the second time.
 assert c1.coursesid
+assert course.getCourseByID(c1.coursesid).name == 'Math 1'
 
 # Tie users to courses:
 c1.addOrUpdateRole(u1.usersid, 'own')
@@ -47,3 +52,13 @@ c3.addOrUpdateRole(u1.usersid, 'edit')
 c3.addOrUpdateRole(u1.usersid, 'edit')
 c4.addOrUpdateRole(u2.usersid, 'own')
 assert c4.getRole(u2.usersid) == 'own'
+
+# Add in some exams
+e1 = exam.Exam(name='Exam 1', coursesid=c1.coursesid, layout='DDDD', show_coursename=True, show_directions=True, show_points=False, show_teachername=True)
+e2 = exam.Exam(name='Exam 2', coursesid=c1.coursesid, layout='CCCC', show_coursename=True, show_directions=True, show_points=False, show_teachername=True)
+e3 = exam.Exam(name='Exam 3', coursesid=c2.coursesid, layout='EDDD', show_coursename=True, show_directions=True, show_points=False, show_teachername=True)
+e1.save() 
+e2.save()
+e3.save()
+e3.save() # yes, twice: should run an UPDATE the second time
+assert exam.getExamByID(e1.examsid).name == 'Exam 1'

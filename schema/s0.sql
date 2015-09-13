@@ -55,10 +55,9 @@ CREATE TRIGGER update_courses_updated_at BEFORE UPDATE ON courses FOR EACH ROW E
 -- Pivot table between courses and users
 CREATE TYPE course_role AS ENUM('own','edit','view');
 CREATE TABLE courses_users (
-	usersid		INTEGER REFERENCES users(usersid),
-	coursesid	INTEGER REFERENCES courses(coursesid),
+	usersid		INTEGER NOT NULL REFERENCES users(usersid),
+	coursesid	INTEGER NOT NULL REFERENCES courses(coursesid),
 	role		course_role NOT NULL,
-	active		BOOLEAN NOT NULL DEFAULT TRUE,
 	created_at	TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
 	updated_at	TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
@@ -69,7 +68,7 @@ CREATE TRIGGER update_courses_users_updated_at BEFORE UPDATE ON courses_users FO
 -- Exams, which are tied to courses
 CREATE TABLE exams (
 	examsid		SERIAL PRIMARY KEY,
-	coursesid	INTEGER REFERENCES courses(coursesid),
+	coursesid	INTEGER NOT NULL REFERENCES courses(coursesid),
 	answers		TEXT,
 	layout		TEXT NOT NULL,
 	name		TEXT NOT NULL,
@@ -87,7 +86,7 @@ CREATE TRIGGER update_exams_updated_at BEFORE UPDATE ON exams FOR EACH ROW EXECU
 -- Exam results can be shared with others using special keys
 CREATE TABLE examshares (
 	examsharesid	SERIAL PRIMARY KEY,
-	examsid		INTEGER REFERENCES exams(examsid),
+	examsid		INTEGER NOT NULL REFERENCES exams(examsid),
 	key		text,
 	active		BOOLEAN NOT NULL DEFAULT TRUE,
 	created_at	TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
@@ -99,7 +98,7 @@ CREATE TRIGGER update_examshares_updated_at BEFORE UPDATE ON examshares FOR EACH
 -- Courses can have multiple sections
 CREATE TABLE sections (
 	sectionsid	SERIAL PRIMARY KEY,
-	examsid		INTEGER REFERENCES exams(examsid),
+	examsid		INTEGER NOT NULL REFERENCES exams(examsid),
 	name		text NOT NULL,
 	active		BOOLEAN NOT NULL DEFAULT TRUE,
 	created_at	TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
@@ -111,8 +110,8 @@ CREATE TRIGGER update_sections_updated_at BEFORE UPDATE ON sections FOR EACH ROW
 -- Student exams are owned by a section, and by an exam
 CREATE TABLE studentexams (
 	studentexamsid	SERIAL PRIMARY KEY,
-	examsid		INTEGER REFERENCES exams(examsid),
-	sectionsid	INTEGER REFERENCES sections(sectionsid),
+	examsid		INTEGER NOT NULL REFERENCES exams(examsid),
+	sectionsid	INTEGER NOT NULL REFERENCES sections(sectionsid),
 	answers		text,
 	active		BOOLEAN NOT NULL DEFAULT TRUE,
 	created_at	TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
@@ -123,7 +122,7 @@ CREATE TRIGGER update_studentexams_updated_at BEFORE UPDATE ON studentexams FOR 
 --
 -- Keeps track of users' sessions.  Designed so that one user can have multiple sessions.
 CREATE TABLE sessions (
-	usersid		INTEGER REFERENCES users(usersid),
+	usersid		INTEGER NOT NULL REFERENCES users(usersid),
 	sessionid	INTEGER NOT NULL,
 	created_at	TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
 	updated_at	TIMESTAMP DEFAULT CURRENT_TIMESTAMP
