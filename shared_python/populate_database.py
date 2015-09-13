@@ -4,12 +4,9 @@ if raw_input("Do you understand that this script will clear all data tables and 
 	exit()
 
 import sys
-sys.path.insert(1,"/var/www/myautota")
-import mat_config
+import matconfig
 import hashlib
-from mat import user
-from mat import course
-from mat import database
+from mat import course, database, user, matconfig
 db = database.mat_db()
 
 # Clear data tables
@@ -26,7 +23,7 @@ u1.save()
 u2.save()
 u3.save()
 u4.save()
-assert hashlib.md5('1234' + mat_config.password_salt).hexdigest() == u1.password
+assert hashlib.md5('1234' + matconfig.password_salt).hexdigest() == u1.password
 
 # Create some courses
 c1 = course.Course(name='Math 1')

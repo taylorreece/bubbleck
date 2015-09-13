@@ -1,5 +1,5 @@
 ansible/global_vars.yml
-website/myautota/config.py
+shared_python/matconfig.py
 *.swp
 
 # Byte-compiled / optimized / DLL files

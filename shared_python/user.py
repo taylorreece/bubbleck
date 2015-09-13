@@ -1,10 +1,7 @@
 #!/usr/bin/python
-import sys
-sys.path.insert(1,"/var/www/myautota")
-
 from mat.database import mat_db
 from mat import course
-import mat_config
+from mat import matconfig
 
 db = mat_db()
 
@@ -77,7 +74,7 @@ class User(object):
 						(self.email, 
 						 self.name, 
 						 self.teachername, 
-						 self.password_plaintext + mat_config.password_salt, 
+						 self.password_plaintext + matconfig.password_salt, 
 						 self.usersid)
 					)
 				self.password = result['password']
@@ -100,7 +97,7 @@ class User(object):
 					(self.email,
 					 self.name,
 					 self.teachername,
-					 self.password_plaintext + mat_config.password_salt)
+					 self.password_plaintext + matconfig.password_salt)
 				)
 			self.created_at = result['created_at']
 			self.password = result['password']

@@ -1,0 +1,4 @@
+dbhost=''
+dbname=''
+dbuser=''
+password_salt=''
