@@ -15,4 +15,6 @@
 
   tasks:
     - include: "{{ ANSIBLE_ROOT }}/tasks/setup_server.yml"
+      when: "role == 'appserver'"
     - include: "{{ ANSIBLE_ROOT }}/tasks/setup_app_server.yml"
+      when: "role == 'appserver'"

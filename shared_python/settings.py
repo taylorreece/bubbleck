@@ -1,2 +1,0 @@
-dbname='mat'
-dbuser='matadmin'

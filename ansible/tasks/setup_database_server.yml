@@ -3,21 +3,30 @@
   with_items:
     - postgresql
 
-#### Ensure users exist:
 - name: Set up admin database user
   postgresql_user: name={{ mat_db_admin_username }} password={{ mat_db_admin_password }} role_attr_flags=CREATEDB,SUPERUSER,CREATEROLE,LOGIN,NOINHERIT
   sudo: yes
   sudo_user: postgres
 
-- name: Set up regular database user
+- name: Set up database user
   postgresql_user: name={{ mat_db_username }} password={{ mat_db_password }} role_attr_flags=NOSUPERUSER,INHERIT,NOCREATEDB,NOCREATEROLE
   sudo: yes
   sudo_user: postgres
 
-#### Ensure database exists:
-- name: Ensure myautota database exists and belongs to proper user
-  postgresql_db: db=myautota encoding=utf-8 owner={{ mat_db_username }}
+- name: Ensure mat database exists and belongs to proper user
+  postgresql_db: db={{ mat_db_name }} encoding=utf-8 owner={{ mat_db_username }}
   sudo: yes
   sudo_user: postgres
   notify:
     - reload postgresql
+
+- name: Upload a proper pg_hba.conf file
+  template: "src={{ ANSIBLE_ROOT }}/templates/postgresql/pg_hba.conf.j2 dest=/etc/postgresql/9.3/main/pg_hba.conf owner=postgres group=postgres mode=640"
+  notify:
+    - reload postgresql
+
+- name: Upload a proper postgresql.conf file
+  template: "src={{ ANSIBLE_ROOT }}/templates/postgresql/postgresql.conf.j2 dest=/etc/postgresql/9.3/main/postgresql.conf owner=postgres group=postgres mode=644"
+  notify:
+    - reload postgresql
+
