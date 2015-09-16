@@ -10,4 +10,6 @@
         Order deny,allow
         Allow from all
     </Directory>
+    ErrorLog /var/log/apache2/api/error.log
+    CustomLog /var/log/apache2/api/access.log combined
 </VirtualHost>
