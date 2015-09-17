@@ -1,4 +1,4 @@
-from flask import Flask
+from flask import Flask, render_template
 from routes_user import routes_user
 
 app = Flask(__name__)
@@ -7,4 +7,4 @@ app.register_blueprint(routes_user)
 
 @app.route('/')
 def index():
-    return 'You have reached the MAT web interface'
+    return render_template('index.html')
