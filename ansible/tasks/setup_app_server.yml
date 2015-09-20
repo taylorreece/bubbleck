@@ -7,7 +7,6 @@
     - libopencv-dev
     - postgresql-client
     - python-flask
-    - python-flask-login
     - python-jinja2
     - python-opencv
 

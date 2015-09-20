@@ -123,7 +123,7 @@ CREATE TRIGGER update_studentexams_updated_at BEFORE UPDATE ON studentexams FOR 
 -- Keeps track of users' sessions.  Designed so that one user can have multiple sessions.
 CREATE TABLE sessions (
 	usersid		INTEGER NOT NULL REFERENCES users(usersid),
-	sessionid	INTEGER NOT NULL,
+	sessionid	text NOT NULL,
 	created_at	TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
 	updated_at	TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );

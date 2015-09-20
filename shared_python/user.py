@@ -25,6 +25,13 @@ def getUsersByID(usersids=None):
 def getUserByID(usersid):
 	return User.getUserByID(User(),usersid)
 
+def getUserBySessionID(sessionid):
+	usersid = db.queryOneVal('SELECT usersid FROM sessions WHERE sessionid=%s',(sessionid,))
+	if usersid:
+		return getUserByID(usersid)
+	else:
+		return None	
+
 class User(MatObject):
 	active = True
 	created_at = None
@@ -35,6 +42,7 @@ class User(MatObject):
 	teachername = None
 	updated_at = None
 	usersid = None
+	sessions = []
 
 	# ===========================================================
 	def __init__(self, *args, **kwargs):
@@ -46,6 +54,7 @@ class User(MatObject):
 		result = db.queryOneRec('SELECT * FROM users WHERE usersid=%s',(self.usersid,))
 		if result:
 			self.setAttributes(result)
+			self._updateSessions()
 			return self
 		else:
 			return None
@@ -89,6 +98,7 @@ class User(MatObject):
 					 self.password_plaintext + matconfig.password_salt)
 				)
 			self.setAttributes(result)
+		self._updateSessions()
 
 	# ===========================================================
 	def setPassword(self,password_plaintext):
@@ -108,3 +118,24 @@ class User(MatObject):
 		for c in courses:
 			ret.append(course.Course(**c))
 		return ret
+
+	# ===========================================================
+	def createSession(self):
+		assert self.usersid
+		sessionid = self.usersid + uuid.uuid4()
+		query = 'INSERT INTO sessions (usersid, sessionid) VALUES (%s,%s)'
+		db.queryNoResults(query, (self.usersid, sessionid))
+		self._updateSessions()
+		return sessionid
+
+	# ===========================================================
+	def deleteSession(self, sessionid):
+		query = 'DELETE FROM sessions WHERE sessionsid=%s'
+		db.queryNoResults(query, (sessionid))
+
+	# ===========================================================
+	def _updateSessions(self):
+		query = 'SELECT sessionid FROM sessions WHERE usersid=%s'
+		self.sessions = db.queryOneValList(query, (self.usersid,))
+		 
+

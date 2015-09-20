@@ -26,3 +26,25 @@
     - 001-api.conf
   notify: reload apache2
 
+- name: Enable Specific Modules
+  apache2_module: name={{ item }} state=present
+  with_items:
+    - mime
+    - ssl
+    - wsgi
+  notify: reload apache2
+
+- name: Get rid of those pesky ServerName warnings
+  shell: "echo 'ServerName localhost' > /etc/apache2/conf-available/servername.conf && /usr/sbin/a2enconf servername"
+  notify: reload apache2
+
+- name: Move SSL Certificates to the correct place
+  copy: src={{ ANSIBLE_ROOT }}/files/apache2/ssl/{{ item }} dest=/etc/ssl/{{ item }}
+  with_items:
+    - myautota.com.ca-bundle
+    - myautota.com.crt
+  notify: reload apache2
+
+- name: Move the SSL key into place
+  copy: src={{ ANSIBLE_ROOT }}/files/apache2/ssl/myautota.com.key dest=/etc/ssl/private/myautota.com.key
+  notify: reload apache2
