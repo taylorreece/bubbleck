@@ -9,6 +9,7 @@
     - python-flask
     - python-jinja2
     - python-opencv
+    - python-wtforms
 
 - name: Set Up Apache2 Log Directories
   file: path=/var/log/apache2/{{ item }} state=directory owner=www-data group=adm mode=755

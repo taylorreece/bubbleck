@@ -4,3 +4,4 @@ mat_db_password: [[INSERT PASSWORD HERE]]
 mat_db_admin_username: matadmin
 mat_db_admin_password: [[INSERT PASSWORD HERE]]
 mat_password_salt: [[INSERT SALT HERE]] 
+webapp_secret_key: [[INSERT SECRET KEY HERE]]
