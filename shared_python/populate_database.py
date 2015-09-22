@@ -10,6 +10,7 @@ from mat import course, database, exam, matconfig, section, studentexam, user
 db = database.MatDB()
 
 # Clear data tables
+db.queryNoResults('DELETE FROM sessions')
 db.queryNoResults('DELETE FROM studentexams')
 db.queryNoResults('DELETE FROM sections')
 db.queryNoResults('DELETE FROM examshares')
@@ -19,7 +20,7 @@ db.queryNoResults('DELETE FROM courses')
 db.queryNoResults('DELETE FROM users')
 
 # Create some users
-u1 = user.User(email='test1@test.com',name='First1 Last',teachername='Mr. First1',password_plaintext='1234')
+u1 = user.User(email='test1@test.com',name='First1 Last',teachername='Mr. First1',password_plaintext='1234', is_admin=True)
 u2 = user.User(email='test2@test.com',name='First2 Last',teachername='Mr. First2',password_plaintext='1234')
 u3 = user.User(email='test3@test.com',name='First3 Last',teachername='Mr. First3',password_plaintext='1234')
 u4 = user.User(email='test4@test.com',name='First4 Last',teachername='Mr. First4',password_plaintext='1234')

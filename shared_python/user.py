@@ -36,6 +36,7 @@ class User(MatObject):
 	active = True
 	created_at = None
 	email = None
+	is_admin = False
 	name = None
 	password = None
 	password_plaintext = None
@@ -65,7 +66,7 @@ class User(MatObject):
 			# A user already exists; we're updating it.
 			if self.password_plaintext:
 				result = db.queryOneRec(
-						'''UPDATE users SET email=%s, name=%s, teachername=%s, password=MD5(%s), active=%s
+						'''UPDATE users SET email=%s, name=%s, teachername=%s, password=MD5(%s), active=%s, is_admin=%s
 							WHERE usersid=%s
 							RETURNING updated_at, password''',
 						(self.email, 
@@ -73,29 +74,31 @@ class User(MatObject):
 						 self.teachername, 
 						 self.password_plaintext + matconfig.password_salt, 
 						 self.active,
+						 self.is_admin,
 						 self.usersid)
 					)
 				self.setAttributes(result)
 				self.updated_at = result['updated_at']
 			else:
 				result = db.queryOneRec(
-						'''UPDATE users SET email=%s, name=%s, teachername=%s, active=%s
+						'''UPDATE users SET email=%s, name=%s, teachername=%s, active=%s, is_admin=%s
 							WHERE usersid=%s
 							RETURNING updated_at''',
-						(self.email, self.name, self.teachername, self.active, self.usersid)
+						(self.email, self.name, self.teachername, self.active, self.is_admin, self.usersid)
 					)
 				self.setAttributes(result)
 				
 		else: 
 			# It's a new users; insert it
 			result = db.queryOneRec(
-					'''INSERT INTO users (email,name,teachername,password) 
-						VALUES (%s,%s,%s,MD5(%s))
+					'''INSERT INTO users (email,name,teachername,password,is_admin) 
+						VALUES (%s,%s,%s,MD5(%s),%s)
 						RETURNING usersid,created_at,updated_at,password,active''',
 					(self.email,
 					 self.name,
 					 self.teachername,
-					 self.password_plaintext + matconfig.password_salt)
+					 self.password_plaintext + matconfig.password_salt,
+					 self.is_admin)
 				)
 			self.setAttributes(result)
 		self._updateSessions()
