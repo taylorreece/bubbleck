@@ -5,10 +5,12 @@ from mat.matobject import MatObject
 db = MatDB()
 
 
+# ===========================================================
 def getUsers():
 	''' Get all users '''
 	return getUsersByID()
 
+# ===========================================================
 def getUsersByID(usersids=None):
 	''' Get multiple user objects, return them in a list '''
 	ret = []
@@ -22,15 +24,23 @@ def getUsersByID(usersids=None):
 		ret.append(User(**r))
 	return ret
 
+# ===========================================================
 def getUserByID(usersid):
 	return User.getUserByID(User(),usersid)
 
+# ===========================================================
 def getUserBySessionID(sessionid):
 	usersid = db.queryOneVal('SELECT usersid FROM sessions WHERE sessionid=%s',(sessionid,))
 	if usersid:
 		return getUserByID(usersid)
 	else:
 		return None	
+
+# ===========================================================
+def deleteSession(sessionid):
+	query = 'DELETE FROM sessions WHERE sessionsid=%s'
+	db.queryNoResults(query, (sessionid))
+
 
 class User(MatObject):
 	active = True
@@ -130,11 +140,6 @@ class User(MatObject):
 		db.queryNoResults(query, (self.usersid, sessionid))
 		self._updateSessions()
 		return sessionid
-
-	# ===========================================================
-	def deleteSession(self, sessionid):
-		query = 'DELETE FROM sessions WHERE sessionsid=%s'
-		db.queryNoResults(query, (sessionid))
 
 	# ===========================================================
 	def _updateSessions(self):
