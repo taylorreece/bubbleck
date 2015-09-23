@@ -38,10 +38,10 @@ def getUserBySessionID(sessionid):
 
 # ===========================================================
 def deleteSession(sessionid):
-	query = 'DELETE FROM sessions WHERE sessionsid=%s'
-	db.queryNoResults(query, (sessionid))
+	query = 'DELETE FROM sessions WHERE sessionid=%s'
+	db.queryNoResults(query, (sessionid,))
 
-
+# ===========================================================
 class User(MatObject):
 	active = True
 	created_at = None
@@ -54,6 +54,7 @@ class User(MatObject):
 	updated_at = None
 	usersid = None
 	sessions = []
+	logged_in = False
 
 	# ===========================================================
 	def __init__(self, *args, **kwargs):

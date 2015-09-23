@@ -20,3 +20,13 @@ def login_required(f):
 		return f(*args, **kwargs)
 	return decorated_function
 
+# ===================================================
+def load_user(f):
+	@wraps(f)
+	def decorated_function(*args,**kwargs):
+		if 'sessionid' in session: 
+			g.current_user = user.getUserBySessionID(session['sessionid'])
+		if g.current_user is None:
+			g.current_user = user.User() # Set a blank user
+		return f(*args, **kwargs)
+	return decorated_function
