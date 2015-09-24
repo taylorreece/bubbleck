@@ -1,6 +1,6 @@
 ansible/global_vars.yml
 ansible/files/apache2/ssl/*
-shared_python/matconfig.py
+shared_python/mat/matconfig.py
 *.swp
 
 # Byte-compiled / optimized / DLL files

@@ -1,5 +1,5 @@
 - name: Check out shared python packages
-  subversion: repo=https://github.com/taylorreece/myautota/trunk/shared_python dest=/usr/lib/python2.7/mat
+  subversion: repo=https://github.com/taylorreece/myautota/trunk/shared_python/mat dest=/usr/lib/python2.7/mat
 
 - name: Upload global variables file for python packages
   template: "src={{ ANSIBLE_ROOT }}/templates/matconfig.py.j2 dest=/usr/lib/python2.7/mat/matconfig.py mode=644"
