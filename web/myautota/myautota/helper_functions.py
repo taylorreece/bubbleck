@@ -24,6 +24,7 @@ def login_required(f):
 def load_user(f):
 	@wraps(f)
 	def decorated_function(*args,**kwargs):
+		g.current_user = None
 		if 'sessionid' in session: 
 			g.current_user = user.getUserBySessionID(session['sessionid'])
 		if g.current_user is None:

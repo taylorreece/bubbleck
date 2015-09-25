@@ -1,6 +1,6 @@
 import psycopg2
 import psycopg2.extras
-from mat.matconfig import dbname, dbuser, dbhost, dbpassword
+from mat.matconfig import dbname, dbuser, dbhost, dbpass
 
 class MatDB:
 	_db_conn = None
