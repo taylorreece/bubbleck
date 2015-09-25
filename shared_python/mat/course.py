@@ -21,7 +21,6 @@ class Course(MatObject):
 	coursesid = None
 	created_at = None
 	name = None
-	role = None
 	updated_at = None
 	
 	# ===========================================================
