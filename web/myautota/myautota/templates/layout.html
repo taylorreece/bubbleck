@@ -15,6 +15,10 @@
 		<![endif]-->
 	</head>
 	<body>
+		{% for key,value in {'Home':'index', 'About':'about', 'Login':'routes_user.login'}.items() %}
+		<a href='{{ url_for(value) }}'>{{ key }}</a>
+		{% endfor %}
+		<br>
 		{% block content %}{% endblock %}
 
 		<!-- Javascript at the end for speed reasons -->
