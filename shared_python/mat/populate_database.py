@@ -1,6 +1,6 @@
 #!/usr/bin/python
 
-if raw_input("Do you understand that this script will clear all data tables and run a series of unit tests? (y/N) ").lower() != 'y':
+if input("Do you understand that this script will clear all data tables and run a series of unit tests? (y/N) ").lower() != 'y':
 	exit()
 
 import sys
@@ -29,7 +29,7 @@ u2.save()
 u3.save()
 u4.save()
 u4.save() # Yes, twice: should run an update the second time.
-assert hashlib.md5('1234' + matconfig.password_salt).hexdigest() == u1.password
+assert hashlib.md5(('1234' + matconfig.password_salt).encode('utf-8')).hexdigest() == u1.password
 assert user.getUserByID(u1.usersid).teachername == 'Mr. First1'
 
 # Create some courses

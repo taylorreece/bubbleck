@@ -1,6 +1,6 @@
 import psycopg2
 import psycopg2.extras
-from mat.matconfig import dbname, dbuser, dbhost
+from mat.matconfig import dbname, dbuser, dbhost, dbpassword
 
 class MatDB:
 	_db_conn = None
@@ -12,7 +12,7 @@ class MatDB:
 
 	# ===========================================================
 	def _connect(self):
-		self._db_conn = psycopg2.connect(database=dbname,user=dbuser,host=dbhost)
+		self._db_conn = psycopg2.connect(database=dbname,user=dbuser,host=dbhost,password=dbpass)
 		self._db_cur = self._db_conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
 
 	# ===========================================================
