@@ -5,7 +5,7 @@
 - name: Install Packages
   apt:  pkg={{ item }} state=present
   with_items:
-    - bpython
+    - bpython3
     - cups
     - elinks
     - ethtool
@@ -14,18 +14,24 @@
     - iftop
     - iotop
     - less
+    - libpython3.4 
+    - libpython3.4-minimal 
+    - libpython3.4-stdlib 
     - links
     - python
-    - python-bcrypt
-    - python-openssl
-    - python-psycopg2
-    - python-simplejson
+    - python3-bcrypt
+    - python3-openssl
+    - python3-psycopg2
+    - python3-simplejson
+    - python3.4
+    - python3.4-minimal
     - rsync
-    - subversion
     - smbclient
+    - subversion
     - unzip
     - wget
     - zip
+
 
 - name: Upload some helpful scripts
   copy: "src={{ ANSIBLE_ROOT }}/files/{{ item }} dest=/usr/local/bin/"

@@ -2,7 +2,7 @@
 # This playbook calls in to setup_database_server.yml task, which calls in into setup_server.yml.
 # It'll install all base packages, set up postgresql, etc.
 
-- name: Setup base database server
+- name: Setup MyAutoTA servers
   hosts: "{{ hosts }}"
   remote_user: root
 
@@ -15,6 +15,7 @@
 
   tasks:
     - include: "{{ ANSIBLE_ROOT }}/tasks/setup_server.yml"
-      when: "role == 'database'"
     - include: "{{ ANSIBLE_ROOT }}/tasks/setup_database_server.yml"
       when: "role == 'database'"
+    - include: "{{ ANSIBLE_ROOT }}/tasks/setup_app_server.yml"
+      when: "role == 'appserver'"

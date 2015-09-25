@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/python3
 import random
 from mat import studentexam
 from mat.database import MatDB

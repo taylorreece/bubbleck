@@ -3,13 +3,11 @@
   apt: pkg={{ item }} state=present
   with_items:
     - apache2
-    - libapache2-mod-wsgi
+    - libapache2-mod-wsgi-py3
     - libopencv-dev
     - postgresql-client
-    - python-flask
-    - python-jinja2
-    - python-opencv
-    - python-wtforms
+    - python3-flask
+    - python3-jinja2
 
 - name: Set Up Apache2 Log Directories
   file: path=/var/log/apache2/{{ item }} state=directory owner=www-data group=adm mode=755

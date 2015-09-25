@@ -13,7 +13,7 @@ def login_required(f):
 	def decorated_function(*args, **kwargs):
 		g.current_user = None
 		if 'sessionid' in session: 
-			g.current_user = user.getUserBySessionID(session['sessionid'])
+			g.current_user = user.getUserBySessionID(str(session['sessionid']))
 		if g.current_user is None:
 			flash('You need to log in to access (request.url)')
 			return redirect(url_for('routes_user.login', next=request.url))
@@ -26,7 +26,7 @@ def load_user(f):
 	def decorated_function(*args,**kwargs):
 		g.current_user = None
 		if 'sessionid' in session: 
-			g.current_user = user.getUserBySessionID(session['sessionid'])
+			g.current_user = user.getUserBySessionID(str(session['sessionid']))
 		if g.current_user is None:
 			g.current_user = user.User() # Set a blank user
 		return f(*args, **kwargs)

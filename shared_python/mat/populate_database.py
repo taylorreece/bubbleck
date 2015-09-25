@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/python3
 
 if input("Do you understand that this script will clear all data tables and run a series of unit tests? (y/N) ").lower() != 'y':
 	exit()

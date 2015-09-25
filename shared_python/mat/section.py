@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/python3
 from mat.database import MatDB
 from mat.matobject import MatObject
 db = MatDB()
