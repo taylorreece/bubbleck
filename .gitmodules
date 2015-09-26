@@ -1,0 +1,3 @@
+[submodule "myautota-android"]
+	path = myautota-android
+	url = https://github.com/taylorreece/myautota-android.git
