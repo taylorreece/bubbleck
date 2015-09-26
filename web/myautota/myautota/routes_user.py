@@ -14,27 +14,38 @@ from myautota.helper_functions import load_user
 
 routes_user = Blueprint('routes_user', __name__)
 
+# ===================================================
+@routes_user.route('/user')
+@load_user
+def dashboard():
+#	form = LoginForm()
+	return render_template('user/dashboard.html')#, form=form)
+
 
 # ===================================================
-@routes_user.route('/login')
+@routes_user.route('/user/login')
 @load_user
 def login():
-#	form = LoginForm()
-	return render_template('login.html')#, form=form)
+	return render_template('user/login.html')
 
 # ===================================================
-@routes_user.route('/register')
-@load_user
-def register():
-#	form = RegisterForm()
-	return render_template('register.html')#, form=form)
-
-# ===================================================
-@routes_user.route('/logout')
+@routes_user.route('/user/logout')
 @login_required
 def logout():
 	g.current_user = None
 	user.deleteSession(session['sessionid'])
 	flash('You have been logged out.')
 	return redirect(url_for('routes_user.login')) 
+
+# ===================================================
+@routes_user.route('/user/register')
+@load_user
+def register():
+	return render_template('user/register.html')
+
+# ===================================================
+@routes_user.route('/user/settings')
+@load_user
+def settings():
+	return render_template('user/settings.html')
 

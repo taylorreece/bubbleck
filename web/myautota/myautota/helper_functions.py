@@ -8,6 +8,22 @@ from functools import wraps
 from mat import user
 
 # ===================================================
+def admin_required(f):
+	@wraps(f)
+	def decorated_function(*args, **kwargs):
+		g.current_user = None
+		if 'sessionid' in session: 
+			g.current_user = user.getUserBySessionID(str(session['sessionid']))
+		if g.current_user is None:
+			flash('info|You need to log in to access ' + request.url)
+			return redirect(url_for('routes_user.login', next=request.url))
+		if not g.current_user.is_admin:
+			flash('danger|You need to be an administrator to access this page.')
+			return redirect(url_for('index'))
+		return f(*args, **kwargs)
+	return decorated_function
+
+# ===================================================
 def login_required(f):
 	@wraps(f)
 	def decorated_function(*args, **kwargs):
@@ -15,7 +31,7 @@ def login_required(f):
 		if 'sessionid' in session: 
 			g.current_user = user.getUserBySessionID(str(session['sessionid']))
 		if g.current_user is None:
-			flash('You need to log in to access (request.url)')
+			flash('info|You need to log in to access ' + request.url)
 			return redirect(url_for('routes_user.login', next=request.url))
 		return f(*args, **kwargs)
 	return decorated_function

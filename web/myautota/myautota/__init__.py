@@ -11,11 +11,13 @@ from mat import matconfig
 from mat import user
 
 # Import some routes that were broken out:
+from myautota.routes_admin import routes_admin
 from myautota.routes_user import routes_user
 
 # Set up the app
 app = Flask(__name__)
 app.secret_key = matconfig.webapp_secret_key 
+app.register_blueprint(routes_admin)
 app.register_blueprint(routes_user)
 
 # ===================================================
@@ -29,4 +31,10 @@ def index():
 @load_user
 def about():
 	return render_template('about.html')
+
+# ===================================================
+@app.route('/contact')
+@load_user
+def contact():
+	return render_template('contact.html')
 
