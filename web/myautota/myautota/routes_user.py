@@ -9,8 +9,8 @@ from flask import url_for
 from mat import user
 from myautota.helper_functions import login_required
 from myautota.helper_functions import load_user 
-#from forms import LoginForm
-#from forms import RegisterForm
+from myautota.forms import LoginForm
+from myautota.forms import RegisterForm
 
 routes_user = Blueprint('routes_user', __name__)
 
@@ -18,7 +18,6 @@ routes_user = Blueprint('routes_user', __name__)
 @routes_user.route('/user')
 @load_user
 def dashboard():
-#	form = LoginForm()
 	return render_template('user/dashboard.html')#, form=form)
 
 
@@ -26,7 +25,8 @@ def dashboard():
 @routes_user.route('/user/login')
 @load_user
 def login():
-	return render_template('user/login.html')
+	form = LoginForm()
+	return render_template('user/login.html', form=form)
 
 # ===================================================
 @routes_user.route('/user/logout')
@@ -34,14 +34,18 @@ def login():
 def logout():
 	g.current_user = None
 	user.deleteSession(session['sessionid'])
-	flash('You have been logged out.')
+	flash('info|You have been logged out.')
 	return redirect(url_for('routes_user.login')) 
 
 # ===================================================
-@routes_user.route('/user/register')
+@routes_user.route('/user/register', methods=('GET', 'POST'))
 @load_user
 def register():
-	return render_template('user/register.html')
+	form = RegisterForm(request.form)
+	if request.method == 'POST' and form.validate():
+		# TODO: use the data from this form to create an actual user
+		return "Got it!"
+	return render_template('user/register.html',form=form)
 
 # ===================================================
 @routes_user.route('/user/settings')

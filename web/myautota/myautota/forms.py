@@ -7,19 +7,19 @@ from wtforms import validators
 
 # ===================================================
 class LoginForm(Form):
-	email       = StringField('Email Address', [validators.Email(message=u'That\'s not a valid email address.')])
-	password    = PasswordField('Password', [validators.Length(min=6, max=35)])
-	remember_me = BooleanField('Remember Me')
+	email       = StringField(u'Email Address', [validators.Email(message=u'That\'s not a valid email address.')])
+	password    = PasswordField(u'Password', [validators.Length(min=6, max=35)])
+	remember_me = BooleanField(u'Remember Me')
 
 # ===================================================
 class RegisterForm(Form):
-	email       = StringField('Email Address', [
-				validators.Email(message=u'That\'s not a valid email address.')
+	email       = StringField(u'Email Address', [validators.Email(message=u'That\'s not a valid email address.')])
+	name        = StringField(u'Full Name')
+	password    = PasswordField(u'Password', [
+				validators.EqualTo(u'confirm', message=u'Passwords must match'), 
+				validators.Length(min=6, message=u'Try a slightly longer password.')
 				])
-	name        = StringField('Full Name')
-	password    = PasswordField('Password', [
-				validators.EqualTo('confirm', message='Passwords must match'), 
-				validators.Length(min=6, message=u'Try a slightly longer password....')
-				])
-	confirm     = PasswordField('Confirm Password')
-	teachername = StringField('Full Name')
+	confirm     = PasswordField(u'Confirm Password')
+	teachername = StringField(u'Teacher Name')
+	geography   = StringField(u'Geographic Region')
+	hearabout   = StringField(u'How did you find myAutoTA?')

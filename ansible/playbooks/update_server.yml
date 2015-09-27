@@ -1,0 +1,19 @@
+#!/usr/bin/env ansible-playbook
+# This playbook calls in to setup_database_server.yml task, which calls in into setup_server.yml.
+# It'll install all base packages, set up postgresql, etc.
+
+- name: Update a Servers Python, Apache packages
+  hosts: "{{ hosts }}"
+  remote_user: root
+
+  vars_files:
+    - ../global_vars.yml
+    - ../vars/users.yml
+
+  handlers:
+    - include: "{{ ANSIBLE_ROOT }}/handlers/main.yml"
+
+  tasks:
+    - include: "{{ ANSIBLE_ROOT }}/tasks/update_shared_python.yml"
+    - include: "{{ ANSIBLE_ROOT }}/tasks/update_apache2.yml"
+      when: "role == 'appserver'"

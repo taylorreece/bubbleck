@@ -1,3 +1,9 @@
+- name: Set Up Apache2 Log Directories
+  file: path=/var/log/apache2/{{ item }} state=directory owner=www-data group=adm mode=755
+  with_items:
+    - api
+    - myautota
+
 - name: Get rid of old sites-enabled files
   file: name={{ item }} state=absent
   with_items:
