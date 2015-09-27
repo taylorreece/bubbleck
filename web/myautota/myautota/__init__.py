@@ -20,6 +20,10 @@ app.secret_key = matconfig.webapp_secret_key
 app.register_blueprint(routes_admin)
 app.register_blueprint(routes_user)
 
+# For recaptcha
+app.config['RECAPTCHA_PUBLIC_KEY'] = matconfig.recaptcha_public_key
+app.config['RECAPTCHA_PRIVATE_KEY'] = matconfig.recaptcha_private_key
+
 # ===================================================
 @app.route('/')
 @load_user

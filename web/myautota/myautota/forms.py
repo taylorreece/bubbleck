@@ -4,6 +4,7 @@ from wtforms import Form
 from wtforms import PasswordField
 from wtforms import StringField
 from wtforms import validators
+from flask_wtf import RecaptchaField
 
 # ===================================================
 class LoginForm(Form):
@@ -23,3 +24,4 @@ class RegisterForm(Form):
 	teachername = StringField(u'Teacher Name')
 	geography   = StringField(u'Geographic Region')
 	hearabout   = StringField(u'How did you find myAutoTA?')
+	recaptcha   = RecaptchaField(u'Human?')

@@ -1,4 +1,5 @@
 {% extends "layout.html" %}
+{% import '_macros.html' as macros %}
 {% block title %}Register{% endblock %}
 {% block content %}
 <div class="row">
@@ -10,35 +11,18 @@
 	<div class="col-lg-4 col-md-12">
 Registration with this service is free.  The software was written for teachers, by a teacher, with the goal of making teachers' lives easier.  The service is unobtrusively ad-supported, though for $10 per year teachers can remove ads and access the Android and iOS phone apps (servers do cost money...).  The option to "upgrade" to the adless / mobile software is available after registration.
 	</div>
-
-{% macro render_field(field, placeholder="") %}
-	{% if field.errors %}
-	<div class="form-group has-error has-feedback">
-	{% else %}
-	<div class="form-group">
-	{% endif %}
-		<label class="control-label col-sm-2">{{ field.label }}</label>
-		<div class="col-sm-10">
-			{{ field(class="form-control", placeholder=placeholder) }}
-		</div>
-	</div>	
-  {% if field.errors %}
-    {% for error in field.errors %}
-      <div class="col-sm-10 col-sm-offset-2 alert alert-danger">{{ error }}</div>
-    {% endfor %}
-  {% endif %}
-{% endmacro %}
 	<div class="col-lg-8 col-md-12">
 		<form class="form-horizontal" role="form" method="POST" action="{{ url_for('routes_user.register') }}">
-			{{ render_field(form.name) }}
-			{{ render_field(form.email) }}
-			{{ render_field(form.password) }}
-			{{ render_field(form.confirm) }}
-			{{ render_field(form.teachername, "e.g. 'Mrs. Smith' - will be printed on exams") }}
+			{{ macros.render_field(form.name) }}
+			{{ macros.render_field(form.email) }}
+			{{ macros.render_field(form.password) }}
+			{{ macros.render_field(form.confirm) }}
+			{{ macros.render_field(form.teachername, "e.g. 'Mrs. Smith' - will be printed on exams") }}
 			<hr>
 			These fields are not required; I'm just interested in where my users come from:
-			{{ render_field(form.geography) }}
-			{{ render_field(form.hearabout) }}
+			{{ macros.render_field(form.geography) }}
+			{{ macros.render_field(form.hearabout) }}
+			{{ macros.render_field(form.recaptcha) }}
 			<div class="form-group"> 
 				<div class="col-sm-offset-2 col-sm-10">
 					<button type="submit" class="btn btn-default">Submit</button>

@@ -3,6 +3,7 @@
   with_items:
     - mat
     - wtforms
+    - flask_wtf
 
 - name: Upload global variables file for python packages
   template: "src={{ ANSIBLE_ROOT }}/templates/matconfig.py.j2 dest=/usr/lib/python3.4/mat/matconfig.py mode=644"
