@@ -9,7 +9,7 @@ from flask_wtf import RecaptchaField
 # ===================================================
 class LoginForm(Form):
 	email       = StringField(u'Email Address', [validators.Email(message=u'That\'s not a valid email address.')])
-	password    = PasswordField(u'Password', [validators.Length(min=6, max=35)])
+	password    = PasswordField(u'Password')
 	remember_me = BooleanField(u'Remember Me')
 
 # ===================================================

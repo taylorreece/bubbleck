@@ -25,7 +25,9 @@ def dashboard():
 @routes_user.route('/user/login')
 @load_user
 def login():
-	form = LoginForm()
+	form = LoginForm(request.form)
+	if request.method == 'POST' and form.validate():
+		return 'Authenticated'
 	return render_template('user/login.html', form=form)
 
 # ===================================================
