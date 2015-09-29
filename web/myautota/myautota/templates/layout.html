@@ -72,13 +72,13 @@
 							
 						</li><!-- /.dropdown - user -->
 						{% else %}
-						<li id="login-trigger"><a href="#" onclick="showNavbarLogin()">Log In <span class="glyphicon glyphicon-log-in"></span></a></li>
-						<form class="navbar-form navbar-right" id="navbar-login" role="search" style="display: none" method="POST" action="{{ url_for("routes_user.login") }}">
+						<li id="login-trigger" style="margin-right:5px"><a href="#" onclick="showNavbarLogin()">Log In <span class="glyphicon glyphicon-log-in"></span></a></li>
+						<form class="navbar-form navbar-right" id="navbar-login" role="search" style="display: none; margin-right: 5px" method="POST" action="{{ url_for("routes_user.login") }}">
 						    <div class="form-group">
-							<input type="text" class="form-control" name="username" placeholder="Username">
+							<input type="text" class="form-control" name="email" id="email" placeholder="Email">
 						    </div>
 						    <div class="form-group">
-							<input type="text" class="form-control" name="password" placeholder="Password">
+							<input type="password" class="form-control" name="password" id="password" placeholder="Password">
 						    </div>
 						    <button type="submit" class="btn btn-default">Sign In</button>
 						</form>

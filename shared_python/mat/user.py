@@ -1,4 +1,5 @@
 #!/usr/bin/python3
+import uuid
 from mat import course, matconfig
 from mat.database import MatDB
 from mat.matobject import MatObject
@@ -35,6 +36,14 @@ def getUserBySessionID(sessionid):
 		return getUserByID(usersid)
 	else:
 		return None	
+
+# ===========================================================
+def getUserByEmailAndPassword(email,password):
+	query = 'SELECT * FROM users WHERE email=%s AND password=MD5(%s)'
+	result = db.queryOneRec(query, (email, password+matconfig.password_salt))
+	if result:
+		return User(**result)
+	return User()
 
 # ===========================================================
 def deleteSession(sessionid):
@@ -136,7 +145,7 @@ class User(MatObject):
 	# ===========================================================
 	def createSession(self):
 		assert self.usersid
-		sessionid = self.usersid + uuid.uuid4()
+		sessionid = str(self.usersid) + str(uuid.uuid4())
 		query = 'INSERT INTO sessions (usersid, sessionid) VALUES (%s,%s)'
 		db.queryNoResults(query, (self.usersid, sessionid))
 		self._updateSessions()

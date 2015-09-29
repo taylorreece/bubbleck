@@ -22,12 +22,18 @@ def dashboard():
 
 
 # ===================================================
-@routes_user.route('/user/login')
+@routes_user.route('/user/login', methods=('GET', 'POST'))
 @load_user
 def login():
 	form = LoginForm(request.form)
 	if request.method == 'POST' and form.validate():
-		return 'Authenticated'
+		g.current_user = user.getUserByEmailAndPassword(form.email.data,form.password.data)
+		if g.current_user.usersid:
+			sessionid = g.current_user.createSession()
+			session['sessionid'] = sessionid
+			return redirect(url_for('routes_user.dashboard'))
+		else:
+			flash('danger|Login Incorrect')
 	return render_template('user/login.html', form=form)
 
 # ===================================================
@@ -45,8 +51,17 @@ def logout():
 def register():
 	form = RegisterForm(request.form)
 	if request.method == 'POST' and form.validate():
-		# TODO: use the data from this form to create an actual user
-		return "Got it!"
+		try:
+			u = user.User( email = form.email.data,
+				  name = form.name.data,
+				  password_plaintext = form.password.data,
+				  teachername = form.teachername.data,
+			)
+			u.save()
+		except:
+			return "An error occured while creating your account.  Please contact taylor (taylor@reecemath.com) for details"
+		flash('info|A user account for %s has been created.  Please log in.' % form.email.data)
+		return redirect(url_for('routes_user.login'))
 	return render_template('user/register.html',form=form)
 
 # ===================================================
