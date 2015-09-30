@@ -7,6 +7,7 @@ from flask import render_template
 from flask import session
 from flask import url_for
 from mat import user
+from myautota.helper_functions import anonymous_required
 from myautota.helper_functions import login_required
 from myautota.helper_functions import load_user 
 from myautota.forms import LoginForm
@@ -23,7 +24,7 @@ def dashboard():
 
 # ===================================================
 @routes_user.route('/user/login', methods=('GET', 'POST'))
-@load_user
+@anonymous_required
 def login():
 	form = LoginForm(request.form)
 	if request.method == 'POST' and form.validate():
@@ -47,7 +48,7 @@ def logout():
 
 # ===================================================
 @routes_user.route('/user/register', methods=('GET', 'POST'))
-@load_user
+@anonymous_required
 def register():
 	form = RegisterForm(request.form)
 	if request.method == 'POST' and form.validate():
