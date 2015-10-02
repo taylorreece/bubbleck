@@ -38,6 +38,5 @@
   with_items:
     - psre
 
-- include: update_users.yml
-
-- include: update_shared_python.yml
+- include: "{{ ANSIBLE_ROOT }}/tasks/update_users.yml"
+- include: "{{ ANSIBLE_ROOT }}/tasks/update_shared_python.yml"

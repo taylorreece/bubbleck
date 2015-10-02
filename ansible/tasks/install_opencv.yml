@@ -1,0 +1,85 @@
+- name: Update APT cache
+  apt: update_cache=yes
+
+- name: Remove the aptitude packages for OpenCV
+  apt: name={{ item }} state=absent
+  with_items:
+    - libopencv-dev
+    - python-opencv
+
+- name: Ensure prerequisites are installed
+  apt: name={{ item }} state=present
+  with_items:
+    - ant
+    - build-essential
+    - checkinstall
+    - cmake
+    - default-jdk
+    - doxygen
+    - gfortran
+    - git
+    - libatlas-base-dev
+    - libavcodec-dev 
+    - libavformat-dev
+    - libdc1394-22-dev
+    - libeigen3-dev
+    - libfaac-dev
+    - libgdal-dev
+    - libgstreamer-plugins-base0.10-dev
+    - libgstreamer0.10-dev
+    - libgtk2.0-dev
+    - libjasper-dev
+    - libjpeg-dev
+    - libjpeg8-dev
+    - libmp3lame-dev
+    - libopencore-amrnb-dev
+    - libopencore-amrwb-dev
+    - libopenexr-dev
+    - libpng-dev
+    - libpng12-dev
+    - libqt4-dev
+    - libswscale-dev
+    - libtbb-dev
+    - libtheora-dev
+    - libtiff5-dev
+    - libv4l-dev
+    - libvorbis-dev
+    - libvtk6-dev
+    - libwebp-dev
+    - libx264-dev
+    - libxine2-dev
+    - libxvidcore-dev
+    - make
+    - pkg-config
+    - python-dev
+    - python-numpy
+    - python-tk
+    - python3-dev
+    - python3-numpy
+    - python3-tk
+    - qt5-default
+    - v4l-utils
+    - x264
+    - yasm
+    - zlib1g-dev
+
+- name: Check out the OpenCV git repo
+  git: repo=https://github.com/Itseez/opencv.git dest=/root/opencv
+
+- name: Ensure build directory exists
+  file: path=/root/opencv/build state=directory
+
+- name: Prepare the build with cmake
+  shell: cd /root/opencv/build && cmake -DWITH_QT=ON -DWITH_OPENGL=ON -DFORCE_VTK=ON -DWITH_TBB=ON -DWITH_GDAL=ON -DWITH_XINE=ON -DBUILD_EXAMPLES=ON .. 
+
+- name: Make the package. This will take forever
+  shell: cd /root/opencv/build && make -j4
+
+- name: Install the package
+  shell: cd /root/opencv/build && make install
+
+- name: Run ldconfig
+  shell: ldconfig
+
+- name: Ensure that the python package was installed appropriately
+  shell: python3 -c 'import cv2'

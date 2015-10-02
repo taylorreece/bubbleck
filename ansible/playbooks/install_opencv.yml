@@ -1,0 +1,15 @@
+#!/usr/bin/env ansible-playbook
+
+- name: Install openCV from source
+  hosts: "{{ hosts }}"
+  remote_user: root
+
+  vars_files:
+    - ../global_vars.yml
+
+  handlers:
+    - include: "{{ ANSIBLE_ROOT }}/handlers/main.yml"
+
+  tasks:
+    - include: "{{ ANSIBLE_ROOT }}/tasks/install_opencv.yml"
+      when: "role == 'appserver'"
