@@ -1,3 +1,13 @@
+schema_version = 0
+from mat import database
+try:
+	if schema_version != int(database.MatDB().getSchemaVersion()):
+		exit('Schema version of the database is incorrect.  Expecting %s, but got %s' % (schema_version,database.MatDB().getSchemaVersion()))
+except TypeError:
+	exit('Could not identify schema version.')
+
+# ===================================================
+
 from flask import Flask
 from flask import g
 from flask import redirect

@@ -22,6 +22,11 @@ class MatDB:
 		self._db_conn.close()
 
 	# ===========================================================
+	def getSchemaVersion(self):
+		query = "SELECT value FROM settings WHERE category='schema' AND name='version'"
+		return self.queryOneVal(query)
+
+	# ===========================================================
 	def query(self,query,args,one_record=False,return_results=True):
 		self._connect()
 		result = self._db_cur.execute(query,args)
