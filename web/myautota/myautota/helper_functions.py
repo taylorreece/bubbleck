@@ -5,6 +5,7 @@ from flask import request
 from flask import session
 from flask import url_for
 from functools import wraps
+from mat import course
 from mat import user
 
 # ===================================================
@@ -36,7 +37,7 @@ def anonymous_required(f):
 		g.current_user = user.User()
 		return f(*args, **kwargs)
 	return decorated_function
-
+	
 # ===================================================
 def login_required(f):
 	@wraps(f)
@@ -64,3 +65,23 @@ def load_user(f):
 			g.current_user.logged_in = True
 		return f(*args, **kwargs)
 	return decorated_function
+
+# ===================================================
+def require_course_access(f):
+	''' Checks whether or not g.current_user has access to the course at hand '''
+	@wraps(f)
+	def decorated_function(*args, **kwargs):	
+		c = course.getCourseByID(kwargs['coursesid'])
+		if c:
+			role = c.getRole(g.current_user.usersid)
+			if g.current_user.is_admin:
+				role = 'edit'
+			if role is None:
+				flash('warning|You do not have permission to access that course.')
+				return redirect(url_for('routes_user.dashboard'))	
+		else:
+			flash('warning|The requested course was not found.')	
+			return redirect(url_for('routes_user.dashboard'))	
+		return f(*args, **kwargs)
+	return decorated_function
+	

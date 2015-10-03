@@ -8,6 +8,7 @@ from flask import url_for
 from mat import course
 from mat import section
 from myautota.helper_functions import login_required
+from myautota.helper_functions import require_course_access
 from myautota.forms import CourseForm
 
 routes_course = Blueprint('routes_course', __name__)
@@ -35,5 +36,6 @@ def new():
 @routes_course.route('/course/view')
 @routes_course.route('/course/view/<coursesid>')
 @login_required
+@require_course_access
 def view(coursesid=None):
 	return "Here's info about a coursesid=%s" % coursesid
