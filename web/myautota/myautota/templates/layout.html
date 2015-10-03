@@ -117,6 +117,10 @@
 					{% for message in messages %}
 						<div class="alert alert-{{ message.split('|')[0] }} alert-dismissible" role="alert">
 							<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+	{% if message.split('|')[0] == 'success' %}<i class="fa fa-check"></i>{% endif %}
+	{% if message.split('|')[0] == 'info' %}<i class="fa fa-info-circle"></i>{% endif %}
+	{% if message.split('|')[0] == 'warning' %}<i class="fa fa-warning"></i>{% endif %}
+	{% if message.split('|')[0] == 'danger' %}<i class="fa fa-warning"></i>{% endif %}
 							{{ message.split('|',1)[1] }}
 						</div>
 					{% endfor %}

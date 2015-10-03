@@ -1,11 +1,19 @@
 from flask import request
 from wtforms import BooleanField
+from wtforms import FieldList
 from wtforms import Form
 from wtforms import PasswordField
 from wtforms import StringField
 from wtforms import validators
 from flask_wtf import RecaptchaField
 
+# ===================================================
+class CourseForm(Form):
+	name        = StringField(u'Course Name', [validators.required()])
+	sections    = FieldList(StringField(u'Section Name'),
+				min_entries = 10,
+				max_entries = 10)
+	
 # ===================================================
 class LoginForm(Form):
 	email       = StringField(u'Email Address')

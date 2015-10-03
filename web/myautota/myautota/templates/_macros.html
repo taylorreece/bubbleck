@@ -1,11 +1,11 @@
 {# render_field is only used (so far) for the register form, but may be used for others #}
-{% macro render_field(field, placeholder="") %}
+{% macro render_field(field, placeholder="", multifield=False) %}
 	{% if field.errors %}
 	<div class="form-group has-error has-feedback">
 	{% else %}
 	<div class="form-group">
 	{% endif %}
-		<label class="control-label col-sm-2">{{ field.label }}</label>
+		<label class="control-label col-sm-2">{{ field.label }}{% if multifield %} #{{ multifield }}{% endif %}</label>
 		<div class="col-sm-10">
 			{{ field(class="form-control", placeholder=placeholder) }}
 		</div>

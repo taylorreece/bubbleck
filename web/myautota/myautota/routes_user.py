@@ -19,7 +19,7 @@ routes_user = Blueprint('routes_user', __name__)
 @routes_user.route('/user')
 @load_user
 def dashboard():
-	return render_template('user/dashboard.html')#, form=form)
+	return render_template('user/dashboard.html')
 
 
 # ===================================================
