@@ -1,13 +1,13 @@
 {# render_field is only used (so far) for the register form, but may be used for others #}
 {% macro render_field(field, placeholder="", multifield=False) %}
 	{% if field.errors %}
-	<div class="form-group has-error has-feedback">
+	<div class="form-group has-error has-feedback{% if multifield %} multifield{% endif %}">
 	{% else %}
-	<div class="form-group">
+	<div class="form-group{% if multifield %} multifield{% endif %}">
 	{% endif %}
 		<label class="control-label col-sm-2">{{ field.label }}{% if multifield %} #{{ multifield }}{% endif %}</label>
 		<div class="col-sm-10">
-			{{ field(class="form-control", placeholder=placeholder) }}
+			{{ field(class="form-control", placeholder='' if multifield not in (False,1) else placeholder) }}
 		</div>
 	</div>	
   {% if field.errors %}

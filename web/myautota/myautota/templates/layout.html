@@ -95,9 +95,10 @@
 						<li><a href="{{ url_for('routes_user.dashboard') }}"><i class="fa fa-dashboard fa-fw"></i> Dashboard</a></li>
 						<li><a href="#"><i class="fa fa-files-o fa-fw"></i> My Courses<span class="fa arrow"></span></a>
 							<ul class="nav nav-second-level">
-								<li><a href="#">Course 1</a></li>
-								<li><a href="#">Course 2</a></li>
-								<li><a href="#"><i class="fa fa-plus-circle fa-fw"></i> New Course</a></li>
+							{% for course in g.current_user.getCourses() %}
+								<li><a href="{{ url_for('routes_course.view') }}/{{ course.coursesid }}">{{ course.name }}</a></li>
+							{% endfor %}
+								<li><a href="{{ url_for('routes_course.new') }}"><i class="fa fa-plus-circle fa-fw"></i> New Course</a></li>
 							</ul>
 						<!-- /.nav-second-level -->
 						</li>
@@ -137,12 +138,12 @@
 	<script src="{{ url_for('static',filename='js/bootstrap.min.js') }}"></script>
 	<script src="{{ url_for('static',filename='js/metisMenu.min.js') }}"></script>
 	<script src="{{ url_for('static',filename='js/sb-admin-2.js') }}"></script>
-	{% block customjs %}{% endblock %}
 	<script>
 	function showNavbarLogin(){
 		$('#login-trigger').hide();
 		$('#navbar-login').slideDown();
 	}
 	</script>
+	{% block customjs %}{% endblock %}
 </body>
 </html>

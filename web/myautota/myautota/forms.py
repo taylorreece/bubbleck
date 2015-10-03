@@ -3,16 +3,18 @@ from wtforms import BooleanField
 from wtforms import FieldList
 from wtforms import Form
 from wtforms import PasswordField
+from wtforms import SelectField
 from wtforms import StringField
 from wtforms import validators
 from flask_wtf import RecaptchaField
 
 # ===================================================
 class CourseForm(Form):
+	max_num_sections = 20
 	name        = StringField(u'Course Name', [validators.required()])
-	sections    = FieldList(StringField(u'Section Name'),
-				min_entries = 10,
-				max_entries = 10)
+	num_sections= SelectField(u'# of Sections', choices=[(str(x),str(x)) for x in range(1,max_num_sections+1)])
+	sections    = FieldList(StringField(u'Section'),
+				min_entries = max_num_sections)
 	
 # ===================================================
 class LoginForm(Form):
