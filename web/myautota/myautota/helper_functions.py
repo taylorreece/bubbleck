@@ -71,7 +71,11 @@ def require_course_access(f):
 	''' Checks whether or not g.current_user has access to the course at hand '''
 	@wraps(f)
 	def decorated_function(*args, **kwargs):	
-		c = course.getCourseByID(kwargs['coursesid'])
+		try:
+			c = course.getCourseByID(kwargs['coursesid'])
+		except KeyError:
+			flash('warning|The requested course was not found.')	
+			return redirect(url_for('routes_user.dashboard'))	
 		if c:
 			role = c.getRole(g.current_user.usersid)
 			if g.current_user.is_admin:

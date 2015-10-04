@@ -38,4 +38,5 @@ def new():
 @login_required
 @require_course_access
 def view(coursesid=None):
-	return "Here's info about a coursesid=%s" % coursesid
+	c = course.getCourseByID(coursesid)
+	return render_template('course/view.html', course=c)
