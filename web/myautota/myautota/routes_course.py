@@ -38,5 +38,13 @@ def new():
 @login_required
 @require_course_access
 def view(coursesid=None):
-	c = course.getCourseByID(coursesid)
-	return render_template('course/view.html', course=c)
+	return render_template('course/view.html')
+
+# ===================================================
+@routes_course.route('/course/settings')
+@routes_course.route('/course/settings/<coursesid>')
+@login_required
+@require_course_access
+def settings(coursesid=None):
+	return render_template('course/settings.html')
+

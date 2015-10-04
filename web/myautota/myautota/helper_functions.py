@@ -86,6 +86,7 @@ def require_course_access(f):
 		else:
 			flash('warning|The requested course was not found.')	
 			return redirect(url_for('routes_user.dashboard'))	
+		g.current_course = c
 		return f(*args, **kwargs)
 	return decorated_function
 	

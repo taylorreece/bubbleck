@@ -62,8 +62,13 @@ def register():
 		except:
 			return "An error occured while creating your account.  Please contact taylor (taylor@reecemath.com) for details"
 		flash('info|A user account for %s has been created.  Please log in.' % form.email.data)
+	
 		return redirect(url_for('routes_user.login'))
-	return render_template('user/register.html',form=form)
+	oauthProviders = {	'facebook':'Facebook',
+				'google-plus':'Google',
+				'twitter':'Twitter'	
+	}
+	return render_template('user/register.html', form=form, oauthProviders=oauthProviders)
 
 # ===================================================
 @routes_user.route('/user/settings')

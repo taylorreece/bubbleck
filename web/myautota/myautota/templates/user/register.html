@@ -1,6 +1,9 @@
 {% extends "layout.html" %}
 {% import '_macros.html' as macros %}
 {% block title %}Register{% endblock %}
+{% block customcss %}
+<link href="{{ url_for('static', filename='css/bootstrap-social.css') }}" rel="stylesheet">
+{% endblock %}
 {% block content %}
 <div class="row">
 	<div class="col-lg-12">
@@ -8,10 +11,25 @@
 	</div><!-- /.col-lg-12 -->
 </div>
 <div class="row">
-	<div class="col-lg-4 col-md-12">
-Registration with this service is free.  The software was written for teachers, by a teacher, with the goal of making teachers' lives easier.  The service is unobtrusively ad-supported, though for $10 per year teachers can remove ads and access the Android and iOS phone apps (servers do cost money...).  The option to "upgrade" to the adless / mobile software is available after registration.
+	<div class="col-lg-4 col-md-4">
+		<div class="alert alert-success" role="alert">
+			Registration with this service is free.  The software was written for teachers, by a teacher, with the goal of making teachers' lives easier.  The service is unobtrusively ad-supported, though for $10 per year teachers can remove ads and access the Android and iOS phone apps (servers do cost money...).  The option to "upgrade" to the adless / mobile software is available after registration.
+		</div>
+	<hr>
+		<div class="panel panel-default">
+			<div class="panel-heading">
+				Alternative registration options
+			</div>
+			<div class="panel-body">
+				{% for key in oauthProviders  %}
+				<a class="btn btn-block btn-social btn-{{ key }}">
+					<i class="fa fa-{{ key }}"></i> Register with {{ oauthProviders[key] }}
+				</a>
+				{% endfor %}
+			</div>
+		</div>
 	</div>
-	<div class="col-lg-8 col-md-12">
+	<div class="col-lg-8 col-md-8 well">
 		<form class="form-horizontal" role="form" method="POST" action="{{ url_for('routes_user.register') }}">
 			{{ macros.render_field(form.name) }}
 			{{ macros.render_field(form.email) }}
