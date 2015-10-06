@@ -40,17 +40,23 @@ app.config['RECAPTCHA_PRIVATE_KEY'] = matconfig.recaptcha_private_key
 @app.route('/')
 @load_user
 def index():
-	return render_template('index.html')
+	return render_template('marketing/index.html')
 
 # ===================================================
 @app.route('/about')
 @load_user
 def about():
-	return render_template('about.html')
+	return render_template('marketing/about.html')
 
 # ===================================================
 @app.route('/contact')
 @load_user
 def contact():
-	return render_template('contact.html')
+	return render_template('marketing/contact.html')
+
+# ===================================================
+@app.route('/about/mobile')
+@load_user
+def aboutMobile():
+	return render_template('marketing/mobile.html')
 

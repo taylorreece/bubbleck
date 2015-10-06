@@ -12,10 +12,14 @@
 </div>
 <div class="row">
 	<div class="col-lg-4 col-md-4">
-		<div class="alert alert-success" role="alert">
-			Registration with this service is free.  The software was written for teachers, by a teacher, with the goal of making teachers' lives easier.  The service is unobtrusively ad-supported, though for $10 per year teachers can remove ads and access the Android and iOS phone apps (servers do cost money...).  The option to "upgrade" to the adless / mobile software is available after registration.
+		<div class="panel panel-success">
+			<div class="panel-heading">
+			Registration with this service is <b>free</b>.  The software was written for teachers, by a teacher, with the goal of making teachers' lives easier.  The service is unobtrusively ad-supported, though for $10 per year teachers can remove ads and have access the Android and iOS phone apps (servers do cost money...).  The option to "upgrade" to the adless / mobile software is available after registration.
+			</div>
+			<div class="panel-body" style="text-align: right">
+				<a href="{{ url_for('aboutMobile') }}" class="btn btn-default">Learn more about mobile <i class="fa fa-chevron-right"></i></a>
+			</div>
 		</div>
-	<hr>
 		<div class="panel panel-default">
 			<div class="panel-heading">
 				Alternative registration options
@@ -29,25 +33,31 @@
 			</div>
 		</div>
 	</div>
-	<div class="col-lg-8 col-md-8 well">
-		<form class="form-horizontal" role="form" method="POST" action="{{ url_for('routes_user.register') }}">
-			{{ macros.render_field(form.name) }}
-			{{ macros.render_field(form.email) }}
-			{{ macros.render_field(form.password) }}
-			{{ macros.render_field(form.confirm) }}
-			{{ macros.render_field(form.teachername, "e.g. 'Mrs. Smith' - will be printed on exams") }}
-			{{ macros.render_field(form.recaptcha) }}
-			<hr>
-			These fields are not required; I'm just interested in where my users come from:
-			{{ macros.render_field(form.geography) }}
-			{{ macros.render_field(form.hearabout) }}
-			<div class="form-group"> 
-				<div class="col-sm-offset-2 col-sm-10">
-					<button type="submit" class="btn btn-default">Submit</button>
-				</div>
+	<div class="col-lg-8 col-md-8">
+		<div class=" panel panel-default">
+			<div class="panel-heading">
+				Registration
 			</div>
-		</form>
-
+			<div class="panel-body">
+				<form class="form-horizontal" role="form" method="POST" action="{{ url_for('routes_user.register') }}">
+					{{ macros.render_field(form.name) }}
+					{{ macros.render_field(form.email) }}
+					{{ macros.render_field(form.password) }}
+					{{ macros.render_field(form.confirm) }}
+					{{ macros.render_field(form.teachername, "e.g. 'Mrs. Smith' - will be printed on exams") }}
+					{{ macros.render_field(form.recaptcha) }}
+					<hr>
+					These fields are not required; I'm just interested in where my users come from:
+					{{ macros.render_field(form.geography) }}
+					{{ macros.render_field(form.hearabout) }}
+					<div class="form-group"> 
+						<div class="col-sm-offset-2 col-sm-10">
+							<button type="submit" class="btn btn-default">Submit</button>
+						</div>
+					</div>
+				</form>
+			</div>
+		</div>
 	</div>
 </div>
 {% endblock %}
