@@ -94,11 +94,11 @@
 						<li><a href="#"><i class="fa fa-files-o fa-fw"></i> My Courses<span class="fa arrow"></span></a>
 							<ul class="nav nav-second-level">
 							{% for course in g.current_user.getCourses() %}
-								<li><a href="{{ url_for('routes_course.view') }}/{{ course.coursesid }}">{{ course.name }}</a></li>
+								<li><a href="{{ url_for('routes_course.view', coursesid=course.coursesid) }}">{{ course.name }}</a></li>
 								{% if g.current_course %}
 									{% if g.current_course.coursesid == course.coursesid %}
 										<ul class="nav nav-third-level">
-											<li><a href="{{ url_for('routes_course.settings') }}/{{ course.coursesid }}">Settings</a></li>
+											<li><a href="{{ url_for('routes_course.settings', coursesid=course.coursesid) }}">Settings</a></li>
 										</ul>
 									{% endif %}	
 								{% endif %}	

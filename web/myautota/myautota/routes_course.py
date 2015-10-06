@@ -29,7 +29,7 @@ def new():
 				s = section.Section(name=section_name, coursesid=c.coursesid)
 				s.save()
 		flash('success|Course %s was created with %s sections.' % (c.name,num_sections))
-		return redirect(url_for('routes_user.dashboard'))
+		return redirect(url_for('routes_course.view', coursesid=c.coursesid))
 	return render_template('course/new.html', form=form, default_num_sections=5)
 
 # ===================================================
