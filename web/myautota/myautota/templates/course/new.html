@@ -8,22 +8,33 @@
 	</div><!-- /.col-lg-12 -->
 </div>
 <div class="row">
-	<div class="col-lg-2 alert alert-success" role="alert" style="margin-right:5px">
-		<i class="fa fa-info-circle"></i> A course may have up to twenty 'sections'.  For example, a Geometry course may have "Hour 1A", "Hour 3B", etc.
-	</div>
-	<div class="col-lg-8 well">
-		<form class="form-horizontal" role="form" method="POST" action="{{ url_for('routes_course.new') }}">
-			{{ macros.render_field(form.name, 'e.g. "Geometry"') }}
-			{{ macros.render_field(form.num_sections) }}
-			{% for section in form.sections %}
-				{{ macros.render_field(section, placeholder='e.g. "Hour 3A"', multifield=loop.index0+1) }}
-			{% endfor %}
-			<div class="form-group"> 
-				<div class="col-sm-offset-2 col-sm-10">
-					<button type="submit" class="btn btn-default">Submit</button>
-				</div>
+	<div class="col-lg-2">
+		<div class="panel panel-success">
+			<div class="panel-heading">
+				<i class="fa fa-info-circle"></i> A course may have up to twenty 'sections'.  For example, a Geometry course may have "Hour 1A", "Hour 3B", etc.
 			</div>
-		</form>
+		</div>
+	</div>
+	<div class="col-lg-8">
+		<div class="panel panel-default">
+			<div class="panel-heading">
+				Course Information
+			</div>
+			<div class="panel-body">
+				<form class="form-horizontal" role="form" method="POST" action="{{ url_for('routes_course.new') }}">
+					{{ macros.render_field(form.name, 'e.g. "Geometry"') }}
+					{{ macros.render_field(form.num_sections) }}
+					{% for section in form.sections %}
+						{{ macros.render_field(section, placeholder='e.g. "Hour 3A"', multifield=loop.index0+1) }}
+					{% endfor %}
+					<div class="form-group"> 
+						<div class="col-sm-offset-2 col-sm-10">
+							<button type="submit" class="btn btn-default">Submit</button>
+						</div>
+					</div>
+				</form>
+			</div>
+		</div>
 
 	</div>
 </div>
