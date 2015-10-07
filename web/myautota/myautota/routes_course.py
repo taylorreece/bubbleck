@@ -7,6 +7,7 @@ from flask import render_template
 from flask import url_for
 from mat import course
 from mat import section
+from mat import user
 from myautota.helper_functions import login_required
 from myautota.helper_functions import require_course_access
 from myautota.forms import CourseForm
@@ -46,5 +47,13 @@ def view(coursesid=None):
 @login_required
 @require_course_access
 def settings(coursesid=None):
-	return render_template('course/settings.html')
+	roles = g.current_course.getUserRoles()
+	users_roles = []
+	for r in roles:
+		users_roles.append({
+				'user' : user.getUserByID(r['usersid']),
+				'role' : r['role']
+		})
+	print(users_roles)
+	return render_template('course/settings.html', users_roles=users_roles)
 

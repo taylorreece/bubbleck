@@ -4,11 +4,23 @@
 {% block content %}
 <div class="row">
 	<div class="col-lg-12">
-		<h2 class="page-header">{{ g.current_course.name }}</h2>
+		<h2 class="page-header">Course Settings: {{ g.current_course.name }}</h2>
 	</div><!-- /.col-lg-12 -->
 </div>
 <div class="row">
-Setting for this one, yo.
+	<div class="col-lg-6">
+		<div class="panel panel-default">
+			<div class="panel-heading">
+				Permissions
+			</div>
+			<div class="panel-body">
+				<!-- TODO: Clean up this UI; allow users to edit permissions -->
+				{% for ur in users_roles %}
+					{{ ur['user'].name }} | {{ ur['role'] }}<br>
+				{% endfor %}
+			</div>
+		</div>
+	</div>
 </div>
 {% endblock %}
 
