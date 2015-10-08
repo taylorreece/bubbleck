@@ -15,6 +15,14 @@ from myautota.forms import CourseForm
 routes_course = Blueprint('routes_course', __name__)
 
 # ===================================================
+@routes_course.route('/course/delete')
+@routes_course.route('/course/delete/<coursesid>')
+@login_required
+@require_course_access
+def delete(coursesid=None):
+	return render_template('course/delete.html')
+
+# ===================================================
 @routes_course.route('/course/new', methods=('GET','POST'))
 @login_required
 def new():
@@ -34,14 +42,6 @@ def new():
 	return render_template('course/new.html', form=form, default_num_sections=5)
 
 # ===================================================
-@routes_course.route('/course/view')
-@routes_course.route('/course/view/<coursesid>')
-@login_required
-@require_course_access
-def view(coursesid=None):
-	return render_template('course/view.html')
-
-# ===================================================
 @routes_course.route('/course/settings')
 @routes_course.route('/course/settings/<coursesid>')
 @login_required
@@ -54,6 +54,13 @@ def settings(coursesid=None):
 				'user' : user.getUserByID(r['usersid']),
 				'role' : r['role']
 		})
-	print(users_roles)
 	return render_template('course/settings.html', users_roles=users_roles)
+
+# ===================================================
+@routes_course.route('/course/view')
+@routes_course.route('/course/view/<coursesid>')
+@login_required
+@require_course_access
+def view(coursesid=None):
+	return render_template('course/view.html')
 
