@@ -15,25 +15,23 @@
 			</div>
 			<table class="table">
 			<tr>
-				<th>Name</th>
-				<th>Email</th>
-				<th>Role</th>
+				<th class="col-md-4">Name</th>
+				<th class="col-md-4">Email</th>
+				<th class="col-md-2">Role</th>
+				<th class="col-md-2"></th>
 			</tr>
 			{% for ur in users_roles %}
 			<tr>
 				<td>{{ ur['user'].name }}</td>
 				<td>{{ ur['user'].email }}</td>
+				<td>
 				{% if ur['user'].usersid == g.current_user.usersid or ur['role'] == 'own' %}
-					<td><button type="button" class="btn btn-default" disabled='disabled'>{% if ur['role'] == 'own' %}Owner{% elif ur['role'] == 'edit' %}Edit{% else %}View{% endif %}</button></td>
+					<button type="button" class="btn btn-default" disabled='disabled'>{% if ur['role'] == 'own' %}Owner{% elif ur['role'] == 'edit' %}Edit{% else %}View{% endif %}</button>
 				{% else %}
-					<td>
-					{% if ur['role'] == 'edit' %}
-					<input type="checkbox" data-toggle="toggle" data-on="Can Edit" data-off="View-only" data-onstyle='default' data-offstyle='default' checked>
-					{% else %}
-					<input type="checkbox" data-toggle="toggle" data-on="Can Edit" data-off="View-only" data-onstyle='default' data-offstyle='default'>
-					{% endif %}
-					</td>
+					<input class="userPermissionToggle" type="checkbox" data-toggle="toggle" data-on="Can Edit" data-off="View-only" data-onstyle='default' data-offstyle='default' data-usersid="{{ ur['user'].usersid }}"{% if ur['role'] == 'edit' %} checked{% endif %}>
 				{% endif %}
+				</td>
+				<td><span id="{{ ur['user'].usersid }}status"></span></td>
 			</tr>
 			{% endfor %}
 			</table>
@@ -64,6 +62,25 @@
 
 {% block customjs %}
 	<script src="{{ url_for('static',filename='js/bootstrap-toggle.min.js') }}"></script>
+	<script>
+		$('.userPermissionToggle').change(function() {
+			usersid = $(this).attr('data-usersid');
+			role = ($(this).prop('checked') ? 'edit' : 'view')
+			url = '{{ url_for('routes_course.processPermissionChange') }}' + '/{{ g.current_course.coursesid }}/' + usersid + '/' + role;
+			$('#' + usersid + 'status').html('loading')
+			$.ajax({
+				url: url,
+				success: function(result) {
+					if(result['status'] == 'success'){
+						$('#' + usersid + 'status').html('Saved.')
+					} else {
+						$('#' + usersid + 'status').html(result['message'])
+					}
+				},
+				error: function(xhr) { alert("Error: " + xhr.status + " " + xhr.statusText); }
+			});
+		})
+	</script>
 {% endblock %}
 {% block customcss %}
 	<link href="{{ url_for('static', filename='css/bootstrap-toggle.min.css') }}" rel="stylesheet">

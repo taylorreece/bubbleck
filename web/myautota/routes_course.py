@@ -1,6 +1,7 @@
 from flask import Blueprint
 from flask import flash
 from flask import g
+from flask import jsonify
 from flask import redirect
 from flask import request
 from flask import render_template
@@ -40,6 +41,36 @@ def new():
 		flash('success|Course %s was created with %s sections.' % (c.name,num_sections))
 		return redirect(url_for('routes_course.view', coursesid=c.coursesid))
 	return render_template('course/new.html', form=form, default_num_sections=5)
+
+# ===================================================
+@routes_course.route('/course/permissions')
+@routes_course.route('/course/permissions/<coursesid>/<usersid>/<role>')
+@login_required
+@require_course_access
+def processPermissionChange(coursesid=None, usersid=None, role=None):
+	result = {}
+	if role not in ('edit','view'):
+		result['status'] = 'error'
+		result['message'] = 'The role you requested is not a role.  WTF are you doing?'
+	elif g.current_course.getRole(g.current_user.usersid) not in ('own','edit'):
+		result['status'] = 'error'
+		result['message'] = 'You are not the owner or editor of this course'
+	elif usersid == g.current_user.usersid:
+		result['status'] = 'error'
+		result['message'] = 'You cannot edit your own permissions.'
+	elif g.current_course.getRole(usersid) == 'own':
+		result['status'] = 'error'
+		result['message'] = 'You cannot change permissions for the course owner.'
+	else:
+		try:
+			g.current_course.addOrUpdateRole(usersid,role)
+		except:
+			result['status'] = 'error'
+			result['message'] = 'Not saved... unknown error.'
+			return jsonify(**result)
+		result['status'] = 'success'
+		result['message'] = 'Permissions changed.'
+	return jsonify(**result)
 
 # ===================================================
 @routes_course.route('/course/settings')

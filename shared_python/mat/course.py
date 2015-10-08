@@ -26,6 +26,14 @@ class Course(MatObject):
 	# ===========================================================
 	def __init__(self, *args, **kwargs):
 		self.setAttributes(kwargs)
+
+	# ===========================================================
+	def addOrUpdateRole(self,usersid, role):
+		assert role in ('view','edit','own')
+		self.removeRoles(usersid)
+		query = '''INSERT INTO courses_users (coursesid, usersid, role)
+				VALUES (%s,%s,%s)'''
+		db.queryNoResults(query, (self.coursesid,usersid,role))
 		
 	# ===========================================================
 	def getCourseByID(self,coursesid):
@@ -37,6 +45,43 @@ class Course(MatObject):
 		else:
 			return None
 
+	# ===========================================================
+	def getExams(self):
+		ret = []
+		query = 'SELECT * FROM exams WHERE coursesid=%s AND active'
+		exams = db.queryDictList(query,(self.coursesid,))
+		for e in exams:
+			ret.append(exam.Exam(**e))
+		return ret
+	
+	# ===========================================================
+	def getRole(self, usersid):
+		query = 'SELECT role FROM courses_users WHERE usersid=%s AND coursesid=%s'
+		return db.queryOneVal(query, (usersid, self.coursesid))
+
+	# ===========================================================
+	def getSections(self):
+		ret = []
+		query = 'SELECT * FROM sections WHERE coursesid=%s AND active'
+		sections = db.queryDictList(query,(self.coursesid,))
+		for e in sections:
+			ret.append(section.Section(**e))
+		return ret
+
+	# ===========================================================
+	def getUserRoles(self):
+		''' 
+		Returns a list of permissions in the form [['usersid':123','role':'view'],[...]]
+		'''
+		query = 'SELECT usersid,role FROM courses_users WHERE coursesid=%s'
+		return db.queryDictList(query,(self.coursesid,))
+
+	# ===========================================================
+	def removeRoles(self,usersid):
+		''' Removes all roles for a particular user for this course '''
+		query = 'DELETE FROM courses_users WHERE coursesid=%s AND usersid=%s'
+		db.queryNoResults(query, (self.coursesid, usersid)) 
+	
 	# ===========================================================
 	def save(self):
 		if self.coursesid:
@@ -53,47 +98,3 @@ class Course(MatObject):
 			result = db.queryOneRec(query,(self.name,))
 			self.setAttributes(result)
 
-	# ===========================================================
-	def removeRoles(self,usersid):
-		''' Removes all roles for a particular user for this course '''
-		query = 'DELETE FROM courses_users WHERE coursesid=%s AND usersid=%s'
-		db.queryNoResults(query, (self.coursesid, usersid)) 
-	
-	# ===========================================================
-	def addOrUpdateRole(self,usersid, role):
-		assert role in ('view','edit','own')
-		self.removeRoles(usersid)
-		query = '''INSERT INTO courses_users (coursesid, usersid, role)
-				VALUES (%s,%s,%s)'''
-		db.queryNoResults(query, (self.coursesid,usersid,role))
-	
-	# ===========================================================
-	def getRole(self, usersid):
-		query = 'SELECT role FROM courses_users WHERE usersid=%s AND coursesid=%s'
-		return db.queryOneVal(query, (usersid, self.coursesid))
-
-	# ===========================================================
-	def getUserRoles(self):
-		''' 
-		Returns a list of permissions in the form [['usersid':123','role':'view'],[...]]
-		'''
-		query = 'SELECT usersid,role FROM courses_users WHERE coursesid=%s'
-		return db.queryDictList(query,(self.coursesid,))
-
-	# ===========================================================
-	def getExams(self):
-		ret = []
-		query = 'SELECT * FROM exams WHERE coursesid=%s AND active'
-		exams = db.queryDictList(query,(self.coursesid,))
-		for e in exams:
-			ret.append(exam.Exam(**e))
-		return ret
-	
-	# ===========================================================
-	def getSections(self):
-		ret = []
-		query = 'SELECT * FROM sections WHERE coursesid=%s AND active'
-		sections = db.queryDictList(query,(self.coursesid,))
-		for e in sections:
-			ret.append(section.Section(**e))
-		return ret
