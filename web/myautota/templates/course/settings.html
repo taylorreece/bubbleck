@@ -13,33 +13,30 @@
 			<div class="panel-heading">
 				<i class="fa fa-users"></i> Permissions
 			</div>
-			<div class="panel-body">
-				<!-- TODO: Clean up this UI; allow users to edit permissions -->
-				<table class="table table-hover">
-				<tr>
-					<th>Name</th>
-					<th>Email</th>
-					<th>Role</th>
-				</tr>
-				{% for ur in users_roles %}
-				<tr>
-					<td>{{ ur['user'].name }}</td>
-					<td>{{ ur['user'].email }}</td>
-					{% if ur['user'].usersid == g.current_user.usersid or ur['role'] == 'own' %}
-						<td><button type="button" class="btn btn-default" disabled='disabled'>{% if ur['role'] == 'own' %}Owner{% elif ur['role'] == 'edit' %}Edit{% else %}View{% endif %}</button></td>
+			<table class="table">
+			<tr>
+				<th>Name</th>
+				<th>Email</th>
+				<th>Role</th>
+			</tr>
+			{% for ur in users_roles %}
+			<tr>
+				<td>{{ ur['user'].name }}</td>
+				<td>{{ ur['user'].email }}</td>
+				{% if ur['user'].usersid == g.current_user.usersid or ur['role'] == 'own' %}
+					<td><button type="button" class="btn btn-default" disabled='disabled'>{% if ur['role'] == 'own' %}Owner{% elif ur['role'] == 'edit' %}Edit{% else %}View{% endif %}</button></td>
+				{% else %}
+					<td>
+					{% if ur['role'] == 'edit' %}
+					<input type="checkbox" data-toggle="toggle" data-on="Can Edit" data-off="View-only" data-onstyle='default' data-offstyle='default' checked>
 					{% else %}
-						<td>
-						{% if ur['role'] == 'edit' %}
-						<input type="checkbox" data-toggle="toggle" data-on="Edit" data-off="View" data-offstyle='info' checked>
-						{% else %}
-						<input type="checkbox" data-toggle="toggle" data-on="Edit" data-off="View" data-offstyle='info'>
-						{% endif %}
-						</td>
+					<input type="checkbox" data-toggle="toggle" data-on="Can Edit" data-off="View-only" data-onstyle='default' data-offstyle='default'>
 					{% endif %}
-				</tr>
-				{% endfor %}
-				</table>
-			</div>
+					</td>
+				{% endif %}
+			</tr>
+			{% endfor %}
+			</table>
 		</div>
 	</div>
 	<div class="col-lg-4">
