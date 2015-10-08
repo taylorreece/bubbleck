@@ -15,7 +15,7 @@
   notify: reload apache2
 
 - name: Check out latest web repository
-  subversion: repo=https://github.com/taylorreece/myautota/trunk/web/myautota dest=/var/www/myautota
+  subversion: repo=https://github.com/taylorreece/myautota/trunk/web dest=/var/www/myautota
   notify: reload apache2
 
 - name: Upload up Apache conf files
