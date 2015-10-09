@@ -49,9 +49,22 @@ def new():
 @require_course_access
 def processPermissionChange(coursesid=None, usersid=None, role=None):
 	result = {}
-	if role not in ('edit','view'):
+	if role == 'remove':
+		if g.current_course.getRole(usersid) == 'own':
+			result['status'] = 'error'
+			result['message'] = 'You cannot remove the owner of a course'
+		else:
+			try:
+				g.current_course.removeRoles(usersid)
+			except:
+				result['status'] = 'error'
+				result['message'] = 'Not saved... unknown error.'
+				return jsonify(**result)
+			result['status'] = 'success'
+			result['message'] = 'Permission removed'
+	elif role not in ('edit','view'):
 		result['status'] = 'error'
-		result['message'] = 'The role you requested is not a role.  WTF are you doing?'
+		result['message'] = 'The role you requested (%s) is not a role.  WTF are you doing?' % role
 	elif g.current_course.getRole(g.current_user.usersid) not in ('own','edit'):
 		result['status'] = 'error'
 		result['message'] = 'You are not the owner or editor of this course'

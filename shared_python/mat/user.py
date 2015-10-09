@@ -46,6 +46,11 @@ def getUserByEmailAndPassword(email,password):
 	return User()
 
 # ===========================================================
+def getUsersidByEmail(email):
+	query = 'SELECT usersid FROM users WHERE email=%s'
+	return db.queryOneVal(query, (email,))
+
+# ===========================================================
 def deleteSession(sessionid):
 	query = 'DELETE FROM sessions WHERE sessionid=%s'
 	db.queryNoResults(query, (sessionid,))

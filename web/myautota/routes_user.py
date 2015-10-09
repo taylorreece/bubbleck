@@ -1,6 +1,7 @@
 from flask import Blueprint
 from flask import flash
 from flask import g
+from flask import jsonify
 from flask import redirect
 from flask import request
 from flask import render_template
@@ -21,6 +22,24 @@ routes_user = Blueprint('routes_user', __name__)
 def dashboard():
 	return render_template('user/dashboard.html')
 
+# ===================================================
+@routes_user.route('/ajax/userbyemail/')
+@routes_user.route('/ajax/userbyemail/<email>')
+@login_required
+def getUsersidByEmail(email=None):
+	result = {}
+	if email:
+		usersid = user.getUsersidByEmail(email)
+		if usersid:
+			result['status'] = 'success'
+			result['usersid'] = usersid
+		else:
+			result['status'] = 'error'
+			result['message'] = 'No registered user has that email address'
+	else:
+		result['status'] = 'error'
+		result['message'] = 'You did not supply an email address'
+	return jsonify(**result)
 
 # ===================================================
 @routes_user.route('/user/login', methods=('GET', 'POST'))

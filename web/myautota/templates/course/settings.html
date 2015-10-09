@@ -15,15 +15,21 @@
 			</div>
 			<table class="table">
 			<tr>
+				<th class="col-md-1"></th>
 				<th class="col-md-4">Name</th>
 				<th class="col-md-4">Email</th>
 				<th class="col-md-2">Role</th>
-				<th class="col-md-2"></th>
+				<th class="col-md-1"></th>
 			</tr>
 			{% for ur in users_roles %}
 			<tr>
-				<td>{{ ur['user'].name }}</td>
-				<td>{{ ur['user'].email }}</td>
+				<td>
+				{% if ur['role'] != 'own'%}
+				<button type="button" class="btn btn-danger btn-sm remove-user-btn" data-usersid="{{ ur['user'].usersid }}"><i class="fa fa-trash-o"></i> Remove</a>
+				{% endif %}
+				</td>
+				<td style="vertical-align:middle">{{ ur['user'].name }}</td>
+				<td style="vertical-align:middle">{{ ur['user'].email }}</td>
 				<td>
 				{% if ur['user'].usersid == g.current_user.usersid or ur['role'] == 'own' %}
 					<button type="button" class="btn btn-default" disabled='disabled'>{% if ur['role'] == 'own' %}Owner{% elif ur['role'] == 'edit' %}Edit{% else %}View{% endif %}</button>
@@ -35,6 +41,24 @@
 			</tr>
 			{% endfor %}
 			</table>
+			<div class="panel-body">
+				<h4>Share with a new user</h4>
+				<div class="form-horizontal">
+					<div class="col-sm-8" style="padding: 0px">
+						<input type="email" id="newuseremail" class="form-control" placeholder="User's Email Address">
+					</div>
+					<div class="col-sm-2" style="padding: 0px">
+						<select class="form-control" id="newuserrole">
+							<option value="edit">Can Edit</option>
+							<option value="view">View-only</option>
+						</select>	
+					</div>
+					<div class="col-sm-2" style="padding: 0px">
+						<span class="btn btn-default btn-block" id="newuserbutton">Add <i class="fa fa-chevron-right"></i></button>
+					</div>
+					<div id="newuserinfo" class="col-sm-12" style="padding: 0px"></div>
+				</div>
+			</div>
 		</div>
 	</div>
 	<div class="col-lg-4">
@@ -63,23 +87,56 @@
 {% block customjs %}
 	<script src="{{ url_for('static',filename='js/bootstrap-toggle.min.js') }}"></script>
 	<script>
-		$('.userPermissionToggle').change(function() {
-			usersid = $(this).attr('data-usersid');
-			role = ($(this).prop('checked') ? 'edit' : 'view')
-			url = '{{ url_for('routes_course.processPermissionChange') }}' + '/{{ g.current_course.coursesid }}/' + usersid + '/' + role;
-			$('#' + usersid + 'status').html('loading')
-			$.ajax({
-				url: url,
-				success: function(result) {
-					if(result['status'] == 'success'){
-						$('#' + usersid + 'status').html('Saved.')
+	function editUserRole(usersid, role, reload){
+		url = '{{ url_for('routes_course.processPermissionChange') }}' + '/{{ g.current_course.coursesid }}/' + usersid + '/' + role;
+		$.ajax({
+			url: url,
+			success: function(result) {
+				if(result['status'] == 'success'){
+					if(reload){window.location.reload();}
+					$('#' + usersid + 'status').html('Saved.');
+				} else {
+					if(reload){
+						$('#newuserinfo').html(result['message']);
 					} else {
-						$('#' + usersid + 'status').html(result['message'])
+						$('#' + usersid + 'status').html(result['message']);
 					}
-				},
-				error: function(xhr) { alert("Error: " + xhr.status + " " + xhr.statusText); }
-			});
-		})
+				}
+			},
+			error: function(xhr) { alert("Error: " + xhr.status + " " + xhr.statusText); }
+		});
+	}
+	$('.userPermissionToggle').change(function() {
+		usersid = $(this).attr('data-usersid');
+		role = ($(this).prop('checked') ? 'edit' : 'view');
+		$('#' + usersid + 'status').html('loading');
+		editUserRole(usersid,role,false);
+
+	});
+	$('#newuserbutton').click(function(){
+		email = $('#newuseremail').val();
+		role = $('#newuserrole').val();
+		$('#newuserinfo').html('validating...');
+		url = '{{ url_for('routes_user.getUsersidByEmail') }}' + email;
+		$.ajax({
+			url: url,
+			success: function(result){
+				if(result['status'] == 'success'){
+					usersid = result['usersid'];
+					editUserRole(usersid, role, true);
+				} else {
+					$('#newuserinfo').html('<div class="alert alert-warning">' + result['message'] + '</div>');
+				}
+			},
+			error: function(xhr) { alert("Error: " + xhr.status + " " + xhr.statusText); }
+		});
+	});
+	$('.remove-user-btn').click(function(){
+		usersid = $(this).attr('data-usersid')
+		if(confirm('Are you sure you want to revoke permissions for this user?')){
+			editUserRole(usersid,'remove',true)
+		}
+	});
 	</script>
 {% endblock %}
 {% block customcss %}
