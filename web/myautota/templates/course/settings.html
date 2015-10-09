@@ -28,12 +28,15 @@
 				<td style="vertical-align:middle">{{ ur['user'].email }}</td>
 				<td>
 				{% if ur['user'].usersid == g.current_user.usersid or ur['role'] == 'own' %}
-					<button type="button" class="btn btn-default" disabled='disabled'>{% if ur['role'] == 'own' %}Owner{% elif ur['role'] == 'edit' %}Edit{% else %}View{% endif %}</button>
+					<button type="button" class="btn btn-default" disabled='disabled'>{% if ur['role'] == 'own' %}Owner{% else %}Edit{% endif %}</button>
 				{% else %}
 					<input class="userPermissionToggle" type="checkbox" data-toggle="toggle" data-on="Can Edit" data-off="View-only" data-onstyle='default' data-offstyle='default' data-usersid="{{ ur['user'].usersid }}"{% if ur['role'] == 'edit' %} checked{% endif %}>
 				{% endif %}
 				</td>
-				<td><span id="{{ ur['user'].usersid }}status_loading"><img src="{{ url_for('static',filename='img/loading_32.gif') }}"></span></td>
+				<td style="vertical-align:middle">
+					<span id="{{ ur['user'].usersid }}status_loading" class="user-loading"><img src="{{ url_for('static',filename='img/loading_32.gif') }}"></span>
+					<span id="{{ ur['user'].usersid }}status_success" class="user-success btn btn-success" disabled="disabled"><i class="fa fa-check-circle"></i></span>
+				</td>
 				<td>
 					{% if ur['role'] != 'own' and ur['user'].usersid != g.current_user.usersid %}
 					<button type="button" class="btn btn-danger btn-sm remove-user-btn" data-usersid="{{ ur['user'].usersid }}"><i class="fa fa-trash-o"></i> Remove</a>
@@ -54,10 +57,12 @@
 							<option value="view">View-only</option>
 						</select>	
 					</div>
-					<div class="col-sm-2" style="padding: 0px">
+					<div class="col-sm-1" style="padding: 0px">
 						<span class="btn btn-default btn-block" id="newuserbutton">Add <i class="fa fa-chevron-right"></i></button>
 					</div>
-					<div id="newuserinfo" class="col-sm-12" style="padding: 0px"></div>
+					<div class="col-sm-1" style="padding: 0px">
+						<span id='newuserloading'><img src="{{ url_for('static',filename='img/loading_32.gif') }}"></span>
+					</div>
 				</div>
 			</div>
 		</div>
@@ -89,7 +94,9 @@
 
 {% block customjs %}
 	<script src="{{ url_for('static',filename='js/bootstrap-toggle.min.js') }}"></script>
+	<script src="{{ url_for('static',filename='js/toastr.min.js') }}"></script>
 	<script>
+	toastr.options.positionClass = 'toast-top-center';
 	function editUserRole(usersid, role, reload){
 		url = '{{ url_for('routes_course.processPermissionChange') }}' + '/{{ g.current_course.coursesid }}/' + usersid + '/' + role;
 		$.ajax({
@@ -97,22 +104,24 @@
 			success: function(result) {
 				if(result['status'] == 'success'){
 					if(reload){window.location.reload();}
-					//$('#' + usersid + 'status').html('Saved.');
+					$('#' + usersid + 'status_loading').hide();
+					$('#' + usersid + 'status_success').slideDown();
+					setTimeout(function(){ $('#' + usersid + 'status_success').fadeOut(); }, 3000);
 				} else {
-					if(reload){
-						$('#newuserinfo').html(result['message']);
-					} else {
-						$('#' + usersid + 'status_loading').hide();
-						$('#' + usersid + 'status_success').slideDown();
-					}
+					$('#' + usersid + 'status_loading').hide();
+					toastr['error'](result['message'],'Error');	
 				}
 			},
-			error: function(xhr) { alert("Error: " + xhr.status + " " + xhr.statusText); }
+			error: function(xhr) { 
+				toastr['error']('Error: ' + xhr.status + ' ' + xhr.statusText,'Error'); 
+				$('#' + usersid + 'status_loading').hide();
+			}
 		});
 	}
 	$('.userPermissionToggle').change(function() {
 		usersid = $(this).attr('data-usersid');
 		role = ($(this).prop('checked') ? 'edit' : 'view');
+		$('#' + usersid + 'status_success').hide();
 		$('#' + usersid + 'status_loading').show();
 		editUserRole(usersid,role,false);
 
@@ -120,7 +129,7 @@
 	$('#newuserbutton').click(function(){
 		email = $('#newuseremail').val();
 		role = $('#newuserrole').val();
-		$('#newuserinfo').html('validating...');
+		$('#newuserloading').show();
 		url = '{{ url_for('routes_user.getUsersidByEmail') }}' + email;
 		$.ajax({
 			url: url,
@@ -129,10 +138,11 @@
 					usersid = result['usersid'];
 					editUserRole(usersid, role, true);
 				} else {
-					$('#newuserinfo').html('<div class="alert alert-warning">' + result['message'] + '</div>');
+					toastr['error'](result['message'],'Error');
+					$('#newuserloading').hide();
 				}
 			},
-			error: function(xhr) { alert("Error: " + xhr.status + " " + xhr.statusText); }
+			error: function(xhr) { toastr['error']('Error: ' + xhr.status + ' ' + xhr.statusText,'Error'); }
 		});
 	});
 	$('.remove-user-btn').click(function(){
@@ -141,8 +151,12 @@
 			editUserRole(usersid,'remove',true)
 		}
 	});
+	$('#newuserloading').hide();
+	$('.user-loading').hide();
+	$('.user-success').hide();
 	</script>
 {% endblock %}
 {% block customcss %}
 	<link href="{{ url_for('static', filename='css/bootstrap-toggle.min.css') }}" rel="stylesheet">
+	<link href="{{ url_for('static', filename='css/toastr.min.css') }}" rel="stylesheet">
 {% endblock %}
