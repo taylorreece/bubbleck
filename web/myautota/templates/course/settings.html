@@ -24,7 +24,7 @@
 			{% for ur in users_roles %}
 			<tr>
 				<td>
-				{% if ur['role'] != 'own'%}
+				{% if ur['role'] != 'own' and ur['user'].usersid != g.current_user.usersid %}
 				<button type="button" class="btn btn-danger btn-sm remove-user-btn" data-usersid="{{ ur['user'].usersid }}"><i class="fa fa-trash-o"></i> Remove</a>
 				{% endif %}
 				</td>
@@ -61,6 +61,7 @@
 			</div>
 		</div>
 	</div>
+	{% if g.current_course.getRole(g.current_user.usersid) == 'own' %}
 	<div class="col-lg-4">
 		<div class="panel panel-danger">
 			<div class="panel-heading">
@@ -71,6 +72,7 @@
 			</div>	
 		</div>
 	</div>
+	{% endif %}
 	<div class="col-lg-8">
 		<div class="panel panel-success">
 			<div class="panel-heading">

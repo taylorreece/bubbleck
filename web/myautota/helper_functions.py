@@ -67,26 +67,27 @@ def load_user(f):
 	return decorated_function
 
 # ===================================================
-def require_course_access(f):
-	''' Checks whether or not g.current_user has access to the course at hand '''
-	@wraps(f)
-	def decorated_function(*args, **kwargs):	
-		try:
-			c = course.getCourseByID(kwargs['coursesid'])
-		except KeyError:
-			flash('warning|The requested course was not found.')	
-			return redirect(url_for('routes_user.dashboard'))	
-		if c:
-			role = c.getRole(g.current_user.usersid)
-			if g.current_user.is_admin:
-				role = 'edit'
-			if role is None:
-				flash('warning|You do not have permission to access that course.')
+def require_course_role(roles):
+	def decorator(method):
+		@wraps(method)
+		def f(*args, **kwargs):	
+			try:
+				c = course.getCourseByID(kwargs['coursesid'])
+			except KeyError:
+				flash('warning|The requested course was not found.')	
 				return redirect(url_for('routes_user.dashboard'))	
-		else:
-			flash('warning|The requested course was not found.')	
-			return redirect(url_for('routes_user.dashboard'))	
-		g.current_course = c
-		return f(*args, **kwargs)
-	return decorated_function
-	
+			if c:
+				role = c.getRole(g.current_user.usersid)
+				if g.current_user.is_admin:
+					role = 'own'
+				if role is None or role not in roles:
+					flash('warning|You do not have permission to access that course.  You have role "%s", but require "%s".' % (role,'" or "'.join(roles)))
+					return redirect(url_for('routes_user.dashboard'))	
+			else:
+				flash('warning|The requested course was not found.')	
+				return redirect(url_for('routes_user.dashboard'))	
+			g.current_course = c
+			return method(*args, **kwargs)
+		return f
+	return decorator
+

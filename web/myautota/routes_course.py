@@ -10,7 +10,7 @@ from mat import course
 from mat import section
 from mat import user
 from myautota.helper_functions import login_required
-from myautota.helper_functions import require_course_access
+from myautota.helper_functions import require_course_role
 from myautota.forms import CourseForm
 
 routes_course = Blueprint('routes_course', __name__)
@@ -19,7 +19,7 @@ routes_course = Blueprint('routes_course', __name__)
 @routes_course.route('/course/delete')
 @routes_course.route('/course/delete/<coursesid>')
 @login_required
-@require_course_access
+@require_course_role(roles=('own',))
 def delete(coursesid=None):
 	return render_template('course/delete.html')
 
@@ -46,7 +46,7 @@ def new():
 @routes_course.route('/course/permissions')
 @routes_course.route('/course/permissions/<coursesid>/<usersid>/<role>')
 @login_required
-@require_course_access
+@require_course_role(roles=('edit','own'))
 def processPermissionChange(coursesid=None, usersid=None, role=None):
 	result = {}
 	if role == 'remove':
@@ -89,7 +89,7 @@ def processPermissionChange(coursesid=None, usersid=None, role=None):
 @routes_course.route('/course/settings')
 @routes_course.route('/course/settings/<coursesid>')
 @login_required
-@require_course_access
+@require_course_role(roles=('edit','own'))
 def settings(coursesid=None):
 	roles = g.current_course.getUserRoles()
 	users_roles = []
@@ -104,7 +104,7 @@ def settings(coursesid=None):
 @routes_course.route('/course/view')
 @routes_course.route('/course/view/<coursesid>')
 @login_required
-@require_course_access
+@require_course_role(roles=('view','edit','own'))
 def view(coursesid=None):
 	return render_template('course/view.html')
 
