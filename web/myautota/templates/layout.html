@@ -96,12 +96,12 @@
 							{% for course in g.current_user.getCourses() %}
 								<li><a href="{{ url_for('routes_course.view', coursesid=course.coursesid) }}">{{ course.name }}</a></li>
 								{% if g.current_course %}
-									{% if g.current_course.coursesid == course.coursesid %}
+									{% if g.current_course.coursesid == course.coursesid and course.getRole(g.current_user.usersid) in ('own','edit') %}
 										<ul class="nav nav-third-level">
 											<li><a href="{{ url_for('routes_course.settings', coursesid=course.coursesid) }}">Settings</a></li>
 										</ul>
-									{% endif %}	
-								{% endif %}	
+									{% endif %}
+								{% endif %}
 							{% endfor %}
 								<li><a href="{{ url_for('routes_course.new') }}"><i class="fa fa-plus-circle fa-fw"></i> New Course</a></li>
 							</ul>

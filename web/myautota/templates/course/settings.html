@@ -15,19 +15,15 @@
 			</div>
 			<table class="table">
 			<tr>
-				<th class="col-md-1"></th>
 				<th class="col-md-4">Name</th>
 				<th class="col-md-4">Email</th>
 				<th class="col-md-2">Role</th>
 				<th class="col-md-1"></th>
+				<th class="col-md-1"></th>
 			</tr>
 			{% for ur in users_roles %}
 			<tr>
-				<td>
-				{% if ur['role'] != 'own' and ur['user'].usersid != g.current_user.usersid %}
-				<button type="button" class="btn btn-danger btn-sm remove-user-btn" data-usersid="{{ ur['user'].usersid }}"><i class="fa fa-trash-o"></i> Remove</a>
-				{% endif %}
-				</td>
+				
 				<td style="vertical-align:middle">{{ ur['user'].name }}</td>
 				<td style="vertical-align:middle">{{ ur['user'].email }}</td>
 				<td>
@@ -37,7 +33,12 @@
 					<input class="userPermissionToggle" type="checkbox" data-toggle="toggle" data-on="Can Edit" data-off="View-only" data-onstyle='default' data-offstyle='default' data-usersid="{{ ur['user'].usersid }}"{% if ur['role'] == 'edit' %} checked{% endif %}>
 				{% endif %}
 				</td>
-				<td><span id="{{ ur['user'].usersid }}status"></span></td>
+				<td><span id="{{ ur['user'].usersid }}status_loading"><img src="{{ url_for('static',filename='img/loading_32.gif') }}"></span></td>
+				<td>
+					{% if ur['role'] != 'own' and ur['user'].usersid != g.current_user.usersid %}
+					<button type="button" class="btn btn-danger btn-sm remove-user-btn" data-usersid="{{ ur['user'].usersid }}"><i class="fa fa-trash-o"></i> Remove</a>
+					{% endif %}
+				</td>
 			</tr>
 			{% endfor %}
 			</table>
@@ -96,12 +97,13 @@
 			success: function(result) {
 				if(result['status'] == 'success'){
 					if(reload){window.location.reload();}
-					$('#' + usersid + 'status').html('Saved.');
+					//$('#' + usersid + 'status').html('Saved.');
 				} else {
 					if(reload){
 						$('#newuserinfo').html(result['message']);
 					} else {
-						$('#' + usersid + 'status').html(result['message']);
+						$('#' + usersid + 'status_loading').hide();
+						$('#' + usersid + 'status_success').slideDown();
 					}
 				}
 			},
@@ -111,7 +113,7 @@
 	$('.userPermissionToggle').change(function() {
 		usersid = $(this).attr('data-usersid');
 		role = ($(this).prop('checked') ? 'edit' : 'view');
-		$('#' + usersid + 'status').html('loading');
+		$('#' + usersid + 'status_loading').show();
 		editUserRole(usersid,role,false);
 
 	});
