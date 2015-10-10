@@ -13,11 +13,12 @@ from myautota.helper_functions import login_required
 from myautota.helper_functions import load_user 
 from myautota.forms import LoginForm
 from myautota.forms import RegisterForm
+from myautota.forms import UserForm
 
 routes_user = Blueprint('routes_user', __name__)
 
 # ===================================================
-@routes_user.route('/user')
+@routes_user.route('/home')
 @load_user
 def dashboard():
 	return render_template('user/dashboard.html')
@@ -49,7 +50,7 @@ def login():
 	if request.method == 'POST' and form.validate():
 		g.current_user = user.getUserByEmailAndPassword(form.email.data,form.password.data)
 		if g.current_user.usersid:
-			sessionid = g.current_user.createSession()
+			sessionid = g.current_user.createSession(ipaddress=request.remote_addr)
 			session['sessionid'] = sessionid
 			return redirect(url_for('routes_user.dashboard'))
 		else:
@@ -72,10 +73,11 @@ def register():
 	form = RegisterForm(request.form)
 	if request.method == 'POST' and form.validate():
 		try:
-			u = user.User( email = form.email.data,
-				  name = form.name.data,
-				  password_plaintext = form.password.data,
-				  teachername = form.teachername.data,
+			u = user.User( 
+				email              = form.email.data,
+			 	name               = form.name.data,
+				password_plaintext = form.password.data,
+				teachername        = form.teachername.data,
 			)
 			u.save()
 		except:
@@ -83,15 +85,31 @@ def register():
 		flash('info|A user account for %s has been created.  Please log in.' % form.email.data)
 	
 		return redirect(url_for('routes_user.login'))
-	oauthProviders = {	'facebook':'Facebook',
-				'google-plus':'Google',
-				'twitter':'Twitter'	
+	oauthProviders = {	
+		'facebook'    : 'Facebook',
+		'google-plus' : 'Google',
+		'twitter'     : 'Twitter'	
 	}
 	return render_template('user/register.html', form=form, oauthProviders=oauthProviders)
 
 # ===================================================
-@routes_user.route('/user/settings')
+@routes_user.route('/user/settings', methods=('GET', 'POST'))
 @load_user
 def settings():
-	return render_template('user/settings.html')
+	form = UserForm(request.form)
+	if request.method == 'POST':
+		if form.validate():
+			try:
+				g.current_user.email       = form.email.data
+				g.current_user.name        = form.name.data
+				g.current_user.teachername = form.teachername.data
+				g.current_user.save()
+			except:
+				return "An error occured while updating your account.  Please contact taylor (taylor@reecemath.com) for details."
+			flash('info|Account Updated')
+	else:
+		form.email.data       = g.current_user.email
+		form.name.data        = g.current_user.name
+		form.teachername.data = g.current_user.teachername
+	return render_template('user/settings.html', form=form)
 

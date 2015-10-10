@@ -15,6 +15,7 @@ from flask import render_template
 from flask import request
 from flask import session
 from flask import url_for
+from myautota.helper_functions import anonymous_required
 from myautota.helper_functions import login_required
 from myautota.helper_functions import load_user
 from mat import matconfig
@@ -38,7 +39,7 @@ app.config['RECAPTCHA_PRIVATE_KEY'] = matconfig.recaptcha_private_key
 
 # ===================================================
 @app.route('/')
-@load_user
+@anonymous_required
 def index():
 	return render_template('marketing/index.html')
 

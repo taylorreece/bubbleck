@@ -14,7 +14,7 @@ def admin_required(f):
 	def decorated_function(*args, **kwargs):
 		g.current_user = None
 		if 'sessionid' in session: 
-			g.current_user = user.getUserBySessionID(str(session['sessionid']))
+			g.current_user = user.getUserBySessionID(str(session['sessionid']),request.remote_addr)
 		if g.current_user is None:
 			flash('info|You need to log in to access ' + request.url)
 			return redirect(url_for('routes_user.login', next=request.url))
@@ -31,7 +31,7 @@ def anonymous_required(f):
 	def decorated_function(*args, **kwargs):
 		g.current_user = None
 		if 'sessionid' in session: 
-			g.current_user = user.getUserBySessionID(str(session['sessionid']))
+			g.current_user = user.getUserBySessionID(str(session['sessionid']),request.remote_addr)
 		if g.current_user is not None:
 			return redirect(url_for('routes_user.dashboard'))
 		g.current_user = user.User()
@@ -44,7 +44,7 @@ def login_required(f):
 	def decorated_function(*args, **kwargs):
 		g.current_user = None
 		if 'sessionid' in session: 
-			g.current_user = user.getUserBySessionID(str(session['sessionid']))
+			g.current_user = user.getUserBySessionID(str(session['sessionid']),request.remote_addr)
 		if g.current_user is None:
 			flash('info|You need to log in to access ' + request.url)
 			return redirect(url_for('routes_user.login', next=request.url))
@@ -58,7 +58,7 @@ def load_user(f):
 	def decorated_function(*args,**kwargs):
 		g.current_user = None
 		if 'sessionid' in session: 
-			g.current_user = user.getUserBySessionID(str(session['sessionid']))
+			g.current_user = user.getUserBySessionID(str(session['sessionid']),request.remote_addr)
 		if g.current_user is None:
 			g.current_user = user.User() # Set a blank user
 		else:

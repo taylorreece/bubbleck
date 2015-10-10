@@ -30,8 +30,8 @@ def getUserByID(usersid):
 	return User.getUserByID(User(),usersid)
 
 # ===========================================================
-def getUserBySessionID(sessionid):
-	usersid = db.queryOneVal('SELECT usersid FROM sessions WHERE sessionid=%s',(sessionid,))
+def getUserBySessionID(sessionid, ipaddress=None):
+	usersid = db.queryOneVal('UPDATE sessions SET ipaddress=%s WHERE sessionid=%s RETURNING usersid',(ipaddress,sessionid))
 	if usersid:
 		return getUserByID(usersid)
 	else:
@@ -54,6 +54,11 @@ def getUsersidByEmail(email):
 def deleteSession(sessionid):
 	query = 'DELETE FROM sessions WHERE sessionid=%s'
 	db.queryNoResults(query, (sessionid,))
+
+# ===========================================================
+def deleteSessions(sessionids):
+	query = 'DELETE FROM sessions WHERE sessionid IN %s'
+	db.queryNoResults(query, (sessionids,))
 
 # ===========================================================
 class User(MatObject):
@@ -148,17 +153,16 @@ class User(MatObject):
 		return ret
 
 	# ===========================================================
-	def createSession(self):
+	def createSession(self,ipaddress):
 		assert self.usersid
 		sessionid = str(self.usersid) + str(uuid.uuid4())
-		query = 'INSERT INTO sessions (usersid, sessionid) VALUES (%s,%s)'
-		db.queryNoResults(query, (self.usersid, sessionid))
+		query = 'INSERT INTO sessions (usersid, sessionid, ipaddress) VALUES (%s,%s,%s)'
+		db.queryNoResults(query, (self.usersid, sessionid, ipaddress))
 		self._updateSessions()
 		return sessionid
 
 	# ===========================================================
 	def _updateSessions(self):
-		query = 'SELECT sessionid FROM sessions WHERE usersid=%s'
-		self.sessions = db.queryOneValList(query, (self.usersid,))
+		query = 'SELECT * FROM sessions WHERE usersid=%s'
+		self.sessions = db.queryDictList(query, (self.usersid,))
 		 
-
