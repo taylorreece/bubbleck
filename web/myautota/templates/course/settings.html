@@ -34,8 +34,8 @@
 				{% endif %}
 				</td>
 				<td style="vertical-align:middle">
-					<span id="{{ ur['user'].usersid }}status_loading" class="user-loading"><img src="{{ url_for('static',filename='img/loading_32.gif') }}"></span>
-					<span id="{{ ur['user'].usersid }}status_success" class="user-success btn btn-success" disabled="disabled"><i class="fa fa-check-circle"></i></span>
+					<span id="{{ ur['user'].usersid }}status_loading" class="user-loading" style="display:none"><img src="{{ url_for('static',filename='img/loading_32.gif') }}"></span>
+					<span id="{{ ur['user'].usersid }}status_success" class="user-success btn btn-success" disabled="disabled" style="display:none"><i class="fa fa-check-circle"></i></span>
 				</td>
 				<td>
 					{% if ur['role'] != 'own' and ur['user'].usersid != g.current_user.usersid %}
@@ -152,8 +152,6 @@
 		}
 	});
 	$('#newuserloading').hide();
-	$('.user-loading').hide();
-	$('.user-success').hide();
 	</script>
 {% endblock %}
 {% block customcss %}
