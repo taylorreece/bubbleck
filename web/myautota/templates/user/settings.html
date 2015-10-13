@@ -28,9 +28,9 @@
 		</div>
 	</div> <!-- col-md-12 Basic Information -->
 	<div class="col-md-6">
-		<div class="panel panel-info">
+		<div class="panel panel-success">
 			<div class="panel-heading">
-				Change your password.
+				<i class="fa fa-edit"></i> Change your password.
 			</div>
 			<div class="panel-body">
 				Some body info
@@ -46,14 +46,27 @@
 				<tr>
 					<th>IP Address</th>
 					<th>Last Active</th>
+					<th></th>
 				</tr>
 				{% for session in g.current_user.sessions %}
-				<tr>
-					<td>{{ session['ipaddress'] }}</td>
-					<td>{{ session['updated_at'] }}</td>
-				</tr> 
+					{% if session['sessionid'] == current_session %}
+					<tr class="active">
+						<td style="vertical-align:middle">{{ session['ipaddress'] }}</td>
+						<td style="vertical-align:middle">{{ (now - session['updated_at']).days }} day(s) ago</td>
+						<td style="vertical-align:middle">Current Session</td>
+					</tr> 
+					{% else %}
+					<tr>
+						<td style="vertical-align:middle">{{ session['ipaddress'] }}</td>
+						<td style="vertical-align:middle">{{ (now - session['updated_at']).days }} day(s) ago</td>
+						<td style="vertical-align:middle"><button class="btn btn-default session-logout">Log out session</button></td>
+					</tr> 
+					{% endif %}
 				{% endfor %}
 			</table><!-- table -->
+			<div class="panel-body">
+				<em>Sessions are automatically removed after 7 days of inactivity.</em>
+			</div>
 		</div>
 	</div> <!-- col-md-6 Sessions -->
 	<div class="col-md-6">
@@ -77,4 +90,9 @@
 		</div>
 	</div> <!-- col-md-6 Delete account-->
 </div> <!-- row -->
+{% endblock %}
+{% block customjs %}
+<script>
+// TODO: Make the 'log out other session' buttons work
+</script>
 {% endblock %}

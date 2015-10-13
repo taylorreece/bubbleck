@@ -163,6 +163,6 @@ class User(MatObject):
 
 	# ===========================================================
 	def _updateSessions(self):
-		query = 'SELECT * FROM sessions WHERE usersid=%s'
+		query = 'SELECT * FROM sessions WHERE usersid=%s ORDER BY updated_at DESC'
 		self.sessions = db.queryDictList(query, (self.usersid,))
 		 
