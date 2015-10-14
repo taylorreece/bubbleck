@@ -1,3 +1,6 @@
+# ===================================================
+# Before anything, make sure the web service is running
+# against the correct schema version.
 schema_version = 1
 from mat import database
 try:
@@ -7,7 +10,7 @@ except TypeError:
 	exit('Could not identify schema version.')
 
 # ===================================================
-
+from datetime import timedelta
 from flask import Flask
 from flask import g
 from flask import redirect
@@ -36,6 +39,12 @@ app.register_blueprint(routes_user)
 # For recaptcha
 app.config['RECAPTCHA_PUBLIC_KEY'] = matconfig.recaptcha_public_key
 app.config['RECAPTCHA_PRIVATE_KEY'] = matconfig.recaptcha_private_key
+
+# ===================================================
+@app.before_request
+def beforerequest():
+	session.permanent = True
+	app.permanent_session_lifetime = timedelta(days=365)
 
 # ===================================================
 @app.route('/')

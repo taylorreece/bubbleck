@@ -62,8 +62,8 @@ def login():
 @routes_user.route('/user/logout')
 @login_required
 def logout():
+	g.current_user.closeSession(session['sessionid'])
 	g.current_user = None
-	user.deleteSession(session['sessionid'])
 	flash('info|You have been logged out.')
 	return redirect(url_for('routes_user.login')) 
 
