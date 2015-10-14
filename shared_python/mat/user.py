@@ -51,16 +51,6 @@ def getUsersidByEmail(email):
 	return db.queryOneVal(query, (email,))
 
 # ===========================================================
-def deleteSession(sessionid):
-	query = 'DELETE FROM sessions WHERE sessionid=%s'
-	db.queryNoResults(query, (sessionid,))
-
-# ===========================================================
-def deleteSessions(sessionids):
-	query = 'DELETE FROM sessions WHERE sessionid IN %s'
-	db.queryNoResults(query, (sessionids,))
-
-# ===========================================================
 class User(MatObject):
 	active = True
 	created_at = None
@@ -153,13 +143,18 @@ class User(MatObject):
 		return ret
 
 	# ===========================================================
-	def createSession(self,ipaddress):
+	def createSession(self, ipaddress):
 		assert self.usersid
 		sessionid = str(self.usersid) + str(uuid.uuid4())
 		query = 'INSERT INTO sessions (usersid, sessionid, ipaddress) VALUES (%s,%s,%s)'
 		db.queryNoResults(query, (self.usersid, sessionid, ipaddress))
 		self._updateSessions()
 		return sessionid
+
+	# ===========================================================
+	def closeSession(self, sessionid):
+		query = 'DELETE FROM sessions WHERE sessionid=%s AND usersid=%s RETURNING 1'
+		return db.queryOneRec(query, (sessionid,self.usersid))
 
 	# ===========================================================
 	def _updateSessions(self):

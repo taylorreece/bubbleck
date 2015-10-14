@@ -20,7 +20,7 @@ routes_user = Blueprint('routes_user', __name__)
 
 # ===================================================
 @routes_user.route('/home')
-@load_user
+@login_required
 def dashboard():
 	return render_template('user/dashboard.html')
 
@@ -94,8 +94,23 @@ def register():
 	return render_template('user/register.html', form=form, oauthProviders=oauthProviders)
 
 # ===================================================
+@routes_user.route('/user/closesession/')
+@routes_user.route('/user/closesession/<sessionid>')
+@login_required
+def closesession(sessionid=None):
+	ret = {}
+	result = g.current_user.closeSession(sessionid)
+	if result:
+		ret['status'] = 'success'
+		ret['message'] = 'Session successfully closed'
+	else:
+		ret['status'] = 'error'
+		ret['message'] = 'Cannot close this session'
+	return jsonify(**ret)
+
+# ===================================================
 @routes_user.route('/user/settings', methods=('GET', 'POST'))
-@load_user
+@login_required
 def settings():
 	form = UserForm(request.form)
 	if request.method == 'POST':
