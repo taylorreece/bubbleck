@@ -27,6 +27,10 @@ class MatDB:
 		return self.queryOneVal(query)
 
 	# ===========================================================
+	def runFile(self,f):
+		self.query(query = f.read(), args=None, return_results=False)
+
+	# ===========================================================
 	def query(self,query,args,one_record=False,return_results=True):
 		self._connect()
 		result = self._db_cur.execute(query,args)

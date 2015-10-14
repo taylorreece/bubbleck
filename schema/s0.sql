@@ -134,7 +134,6 @@ ALTER TABLE studentexams OWNER TO mat;
 CREATE TABLE sessions (
 	usersid		INTEGER NOT NULL REFERENCES users(usersid),
 	sessionid	text NOT NULL,
-	ipaddress	text NOT NULL,
 	created_at	TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
 	updated_at	TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );

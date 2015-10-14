@@ -1,4 +1,4 @@
-schema_version = 0
+schema_version = 1
 from mat import database
 try:
 	if schema_version != int(database.MatDB().getSchemaVersion()):
