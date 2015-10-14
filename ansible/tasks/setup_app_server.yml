@@ -4,7 +4,6 @@
   with_items:
     - apache2
     - libapache2-mod-wsgi-py3
-    - libopencv-dev
     - postgresql-client
     - python3-flask
     - python3-jinja2

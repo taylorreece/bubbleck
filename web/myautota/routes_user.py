@@ -1,3 +1,4 @@
+from datetime import datetime
 from flask import Blueprint
 from flask import flash
 from flask import g
@@ -111,5 +112,5 @@ def settings():
 		form.email.data       = g.current_user.email
 		form.name.data        = g.current_user.name
 		form.teachername.data = g.current_user.teachername
-	return render_template('user/settings.html', form=form)
+	return render_template('user/settings.html', form=form, current_session=session['sessionid'], now=datetime.now())
 

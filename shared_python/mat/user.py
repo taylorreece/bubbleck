@@ -31,7 +31,7 @@ def getUserByID(usersid):
 
 # ===========================================================
 def getUserBySessionID(sessionid, ipaddress=None):
-	usersid = db.queryOneVal('UPDATE sessions SET ipaddress=%s WHERE sessionid=%s RETURNING usersid',(ipaddress,sessionid))
+	usersid = db.queryOneVal('UPDATE sessions SET ipaddress=%s, updated_at=NOW() WHERE sessionid=%s RETURNING usersid',(ipaddress,sessionid))
 	if usersid:
 		return getUserByID(usersid)
 	else:
@@ -163,6 +163,6 @@ class User(MatObject):
 
 	# ===========================================================
 	def _updateSessions(self):
-		query = 'SELECT * FROM sessions WHERE usersid=%s'
+		query = 'SELECT * FROM sessions WHERE usersid=%s ORDER BY updated_at DESC'
 		self.sessions = db.queryDictList(query, (self.usersid,))
 		 
