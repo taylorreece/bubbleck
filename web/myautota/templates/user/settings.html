@@ -15,12 +15,12 @@
 			</div>
 			<div class="panel-body">
 				<form class="form-horizontal" role="form" method="POST" action="{{ url_for('routes_user.settings') }}">
-					{{ macros.render_field(form.name) }}
-					{{ macros.render_field(form.email) }}
-					{{ macros.render_field(form.teachername, "e.g. 'Mrs. Smith' - will be printed on exams") }}
+					{{ macros.render_field(userform.name) }}
+					{{ macros.render_field(userform.email) }}
+					{{ macros.render_field(userform.teachername, "e.g. 'Mrs. Smith' - will be printed on exams") }}
 					<div class="form-group"> 
 						<div class="col-sm-offset-2 col-sm-10">
-							<button type="submit" class="btn btn-default">Submit</button>
+							<button type="submit" class="btn btn-default">Update User Information</button>
 						</div>
 					</div>
 				</form>	
@@ -33,7 +33,16 @@
 				<i class="fa fa-edit"></i> Change your password.
 			</div>
 			<div class="panel-body">
-				Some body info
+				<div class="form-horizontal" role="form">
+					{{ macros.render_field(changepasswordform.oldpassword) }}
+					{{ macros.render_field(changepasswordform.newpassword) }}
+					{{ macros.render_field(changepasswordform.confirm) }}
+					<div class="form-group"> 
+						<div class="col-sm-offset-2 col-sm-10">
+							<button class="btn btn-default" id="change-password">Change Password</button>
+						</div>
+					</div>
+				</div>	
 			</div>
 		</div>
 	</div> <!-- col-md-6 Change Password -->
@@ -114,6 +123,34 @@
 		});
 
 	});
+
+	$('#change-password').click(function(){
+		oldpassword = $('#{{ changepasswordform.oldpassword.id }}').val()
+		newpassword = $('#{{ changepasswordform.newpassword.id }}').val()
+		confirmation = $('#{{ changepasswordform.confirm.id }}').val()
+		url = '{{ url_for('routes_user.changepassword') }}'
+		$.ajax({
+			method: 'POST',
+			url: url,
+			data: { oldpassword : oldpassword,
+				newpassword : newpassword,
+				confirm : confirmation
+			},
+			success: function(result){
+				if(result['status'] == 'success'){
+					toastr['success']('Password Successfully Changed');
+					window.location.reload();
+				} else {
+					toastr['error'](result['message']);
+				}
+			},
+			error: function(xhr){
+				toastr['error']('Error: ' + xhr.status + ' ' + xhr.statusText,'Error'); 
+			}
+
+		});
+	});
+
 </script>
 {% endblock %}
 

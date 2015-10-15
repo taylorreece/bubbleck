@@ -12,6 +12,7 @@ from mat import user
 from myautota.helper_functions import anonymous_required
 from myautota.helper_functions import login_required
 from myautota.helper_functions import load_user 
+from myautota.forms import ChangePasswordForm
 from myautota.forms import LoginForm
 from myautota.forms import RegisterForm
 from myautota.forms import UserForm
@@ -98,34 +99,53 @@ def register():
 @routes_user.route('/user/closesession/<sessionid>')
 @login_required
 def closesession(sessionid=None):
-	ret = {}
-	result = g.current_user.closeSession(sessionid)
-	if result:
-		ret['status'] = 'success'
-		ret['message'] = 'Session successfully closed'
+	result = {}
+	if g.current_user.closeSession(sessionid):
+		result['status'] = 'success'
+		result['message'] = 'Session successfully closed'
 	else:
-		ret['status'] = 'error'
-		ret['message'] = 'Cannot close this session'
-	return jsonify(**ret)
+		result['status'] = 'error'
+		result['message'] = 'Cannot close this session'
+	return jsonify(**result)
 
 # ===================================================
 @routes_user.route('/user/settings', methods=('GET', 'POST'))
 @login_required
 def settings():
-	form = UserForm(request.form)
+	userform = UserForm(request.form)
 	if request.method == 'POST':
-		if form.validate():
+		if userform.validate():
 			try:
-				g.current_user.email       = form.email.data
-				g.current_user.name        = form.name.data
-				g.current_user.teachername = form.teachername.data
+				g.current_user.email       = userform.email.data
+				g.current_user.name        = userform.name.data
+				g.current_user.teachername = userform.teachername.data
 				g.current_user.save()
 			except:
 				return "An error occured while updating your account.  Please contact taylor (taylor@reecemath.com) for details."
 			flash('info|Account Updated')
 	else:
-		form.email.data       = g.current_user.email
-		form.name.data        = g.current_user.name
-		form.teachername.data = g.current_user.teachername
-	return render_template('user/settings.html', form=form, current_session=session['sessionid'], now=datetime.now())
+		userform.email.data       = g.current_user.email
+		userform.name.data        = g.current_user.name
+		userform.teachername.data = g.current_user.teachername
+	return render_template('user/settings.html', userform=userform, changepasswordform = ChangePasswordForm(), current_session=session['sessionid'], now=datetime.now())
 
+# ===================================================
+@routes_user.route('/user/settings/changepassword', methods=('GET','POST'))
+@login_required
+def changepassword():
+	result = {}
+	form = ChangePasswordForm(request.form)
+	if form.validate():
+		if g.current_user.checkPassword(form.oldpassword.data):
+			g.current_user.setPassword(form.newpassword.data)
+			g.current_user.save()
+			result['status'] = 'success'
+			flash('success|Password changed successfully')
+			# TODO: email a notice that their password changed.
+		else:
+			result['status'] = 'error'
+			result['message'] = 'The current password you supplied is incorrect.'
+	else:
+		result['status'] = 'error'
+		result['message'] = 'Validation failed with the following errors: %s' % form.errors
+	return jsonify(**result)
