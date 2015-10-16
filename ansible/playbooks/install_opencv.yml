@@ -12,4 +12,4 @@
 
   tasks:
     - include: "{{ ANSIBLE_ROOT }}/tasks/install_opencv.yml"
-      when: "role == 'appserver'"
+      when: "'appserver' in roles"

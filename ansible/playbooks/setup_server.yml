@@ -21,6 +21,8 @@
   tasks:
     - include: "{{ ANSIBLE_ROOT }}/tasks/setup_server.yml"
     - include: "{{ ANSIBLE_ROOT }}/tasks/setup_database_server.yml"
+      when: "'database' in roles"
     - include: "{{ ANSIBLE_ROOT }}/tasks/setup_app_server.yml"
+      when: "'appserver' in roles"
     - include: "{{ ANSIBLE_ROOT }}/tasks/install_opencv.yml"
-      when: "role == 'appserver' and build_opencv == 'yes'"
+      when: "'appserver' in roles and build_opencv == 'yes'"

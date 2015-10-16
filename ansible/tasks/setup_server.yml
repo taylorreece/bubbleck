@@ -19,6 +19,7 @@
     - libpython3.4-stdlib 
     - links
     - python
+    - python-psycopg2
     - python3-bcrypt
     - python3-openssl
     - python3-psycopg2

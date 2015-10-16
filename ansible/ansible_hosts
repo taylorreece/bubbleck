@@ -8,10 +8,6 @@
 #   - You can enter hostnames or ip addresses
 #   - A hostname/ip can be a member of multiple groups
 
-# Ex 1: Ungrouped hosts, specify before any group headers.
-
-# Ex 2: A collection of hosts belonging to the 'webservers' group
-
 [test]
 mat-test-app
 mat-test-db
@@ -35,39 +31,23 @@ mat-prod-db
 mat-test-db
 
 [database:vars]
-role = database
+roles = ['database']
 
 [app]
 mat-prod-app
 mat-test-app
 
 [app:vars]
-role = appserver
+roles = ['appserver']
 
 [local]
 127.0.0.1
 
-#alpha.example.org
-#beta.example.org
-#192.168.1.100
-#192.168.1.110
+[linode]
+mat-prod-0
 
-# If you have multiple hosts following a pattern you can specify
-# them like this:
-
-#www[001:006].example.com
-
-# Ex 3: A collection of database servers in the 'dbservers' group
-
-#[dbservers]
-#
-#db01.intranet.mydomain.net
-#db02.intranet.mydomain.net
-#10.25.1.56
-#10.25.1.57
-
-# Here's another example of host ranges, this time there are no
-# leading 0s:
-
-#db-[99:101]-node.example.com
-
+[linode:vars]
+https_port = 443
+appserver_ip = 127.0.0.1
+database_ip = 127.0.0.1
+roles = ['appserver', 'database']

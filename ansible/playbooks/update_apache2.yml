@@ -14,4 +14,4 @@
 
   tasks:
     - include: "{{ ANSIBLE_ROOT }}/tasks/update_apache2.yml"
-      when: "role == 'appserver'"
+      when: "'appserver' in roles"
