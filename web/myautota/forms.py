@@ -38,3 +38,12 @@ class RegisterForm(UserForm):
 	geography   = StringField(u'Geographic Region')
 	hearabout   = StringField(u'How did you find myAutoTA?')
 	recaptcha   = RecaptchaField(u'Are You Human?')
+
+# ===================================================
+class ChangePasswordForm(Form):
+	oldpassword = PasswordField(u'Current Password')
+	newpassword = PasswordField(u'New Password', [
+				validators.EqualTo(u'confirm', message=u'Passwords must match'), 
+				validators.Length(min=6, message=u'Try a slightly longer password.')
+				])
+	confirm     = PasswordField(u'Confirm Password')

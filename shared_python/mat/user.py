@@ -129,6 +129,11 @@ class User(MatObject):
 		self.password_plaintext = password_plaintext
 
 	# ===========================================================
+	def checkPassword(self,password_plaintext):
+		''' Check if the password supplied is the users current password '''
+		return db.queryOneVal("SELECT MD5(%s)=password FROM users WHERE usersid=%s", (password_plaintext + matconfig.password_salt, self.usersid))
+		
+	# ===========================================================
 	def getCourses(self):
 		ret = []
 		query = '''SELECT c.*,cu.role AS role 
