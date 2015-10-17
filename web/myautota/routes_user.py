@@ -127,7 +127,23 @@ def settings():
 		userform.email.data       = g.current_user.email
 		userform.name.data        = g.current_user.name
 		userform.teachername.data = g.current_user.teachername
-	return render_template('user/settings.html', userform=userform, changepasswordform = ChangePasswordForm(), current_session=session['sessionid'], now=datetime.now())
+	subscription = g.current_user.getSubscriptionExpiration()
+	if subscription:
+		subscription['expiration'] = datetime.strftime(subscription['expiration'],'%B %d, %Y')
+	return render_template('user/settings.html', 
+				changepasswordform = ChangePasswordForm(), 
+				current_session=session['sessionid'], 
+				now=datetime.now(),
+				subscription=subscription,
+				userform=userform
+				)
+
+# ===================================================
+@routes_user.route('/user/settings/subscribe')
+@login_required
+def subscribe():
+	# TODO: Create a subscription page, tie in to paypal, etc.
+	return "not yet implemented"
 
 # ===================================================
 @routes_user.route('/user/settings/changepassword', methods=('GET','POST'))
@@ -149,3 +165,14 @@ def changepassword():
 		result['status'] = 'error'
 		result['message'] = 'Validation failed with the following errors: %s' % form.errors
 	return jsonify(**result)
+
+# ===================================================
+@routes_user.route('/user/settings/deactivate', methods=('GET','POST'))
+@login_required
+def deactivate():
+	if request.args.get('confirm') == 'yes':
+		g.current_user.deactivate()
+		flash('success|Your account has been deactivated')
+		return redirect(url_for('index'))
+	else:
+		return render_template('user/deactivate.html')

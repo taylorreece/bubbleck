@@ -1,6 +1,5 @@
 -- s0.sql - Initial Database schema
 
-BEGIN;
 --
 -- Function for updating updated_at columns; generic for all tables.
 CREATE OR REPLACE FUNCTION update_updated_at_column()	
@@ -172,4 +171,3 @@ ALTER FUNCTION update_setting(TEXT,TEXT,TEXT) OWNER TO mat;
 
 -- SET SCHEMA VERSION:
 SELECT update_setting('schema','version','0');
-COMMIT;

@@ -16,10 +16,10 @@ def getUsersByID(usersids=None):
 	''' Get multiple user objects, return them in a list '''
 	ret = []
 	if usersids:
-		query = 'SELECT * FROM users WHERE usersid IN %s'
+		query = 'SELECT * FROM users WHERE usersid IN %s AND active'
 		result = db.queryDictList(query, (usersids,))
 	else: 
-		query = 'SELECT * FROM users'
+		query = 'SELECT * FROM users WHERE active'
 		result = db.queryDictList(query)
 	for r in result:
 		ret.append(User(**r))
@@ -31,6 +31,7 @@ def getUserByID(usersid):
 
 # ===========================================================
 def getUserBySessionID(sessionid, ipaddress=None):
+	# Update the user with their new IP.  updated_at will track last login time
 	usersid = db.queryOneVal('UPDATE sessions SET ipaddress=%s, updated_at=NOW() WHERE sessionid=%s RETURNING usersid',(ipaddress,sessionid))
 	if usersid:
 		return getUserByID(usersid)
@@ -39,7 +40,7 @@ def getUserBySessionID(sessionid, ipaddress=None):
 
 # ===========================================================
 def getUserByEmailAndPassword(email,password):
-	query = 'SELECT * FROM users WHERE email=%s AND password=MD5(%s)'
+	query = 'SELECT * FROM users WHERE email=%s AND password=MD5(%s) AND active'
 	result = db.queryOneRec(query, (email, password+matconfig.password_salt))
 	if result:
 		return User(**result)
@@ -47,7 +48,7 @@ def getUserByEmailAndPassword(email,password):
 
 # ===========================================================
 def getUsersidByEmail(email):
-	query = 'SELECT usersid FROM users WHERE email=%s'
+	query = 'SELECT usersid FROM users WHERE email=%s AND active'
 	return db.queryOneVal(query, (email,))
 
 # ===========================================================
@@ -72,7 +73,7 @@ class User(MatObject):
 	# ===========================================================
 	def getUserByID(self,usersid):
 		self.usersid = usersid
-		result = db.queryOneRec('SELECT * FROM users WHERE usersid=%s',(self.usersid,))
+		result = db.queryOneRec('SELECT * FROM users WHERE usersid=%s AND active',(self.usersid,))
 		if result:
 			self.setAttributes(result)
 			self._updateSessions()
@@ -160,6 +161,16 @@ class User(MatObject):
 	def closeSession(self, sessionid):
 		query = 'DELETE FROM sessions WHERE sessionid=%s AND usersid=%s RETURNING 1'
 		return db.queryOneRec(query, (sessionid,self.usersid))
+
+	# ===========================================================
+	def getSubscriptionExpiration(self):
+		query = 'SELECT NOW()>expiration AS expired, expiration FROM subscriptions WHERE usersid=%s AND active'
+		return db.queryOneRec(query, (self.usersid,))
+		
+	# ===========================================================
+	def deactivate(self):
+		query = 'UPDATE users SET active=false WHERE usersid=%s'
+		return db.queryNoResults(query, (self.usersid,))
 
 	# ===========================================================
 	def _updateSessions(self):
