@@ -18,6 +18,16 @@ CREATE TABLE email_users (
 CREATE TRIGGER update_email_users_updated_at BEFORE UPDATE ON email_users FOR EACH ROW EXECUTE PROCEDURE update_updated_at_column();
 ALTER TABLE email_users OWNER TO mat;
 
+CREATE TABLE password_reset (
+	resetid		SERIAL PRIMARY KEY,
+	usersid		INTEGER REFERENCES users(usersid),
+	key		TEXT,
+	active		BOOLEAN NOT NULL DEFAULT TRUE,
+	created_at	TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+	updated_at	TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+
 CREATE TABLE subscriptions (
 	subscriptionsid	SERIAL PRIMARY KEY,
 	usersid		INTEGER REFERENCES users(usersid),

@@ -12,7 +12,9 @@ from mat import user
 from myautota.helper_functions import anonymous_required
 from myautota.helper_functions import login_required
 from myautota.helper_functions import load_user 
+from myautota.helper_functions import queueEmail
 from myautota.forms import ChangePasswordForm
+from myautota.forms import ForgottenPasswordForm
 from myautota.forms import LoginForm
 from myautota.forms import RegisterForm
 from myautota.forms import UserForm
@@ -43,6 +45,55 @@ def getUsersidByEmail(email=None):
 		result['status'] = 'error'
 		result['message'] = 'You did not supply an email address'
 	return jsonify(**result)
+
+# ===================================================
+@routes_user.route('/user/forgot', methods=('GET','POST'))
+@anonymous_required
+def forgot():
+	form = ForgottenPasswordForm(request.form)
+	if request.method == 'POST' and form.validate():
+		email = form.email.data,
+		usersid = user.getUsersidByEmail(email)
+		if usersid:
+			u = user.getUserByID(usersid)
+			reset_key = u.generatePasswordResetKey()
+			queueEmail(
+				usersid = usersid,
+				subject = 'myAutoTA Password Reset',
+				body = '''
+					Dear %s,
+						You, or someone pretending to be you, has requested that your password for myautota.com be reset.  If you did not make this request, ignore this email.  Everything is fine.  If you did make this request, please visit https://www.myautota.com/user/reset/%s to reset your password.
+					Cheers,
+					Taylor
+					''' % (u.teachername, reset_key),
+				show_as_web_msg = False
+			)
+			flash('success|An email with instructions on how to reset your password has been sent to %s.' % email)
+			return redirect(url_for('index'))
+		else:
+			flash('danger|No user is registered under email address (%s)' % email)
+			return render_template('user/forgot.html', form=form)
+	else:
+		return render_template('user/forgot.html', form=form)
+
+# ===================================================
+@routes_user.route('/user/reset/<reset_key>', methods=('GET', 'POST'))
+@load_user
+def passwordreset(reset_key):
+	form = ChangePasswordForm(request.form)	
+	u = user.getUserByResetKey(reset_key)
+	if u:
+		if request.method == 'POST' and form.validate():
+			new_password = form.newpassword.data
+			u.setPassword(form.newpassword.data)
+			u.save()
+			flash('success|Password reset successfully')
+			return redirect(url_for('routes_user.login'))
+		else:
+			return render_template('user/passwordreset.html', form=form, reset_key=reset_key)
+	else:
+		flash('error|This password rest key is invalid')
+		return redirect(url_for('index')) 
 
 # ===================================================
 @routes_user.route('/user/login', methods=('GET', 'POST'))

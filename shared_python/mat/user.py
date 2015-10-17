@@ -44,7 +44,17 @@ def getUserByEmailAndPassword(email,password):
 	result = db.queryOneRec(query, (email, password+matconfig.password_salt))
 	if result:
 		return User(**result)
-	return User()
+	else:
+		return User()
+
+# ===========================================================
+def getUserByResetKey(reset_key):
+	query = 'SELECT * FROM users WHERE usersid=(SELECT usersid FROM password_reset WHERE key=%s)'
+	result = db.queryOneRec(query, (reset_key,))
+	if result:
+		return User(**result)
+	else:
+		return None
 
 # ===========================================================
 def getUsersidByEmail(email):
@@ -171,6 +181,13 @@ class User(MatObject):
 	def deactivate(self):
 		query = 'UPDATE users SET active=false WHERE usersid=%s'
 		return db.queryNoResults(query, (self.usersid,))
+
+	# ===========================================================
+	def generatePasswordResetKey(self):
+		reset_key = str(self.usersid) + 'p' + str(uuid.uuid4())
+		query = 'INSERT INTO password_reset (usersid, key) VALUES (%s,%s)'
+		db.queryNoResults(query, (self.usersid, reset_key))
+		return reset_key
 
 	# ===========================================================
 	def _updateSessions(self):

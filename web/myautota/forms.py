@@ -17,8 +17,12 @@ class CourseForm(Form):
 				min_entries = max_num_sections)
 	
 # ===================================================
+class ForgottenPasswordForm(Form):
+	email       = StringField(u'Email Address', [validators.Email(message=u'That\'s not a valid email address.')])
+
+# ===================================================
 class LoginForm(Form):
-	email       = StringField(u'Email Address')
+	email       = StringField(u'Email Address', [validators.Email(message=u'That\'s not a valid email address.')])
 	password    = PasswordField(u'Password')
 	remember_me = BooleanField(u'Remember Me')
 

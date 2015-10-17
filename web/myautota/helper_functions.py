@@ -6,6 +6,7 @@ from flask import session
 from flask import url_for
 from functools import wraps
 from mat import course
+from mat import database
 from mat import user
 
 # ===================================================
@@ -91,3 +92,10 @@ def require_course_role(roles):
 		return f
 	return decorator
 
+# ===================================================
+def queueEmail(usersid=None, additional_to=None, additional_cc=None, additional_bcc=None, subject=None, body=None, show_as_web_msg=True):
+	db = database.MatDB()	
+	db.queryNoResults('''INSERT INTO email_users (usersid, additional_to, additional_cc, additional_bcc, subject, body, show_as_web_msg) 
+				VALUES (%s,%s,%s,%s,%s,%s,%s)''',
+			(usersid, additional_to, additional_cc, additional_bcc, subject, body, show_as_web_msg))	
+	
