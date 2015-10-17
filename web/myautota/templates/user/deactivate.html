@@ -1,0 +1,17 @@
+{% extends "layout.html" %}
+{% import '_macros.html' as macros %}
+{% block title %}User Settings{% endblock %}
+{% block content %}
+<div class="row">
+	<div class="col-lg-12">
+		<h2 class="page-header">Deactivate Account</h2>
+	</div><!-- /.col-lg-12 -->
+</div>
+<div class="row">
+	<div class="col-lg-12">
+		One last button, just to be sure.  Are you absolutely, 100% sure that you would like to deactivate your account?  If so, click this button: 
+		<hr>
+		<a href="{{ url_for('routes_user.deactivate') }}?confirm=yes"><button class="btn btn-danger">Yes, deactivate my account</button></a>
+	</div>
+</div>
+{% endblock %}	
