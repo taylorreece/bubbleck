@@ -1,5 +1,6 @@
 from flask import flash
 from flask import g
+from flask import jsonify
 from flask import redirect
 from flask import request
 from flask import session
@@ -68,13 +69,19 @@ def load_user(f):
 	return decorated_function
 
 # ===================================================
-def require_course_role(roles):
+def require_course_role(roles, json=False):
 	def decorator(method):
 		@wraps(method)
 		def f(*args, **kwargs):	
+			if json:
+				jsonret = {}
 			try:
 				c = course.getCourseByID(kwargs['coursesid'])
 			except KeyError:
+				if json:
+					jsonret['status'] = 'error'
+					jsonret['message'] = 'Course not found'
+					return jsonify(**jsonret)	
 				flash('warning|The requested course was not found.')	
 				return redirect(url_for('routes_user.dashboard'))	
 			if c:
@@ -82,9 +89,17 @@ def require_course_role(roles):
 				if g.current_user.is_admin:
 					role = 'own'
 				if role is None or role not in roles:
+					if json:
+						jsonret['status'] = 'error'
+						jsonret['message'] = 'You do not have permission to make this change'
+						return jsonify(**jsonret)
 					flash('warning|You do not have permission to access that course.  You have role "%s", but require "%s".' % (role,'" or "'.join(roles)))
 					return redirect(url_for('routes_user.dashboard'))	
 			else:
+				if json:
+					jsonret['status'] = 'error'
+					jsonret['message'] = 'Course not found'
+					return jsonify(**jsonret)
 				flash('warning|The requested course was not found.')	
 				return redirect(url_for('routes_user.dashboard'))	
 			g.current_course = c

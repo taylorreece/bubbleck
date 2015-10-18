@@ -62,7 +62,7 @@ class Course(MatObject):
 	# ===========================================================
 	def getSections(self):
 		ret = []
-		query = 'SELECT * FROM sections WHERE coursesid=%s AND active'
+		query = 'SELECT * FROM sections WHERE coursesid=%s AND active ORDER BY sectionsid'
 		sections = db.queryDictList(query,(self.coursesid,))
 		for e in sections:
 			ret.append(section.Section(**e))
@@ -97,4 +97,9 @@ class Course(MatObject):
 					RETURNING created_at, updated_at, coursesid, active'''
 			result = db.queryOneRec(query,(self.name,))
 			self.setAttributes(result)
+
+	# ===========================================================
+	def deactivate(self):
+		query = 'UPDATE courses SET active=false WHERE coursesid=%s'
+		return db.queryNoResults(query, (self.coursesid,))
 

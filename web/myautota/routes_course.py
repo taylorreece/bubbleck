@@ -12,16 +12,21 @@ from mat import user
 from myautota.helper_functions import login_required
 from myautota.helper_functions import require_course_role
 from myautota.forms import CourseForm
+from myautota.forms import NewCourseForm
 
 routes_course = Blueprint('routes_course', __name__)
 
 # ===================================================
-@routes_course.route('/course/delete')
 @routes_course.route('/course/delete/<coursesid>')
 @login_required
 @require_course_role(roles=('own',))
 def delete(coursesid=None):
-	return render_template('course/delete.html')
+	if request.args.get('confirm') == 'yes':
+		g.current_course.deactivate()
+		flash('success|%s has been deleted' % g.current_course.name)
+		return redirect(url_for('routes_user.dashboard'))
+	else:
+		return render_template('course/delete.html')
 
 # ===================================================
 @routes_course.route('/course/new', methods=('GET','POST'))
@@ -86,11 +91,27 @@ def processPermissionChange(coursesid=None, usersid=None, role=None):
 	return jsonify(**result)
 
 # ===================================================
-@routes_course.route('/course/settings')
-@routes_course.route('/course/settings/<coursesid>')
+@routes_course.route('/course/settings/<coursesid>', methods=('GET','POST'))
 @login_required
 @require_course_role(roles=('edit','own'))
 def settings(coursesid=None):
+	courseform = CourseForm(request.form)
+	if request.method == 'POST':
+		if courseform.validate():
+			try:
+				g.current_course.name = courseform.name.data
+				g.current_course.save()
+				i = 0
+				for section in g.current_course.getSections():
+					if section.name != courseform.sections[i].data:
+						section.name = courseform.sections[i].data
+						section.save()
+					i = i + 1
+			except:
+				return "An error occured while updating this course.  Please contact Taylor (taylor@reecemath.com) for details."
+			flash('info|Course Updated')
+	else:
+		courseform.name.data = g.current_course.name
 	roles = g.current_course.getUserRoles()
 	users_roles = []
 	for r in roles:
@@ -98,10 +119,55 @@ def settings(coursesid=None):
 				'user' : user.getUserByID(r['usersid']),
 				'role' : r['role']
 		})
-	return render_template('course/settings.html', users_roles=users_roles)
+	num_sections = 0
+	for section in g.current_course.getSections():
+		courseform.sections[num_sections].data = section.name
+		num_sections = num_sections + 1
+	return render_template('course/settings.html', users_roles=users_roles, courseform = courseform, default_num_sections=num_sections)
 
 # ===================================================
-@routes_course.route('/course/view')
+@routes_course.route('/course/settings/addsection/<coursesid>/')
+@routes_course.route('/course/settings/addsection/<coursesid>/<section_name>')
+@login_required
+@require_course_role(roles=('edit','own'), json=True)
+def addsection(coursesid, section_name=None):
+	if section_name:
+		s = section.Section(name=section_name, coursesid=g.current_course.coursesid)
+		s.save()
+		ret = {
+			'status'  : 'success',
+			'message' : 'Section successfully added'
+		}
+	else:
+		ret = {
+			'status'  : 'error',
+			'message' : 'No section name provided'
+		}
+	return jsonify(**ret)
+
+	
+# ===================================================
+@routes_course.route('/course/settings/removesection/<coursesid>/')
+@routes_course.route('/course/settings/removesection/<coursesid>/<sectionsid>')
+@login_required
+@require_course_role(roles=('edit','own'), json=True)
+def removesection(coursesid, sectionsid=None):
+	ret = {}
+	s = section.getSectionByID(sectionsid)
+	if not s:
+		ret['status'] = 'error'
+		ret['message'] = 'No such section was found'
+		return jsonify(**ret)
+	if s.coursesid != g.current_course.coursesid:
+		ret['status'] = 'error'
+		ret['message'] = "The section's coursesid does not match the coursesid. What exactly are you trying to do here?"
+		return jsonify(**ret)
+	s.deactivate()
+	ret['status'] = 'success'
+	ret['message'] = 'Section successfully deactivated'
+	return jsonify(**ret)
+
+# ===================================================
 @routes_course.route('/course/view/<coursesid>')
 @login_required
 @require_course_role(roles=('view','edit','own'))

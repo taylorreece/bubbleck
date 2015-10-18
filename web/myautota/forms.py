@@ -12,9 +12,13 @@ from flask_wtf import RecaptchaField
 class CourseForm(Form):
 	max_num_sections = 20
 	name        = StringField(u'Course Name', [validators.required()])
-	num_sections= SelectField(u'# of Sections', choices=[(str(x),str(x)) for x in range(1,max_num_sections+1)])
 	sections    = FieldList(StringField(u'Section'),
 				min_entries = max_num_sections)
+
+# ===================================================
+class NewCourseForm(CourseForm):
+	max_num_sections = 20
+	num_sections= SelectField(u'# of Sections', choices=[(str(x),str(x)) for x in range(1,max_num_sections+1)])
 	
 # ===================================================
 class ForgottenPasswordForm(Form):

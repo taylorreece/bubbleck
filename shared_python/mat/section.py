@@ -3,6 +3,9 @@ from mat.database import MatDB
 from mat.matobject import MatObject
 db = MatDB()
 
+def getSectionByID(sectionsid):
+	return Section.getSectionByID(Section(),sectionsid)
+
 class Section(MatObject):
 	active = None
 	created_at = None
@@ -39,3 +42,19 @@ class Section(MatObject):
 							self.coursesid)
 			)
 			self.setAttributes(result)
+
+	# ===========================================================
+	def getSectionByID(self,sectionsid):
+		self.sectionsid = sectionsid
+		result = db.queryOneRec('SELECT * FROM sections WHERE sectionsid=%s',(self.sectionsid,))
+		if result:
+			self.setAttributes(result)
+			return self
+		else:
+			return None 
+	
+	# ===========================================================
+	def deactivate(self):
+		query = 'UPDATE sections SET active=false WHERE sectionsid=%s'
+		return db.queryNoResults(query, (self.sectionsid,))
+
