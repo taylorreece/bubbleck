@@ -61,11 +61,11 @@ def forgot():
 				usersid = usersid,
 				subject = 'myAutoTA Password Reset',
 				body = '''
-					Dear %s,
-						You, or someone pretending to be you, has requested that your password for myautota.com be reset.  If you did not make this request, ignore this email.  Everything is fine.  If you did make this request, please visit https://www.myautota.com/user/reset/%s to reset your password.
-					Cheers,
-					Taylor
-					''' % (u.teachername, reset_key),
+Dear %s,
+	You, or someone pretending to be you, has requested that your password for myautota.com be reset.  If you did not make this request, ignore this email.  Everything is fine.  If you did make this request, please visit %s%s to reset your password.
+	Cheers,
+		Taylor
+					''' % (u.teachername, request.url_root[:-1], url_for('routes_user.passwordreset',reset_key=reset_key)),
 				show_as_web_msg = False
 			)
 			flash('success|An email with instructions on how to reset your password has been sent to %s.' % email)
