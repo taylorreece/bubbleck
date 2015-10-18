@@ -32,7 +32,7 @@ def delete(coursesid=None):
 @routes_course.route('/course/new', methods=('GET','POST'))
 @login_required
 def new():
-	form = CourseForm(request.form)
+	form = NewCourseForm(request.form)
 	if request.method == 'POST' and form.validate():
 		c = course.Course(name=form.name.data)
 		c.save()
