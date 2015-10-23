@@ -27,6 +27,7 @@ from mat import user
 # Import some routes that were broken out:
 from myautota.routes_admin import routes_admin
 from myautota.routes_course import routes_course
+from myautota.routes_exam import routes_exam
 from myautota.routes_user import routes_user
 
 # Set up the app
@@ -34,6 +35,7 @@ app = Flask(__name__)
 app.secret_key = matconfig.webapp_secret_key 
 app.register_blueprint(routes_admin)
 app.register_blueprint(routes_course)
+app.register_blueprint(routes_exam)
 app.register_blueprint(routes_user)
 
 # For recaptcha
