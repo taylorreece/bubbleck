@@ -17,8 +17,8 @@ from myautota.forms import NewCourseForm
 routes_course = Blueprint('routes_course', __name__)
 
 # ===================================================
-@routes_course.route('/course/settings/addsection/<coursesid>/')
-@routes_course.route('/course/settings/addsection/<coursesid>/<section_name>')
+@routes_course.route('/course/<coursesid>/settings/addsection/')
+@routes_course.route('/course/<coursesid>/settings/addsection/<section_name>')
 @login_required
 @require_course_role(roles=('edit','own'), json=True)
 def addsection(coursesid, section_name=None):
@@ -37,7 +37,7 @@ def addsection(coursesid, section_name=None):
 	return jsonify(**ret)
 
 # ===================================================
-@routes_course.route('/course/delete/<coursesid>')
+@routes_course.route('/course/<coursesid>/delete')
 @login_required
 @require_course_role(roles=('own',))
 def delete(coursesid=None):
@@ -68,8 +68,8 @@ def new():
 	return render_template('course/new.html', form=form, default_num_sections=5)
 
 # ===================================================
-@routes_course.route('/course/permissions')
-@routes_course.route('/course/permissions/<coursesid>/<usersid>/<role>')
+@routes_course.route('/course/<coursesid>/permissions/')
+@routes_course.route('/course/<coursesid>/permissions/<usersid>/<role>')
 @login_required
 @require_course_role(roles=('edit','own'))
 def processPermissionChange(coursesid=None, usersid=None, role=None):
@@ -111,8 +111,8 @@ def processPermissionChange(coursesid=None, usersid=None, role=None):
 	return jsonify(**result)
 
 # ===================================================
-@routes_course.route('/course/settings/removesection/<coursesid>/')
-@routes_course.route('/course/settings/removesection/<coursesid>/<sectionsid>')
+@routes_course.route('/course/<coursesid>/settings/removesection/')
+@routes_course.route('/course/<coursesid>/settings/removesection/<sectionsid>')
 @login_required
 @require_course_role(roles=('edit','own'), json=True)
 def removesection(coursesid, sectionsid=None):
@@ -132,7 +132,7 @@ def removesection(coursesid, sectionsid=None):
 	return jsonify(**ret)
 
 # ===================================================
-@routes_course.route('/course/settings/<coursesid>', methods=('GET','POST'))
+@routes_course.route('/course/<coursesid>/settings/', methods=('GET','POST'))
 @login_required
 @require_course_role(roles=('edit','own'))
 def settings(coursesid=None):
@@ -167,7 +167,7 @@ def settings(coursesid=None):
 	return render_template('course/settings.html', users_roles=users_roles, courseform = courseform, default_num_sections=num_sections)
 
 # ===================================================
-@routes_course.route('/course/view/<coursesid>')
+@routes_course.route('/course/<coursesid>/view/')
 @login_required
 @require_course_role(roles=('view','edit','own'))
 def view(coursesid=None):

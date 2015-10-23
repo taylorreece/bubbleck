@@ -115,7 +115,7 @@
 							<span id="add-section-loading" style="display:none"><img src="{{ url_for('static',filename='img/loading_32.gif') }}"></span>
 						</div>
 						<div class="col-sm-2">
-							<span class="btn btn-success btn-block" id="add-section"><i class="fa fa-plus-circle"></i> Add section</span> 
+							<a href="#" class="btn btn-block" id="add-section"><i class="fa fa-plus-circle"></i> Add section</a>
 						</div>
 					</div>
 				</div>
@@ -131,7 +131,7 @@
 	<script>
 	toastr.options.positionClass = 'toast-top-center';
 	function editUserRole(usersid, role, reload){
-		url = '{{ url_for('routes_course.processPermissionChange') }}' + '/{{ g.current_course.coursesid }}/' + usersid + '/' + role;
+		url = '{{ url_for('routes_course.processPermissionChange', coursesid=g.current_course.coursesid) }}' + usersid + '/' + role;
 		$.ajax({
 			url: url,
 			success: function(result) {

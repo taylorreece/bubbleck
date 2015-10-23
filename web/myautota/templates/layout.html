@@ -96,10 +96,11 @@
 								<li><a href="{{ url_for('routes_course.view', coursesid=course.coursesid) }}">{{ course.name }}</a></li>
 								{% if g.current_course and g.current_course.coursesid == course.coursesid and course.getRole(g.current_user.usersid) in ('own','edit') %}
 									<ul class="nav nav-third-level">
-										{% for exam in g.current_course.getExams() %}
-										<li><a href="{{ url_for('routes_exam.view',coursesid=g.current_course.coursesid,examsid=exam.examsid) }}">{{ exam.name }}</a></li>
+										<li style="display:none"><a href="{{ url_for('routes_course.settings',coursesid=course.coursesid) }}">Settings</a></li>
+										{% for exam in course.getExams() %}
+										<li><a href="{{ url_for('routes_exam.view',coursesid=course.coursesid,examsid=exam.examsid) }}">{{ exam.name }}</a></li>
 										{% endfor %}
-										<li><a href="{{ url_for('routes_exam.new') }}"><i class="fa fa-plus-circle fa-fw"></i> New Exam</a></li>
+										<li><a href="{{ url_for('routes_exam.new', coursesid=course.coursesid) }}"><i class="fa fa-plus-circle fa-fw"></i> New Exam</a></li>
 									</ul>
 								{% endif %}
 							{% endfor %}
