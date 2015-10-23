@@ -22,29 +22,56 @@ from myautota.forms import UserForm
 routes_user = Blueprint('routes_user', __name__)
 
 # ===================================================
+@routes_user.route('/user/settings/changepassword', methods=('GET','POST'))
+@login_required
+def changepassword():
+	result = {}
+	form = ChangePasswordForm(request.form)
+	if form.validate():
+		if g.current_user.checkPassword(form.oldpassword.data):
+			g.current_user.setPassword(form.newpassword.data)
+			g.current_user.save()
+			result['status'] = 'success'
+			flash('success|Password changed successfully')
+			# TODO: email a notice that their password changed.
+		else:
+			result['status'] = 'error'
+			result['message'] = 'The current password you supplied is incorrect.'
+	else:
+		result['status'] = 'error'
+		result['message'] = 'Validation failed with the following errors: %s' % form.errors
+	return jsonify(**result)
+
+# ===================================================
+@routes_user.route('/user/closesession/')
+@routes_user.route('/user/closesession/<sessionid>')
+@login_required
+def closesession(sessionid=None):
+	result = {}
+	if g.current_user.closeSession(sessionid):
+		result['status'] = 'success'
+		result['message'] = 'Session successfully closed'
+	else:
+		result['status'] = 'error'
+		result['message'] = 'Cannot close this session'
+	return jsonify(**result)
+
+# ===================================================
+@routes_user.route('/user/settings/deactivate', methods=('GET','POST'))
+@login_required
+def deactivate():
+	if request.args.get('confirm') == 'yes':
+		g.current_user.deactivate()
+		flash('success|Your account has been deactivated')
+		return redirect(url_for('index'))
+	else:
+		return render_template('user/deactivate.html')
+
+# ===================================================
 @routes_user.route('/home')
 @login_required
 def dashboard():
 	return render_template('user/dashboard.html')
-
-# ===================================================
-@routes_user.route('/ajax/userbyemail/')
-@routes_user.route('/ajax/userbyemail/<email>')
-@login_required
-def getUsersidByEmail(email=None):
-	result = {}
-	if email:
-		usersid = user.getUsersidByEmail(email)
-		if usersid:
-			result['status'] = 'success'
-			result['usersid'] = usersid
-		else:
-			result['status'] = 'error'
-			result['message'] = 'No registered user has that email address'
-	else:
-		result['status'] = 'error'
-		result['message'] = 'You did not supply an email address'
-	return jsonify(**result)
 
 # ===================================================
 @routes_user.route('/user/forgot', methods=('GET','POST'))
@@ -77,23 +104,23 @@ Dear %s,
 		return render_template('user/forgot.html', form=form)
 
 # ===================================================
-@routes_user.route('/user/reset/<reset_key>', methods=('GET', 'POST'))
-@load_user
-def passwordreset(reset_key):
-	form = ChangePasswordForm(request.form)	
-	u = user.getUserByResetKey(reset_key)
-	if u:
-		if request.method == 'POST' and form.validate():
-			new_password = form.newpassword.data
-			u.setPassword(form.newpassword.data)
-			u.save()
-			flash('success|Password reset successfully')
-			return redirect(url_for('routes_user.login'))
+@routes_user.route('/ajax/userbyemail/')
+@routes_user.route('/ajax/userbyemail/<email>')
+@login_required
+def getUsersidByEmail(email=None):
+	result = {}
+	if email:
+		usersid = user.getUsersidByEmail(email)
+		if usersid:
+			result['status'] = 'success'
+			result['usersid'] = usersid
 		else:
-			return render_template('user/passwordreset.html', form=form, reset_key=reset_key)
+			result['status'] = 'error'
+			result['message'] = 'No registered user has that email address'
 	else:
-		flash('error|This password rest key is invalid')
-		return redirect(url_for('index')) 
+		result['status'] = 'error'
+		result['message'] = 'You did not supply an email address'
+	return jsonify(**result)
 
 # ===================================================
 @routes_user.route('/user/login', methods=('GET', 'POST'))
@@ -120,6 +147,26 @@ def logout():
 	return redirect(url_for('routes_user.login')) 
 
 # ===================================================
+@routes_user.route('/user/reset/<reset_key>', methods=('GET', 'POST'))
+@load_user
+def passwordreset(reset_key):
+	form = ChangePasswordForm(request.form)	
+	u = user.getUserByResetKey(reset_key)
+	if u:
+		if request.method == 'POST' and form.validate():
+			new_password = form.newpassword.data
+			u.setPassword(form.newpassword.data)
+			u.save()
+			flash('success|Password reset successfully')
+			return redirect(url_for('routes_user.login'))
+		else:
+			return render_template('user/passwordreset.html', form=form, reset_key=reset_key)
+	else:
+		flash('error|This password rest key is invalid')
+		return redirect(url_for('index')) 
+
+
+# ===================================================
 @routes_user.route('/user/register', methods=('GET', 'POST'))
 @anonymous_required
 def register():
@@ -144,20 +191,6 @@ def register():
 		'twitter'     : 'Twitter'	
 	}
 	return render_template('user/register.html', form=form, oauthProviders=oauthProviders)
-
-# ===================================================
-@routes_user.route('/user/closesession/')
-@routes_user.route('/user/closesession/<sessionid>')
-@login_required
-def closesession(sessionid=None):
-	result = {}
-	if g.current_user.closeSession(sessionid):
-		result['status'] = 'success'
-		result['message'] = 'Session successfully closed'
-	else:
-		result['status'] = 'error'
-		result['message'] = 'Cannot close this session'
-	return jsonify(**result)
 
 # ===================================================
 @routes_user.route('/user/settings', methods=('GET', 'POST'))
@@ -196,34 +229,3 @@ def subscribe():
 	# TODO: Create a subscription page, tie in to paypal, etc.
 	return "not yet implemented"
 
-# ===================================================
-@routes_user.route('/user/settings/changepassword', methods=('GET','POST'))
-@login_required
-def changepassword():
-	result = {}
-	form = ChangePasswordForm(request.form)
-	if form.validate():
-		if g.current_user.checkPassword(form.oldpassword.data):
-			g.current_user.setPassword(form.newpassword.data)
-			g.current_user.save()
-			result['status'] = 'success'
-			flash('success|Password changed successfully')
-			# TODO: email a notice that their password changed.
-		else:
-			result['status'] = 'error'
-			result['message'] = 'The current password you supplied is incorrect.'
-	else:
-		result['status'] = 'error'
-		result['message'] = 'Validation failed with the following errors: %s' % form.errors
-	return jsonify(**result)
-
-# ===================================================
-@routes_user.route('/user/settings/deactivate', methods=('GET','POST'))
-@login_required
-def deactivate():
-	if request.args.get('confirm') == 'yes':
-		g.current_user.deactivate()
-		flash('success|Your account has been deactivated')
-		return redirect(url_for('index'))
-	else:
-		return render_template('user/deactivate.html')
