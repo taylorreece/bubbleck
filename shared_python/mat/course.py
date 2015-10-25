@@ -71,7 +71,7 @@ class Course(MatObject):
 	# ===========================================================
 	def getUserRoles(self):
 		''' 
-		Returns a list of permissions in the form [['usersid':123','role':'view'],[...]]
+		Returns a list of permissions in the form [['usersid':'123','role':'view'],[...]]
 		'''
 		query = "SELECT usersid,role FROM courses_users WHERE coursesid=%s ORDER BY role='view', role='edit', role='own'"
 		return db.queryDictList(query,(self.coursesid,))

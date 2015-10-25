@@ -171,5 +171,11 @@ def settings(coursesid=None):
 @login_required
 @require_course_role(roles=('view','edit','own'))
 def view(coursesid=None):
-	return render_template('course/view.html')
+	roles = g.current_course.getUserRoles()
+	course_users = {
+		'own':[user.getUserByID(key) for key,value in roles if value=='own'],
+		'edit':[user.getUserByID(key) for key,value in roles if value=='edit'],
+		'view':[user.getUserByID(key) for key,value in roles if value=='view']
+	}
+	return render_template('course/view.html', course_users=course_users)
 
