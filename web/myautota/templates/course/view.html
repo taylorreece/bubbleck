@@ -4,7 +4,11 @@
 {% block content %}
 <div class="row">
 	<div class="col-lg-12">
-		<h2 class="page-header">{{ g.current_course.name }}<small><small> [<a href="{{ url_for('routes_course.settings',coursesid=g.current_course.coursesid) }}">Edit</a>]</small></small></h2>
+		<h2 class="page-header">{{ g.current_course.name }}
+		{% if g.current_course.getRole(g.current_user.usersid) in ('edit', 'own') %}
+			<small><small> [<a href="{{ url_for('routes_course.settings',coursesid=g.current_course.coursesid) }}">Edit</a>]</small></small>
+		{% endif %}
+		</h2>
 	</div><!-- /.col-lg-12 -->
 </div>
 <div class="row">
