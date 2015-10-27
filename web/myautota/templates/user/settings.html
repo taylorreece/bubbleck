@@ -11,7 +11,7 @@
 	<div class="col-md-12">
 		<div class="panel panel-default">
 			<div class="panel-heading">
-				<i class="fa fa-user"></i> Basic Information
+				<i class="fa fa-user fa-fw"></i> Basic Information
 			</div>
 			<div class="panel-body">
 				<form class="form-horizontal" role="form" method="POST" action="{{ url_for('routes_user.settings') }}">
@@ -32,7 +32,7 @@
 			<div class="col-md-12">
 				<div class="panel panel-success">
 					<div class="panel-heading">
-						<i class="fa fa-edit"></i> Change your password.
+						<i class="fa fa-edit fa-fw"></i> Change your password.
 					</div>
 					<div class="panel-body">
 						<div class="form-horizontal" role="form">
@@ -51,7 +51,7 @@
 			<div class="col-md-12">
 				<div class="panel panel-danger">
 					<div class="panel-heading">
-						<i class="fa fa-trash"></i> Deactivate Account
+						<i class="fa fa-trash fa-fw"></i> Deactivate Account
 					</div>
 					<div class="panel-body">
 						Warning: This will delete all user data.  Make sure that this is something you actually want to do.  If you <em>really</em> want to deactivate your account, click <a href="{{ url_for('routes_user.deactivate') }}">here</a>.
@@ -65,7 +65,7 @@
 			<div class="col-md-12">
 				<div class="panel panel-{% if subscription['expired'] %}red{% else %}primary{% endif %}">
 					<div class="panel-heading">
-						<i class="fa fa-mobile"></i> Mobile Subscription
+						<i class="fa fa-mobile fa-fw"></i> Mobile Subscription
 					</div>
 					<div class="panel-body">
 						{% if subscription %}
@@ -75,10 +75,10 @@
 								Your subscription is active until <strong>{{ subscription['expiration'] }}</strong>.
 							{% endif %}
 								You may purchase additional time in one, two, or three year increments.
-								<hr><a href="{{ url_for('routes_user.subscribe') }}"><button class="btn btn-primary"><i class="fa fa-plus-square"></i> Add time to your subscription</button></a>
+								<hr><a href="{{ url_for('routes_user.subscribe') }}"><button class="btn btn-primary"><i class="fa fa-plus-square fa-fw"></i> Add time to your subscription</button></a>
 						{% else %}
 							You are currently using the free, ad-supported version of myAutoTA.  Do you hate ads, want to use the mobile app, or simply want to support this website?  Subscribe!  For $10 per year you can use this site ad-free, and have access to the mobile app for on-the-go grading.  <a href="{{ url_for('routes_user.subscribe') }}">Learn More</a>
-							<hr><a href="{{ url_for('routes_user.subscribe') }}"><button class="btn btn-primary"><i class="fa fa-plus-square"></i> Subscribe</button></a>
+							<hr><a href="{{ url_for('routes_user.subscribe') }}"><button class="btn btn-primary"><i class="fa fa-plus-square fa-fw"></i> Subscribe</button></a>
 						{% endif %}
 							
 					</div>
@@ -87,7 +87,7 @@
 			<div class="col-md-12">
 				<div class="panel panel-info">
 					<div class="panel-heading">
-						<i class="fa fa-laptop"></i> Currently Open Sessions
+						<i class="fa fa-laptop fa-fw"></i> Currently Open Sessions
 					</div>
 					<table class="table">
 						<tr>

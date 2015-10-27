@@ -11,7 +11,7 @@
 	<div class="col-lg-8">
 		<div class="panel panel-info">
 			<div class="panel-heading">
-				<i class="fa fa-users"></i> Permissions
+				<i class="fa fa-users fa-fw"></i> Permissions
 			</div>
 			<table class="table">
 			<tr>
@@ -35,11 +35,11 @@
 				</td>
 				<td style="vertical-align:middle">
 					<span id="{{ ur['user'].usersid }}status_loading" class="user-loading" style="display:none"><img src="{{ url_for('static',filename='img/loading_32.gif') }}"></span>
-					<span id="{{ ur['user'].usersid }}status_success" class="user-success btn btn-success" disabled="disabled" style="display:none"><i class="fa fa-check-circle"></i></span>
+					<span id="{{ ur['user'].usersid }}status_success" class="user-success btn btn-success" disabled="disabled" style="display:none"><i class="fa fa-check-circle fa-fw"></i></span>
 				</td>
 				<td>
 					{% if ur['role'] != 'own' and ur['user'].usersid != g.current_user.usersid %}
-					<button type="button" class="btn btn-danger btn-sm remove-user-btn" data-usersid="{{ ur['user'].usersid }}"><i class="fa fa-trash-o"></i> Remove</a>
+					<button type="button" class="btn btn-danger btn-sm remove-user-btn" data-usersid="{{ ur['user'].usersid }}"><i class="fa fa-trash-o fa-fw"></i> Remove</a>
 					{% endif %}
 				</td>
 			</tr>
@@ -58,7 +58,7 @@
 						</select>	
 					</div>
 					<div class="col-sm-1" style="padding: 0px">
-						<span class="btn btn-default btn-block" id="newuserbutton">Add <i class="fa fa-chevron-right"></i></button>
+						<span class="btn btn-default btn-block" id="newuserbutton">Add <i class="fa fa-chevron-right fa-fw"></i></button>
 					</div>
 					<div class="col-sm-1" style="padding: 0px">
 						<span id='newuserloading'><img src="{{ url_for('static',filename='img/loading_32.gif') }}"></span>
@@ -71,7 +71,7 @@
 	<div class="col-lg-4">
 		<div class="panel panel-danger">
 			<div class="panel-heading">
-				<i class="fa fa-trash-o"></i> Delete Course
+				<i class="fa fa-trash-o fa-fw"></i> Delete Course
 			</div>
 			<div class="panel-body" style="text-align: center">
 				<a href="{{ url_for('routes_course.delete',coursesid=g.current_course.coursesid) }}" class="btn btn-danger">Delete {{ g.current_course.name }}</a>		
@@ -82,7 +82,7 @@
 	<div class="col-lg-8">
 		<div class="panel panel-green">
 			<div class="panel-heading">
-				<i class="fa fa-gears"></i> Course Settings
+				<i class="fa fa-gears fa-fw"></i> Course Settings
 			</div>
 			<div class="panel-body">
 				<form class="form-horizontal" role="form" method="POST" action="{{ url_for('routes_course.settings', coursesid=g.current_course.coursesid) }}">
@@ -94,7 +94,7 @@
 								<input class="form-control" id="sections-{{loop.index0}}" name="sections-{{loop.index0}}" placeholder="e.g. &quot;Hour 3A&quot;" type="text" value="{{section.name}}">
 							</div>
 							<div class="col-sm-2">
-								<span class="btn btn-danger btn-block remove-section" data-sectionsid="{{section.sectionsid}}"><i class="fa fa-trash-o"></i> Remove</span>
+								<span class="btn btn-danger btn-block remove-section" data-sectionsid="{{section.sectionsid}}"><i class="fa fa-trash-o fa-fw"></i> Remove</span>
 							</div>
 						</div>
 					{% endfor %}
@@ -115,7 +115,7 @@
 							<span id="add-section-loading" style="display:none"><img src="{{ url_for('static',filename='img/loading_32.gif') }}"></span>
 						</div>
 						<div class="col-sm-2">
-							<a href="#" class="btn btn-block" id="add-section"><i class="fa fa-plus-circle"></i> Add section</a>
+							<a href="#" class="btn btn-block" id="add-section"><i class="fa fa-plus-circle fa-fw"></i> Add section</a>
 						</div>
 					</div>
 				</div>

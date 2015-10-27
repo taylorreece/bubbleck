@@ -17,14 +17,14 @@
 			{% for exam in g.current_course.getExams() %}
 				<tr>
 					<td>
-						<a href="{{ url_for('routes_exam.view', coursesid=exam.coursesid, examsid=exam.examsid) }}" class="btn btn-link"><i class="fa fa-file-text"></i> <strong>{{ exam.name }}</strong></a>
+						<a href="{{ url_for('routes_exam.view', coursesid=exam.coursesid, examsid=exam.examsid) }}" class="btn btn-link"><i class="fa fa-file-text fa-fw"></i> <strong>{{ exam.name }}</strong></a>
 					</td>
 					<td>
 						{% if g.current_course.getRole(g.current_user.usersid) in ('edit','own') %}
-							<a href="{{ url_for('routes_exam.view', coursesid=exam.coursesid, examsid=exam.examsid) }}" class="btn btn-success" data-toggle="tooltip" data-original-title="View Results " rel="tooltip" data-placement="bottom"><span class="fa fa-list-alt"></span></a>
-							<a href="{{ url_for('routes_exam.pdf', coursesid=exam.coursesid, examsid=exam.examsid) }}" class="btn btn-default" data-toggle="tooltip" data-original-title="Download Blank PDF" rel="tooltip" data-placement="bottom"><i class="fa fa-file"></i></a>
-							<a href="{{ url_for('routes_exam.delete', coursesid=exam.coursesid, examsid=exam.examsid) }}" class="btn btn-danger" data-toggle="tooltip" data-original-title="Delete Exam" rel="tooltip" data-placement="bottom"><span class="fa fa-trash"></span></a>
-							<a href="{{ url_for('routes_exam.share', coursesid=exam.coursesid, examsid=exam.examsid) }}" class="btn btn-info" data-toggle="tooltip" data-original-title="Share Results" rel="tooltip" data-placement="bottom"><span class="fa fa-paper-plane"></span></a>
+							<a href="{{ url_for('routes_exam.view', coursesid=exam.coursesid, examsid=exam.examsid) }}" class="btn btn-success" data-toggle="tooltip" data-original-title="View Results " rel="tooltip" data-placement="bottom"><span class="fa fa-list-alt fa-fw"></span></a>
+							<a href="{{ url_for('routes_exam.pdf', coursesid=exam.coursesid, examsid=exam.examsid) }}" class="btn btn-default" data-toggle="tooltip" data-original-title="Download Blank PDF" rel="tooltip" data-placement="bottom"><i class="fa fa-file fa-fw"></i></a>
+							<a href="{{ url_for('routes_exam.delete', coursesid=exam.coursesid, examsid=exam.examsid) }}" class="btn btn-danger" data-toggle="tooltip" data-original-title="Delete Exam" rel="tooltip" data-placement="bottom"><span class="fa fa-trash fa-fw"></span></a>
+							<a href="{{ url_for('routes_exam.share', coursesid=exam.coursesid, examsid=exam.examsid) }}" class="btn btn-info" data-toggle="tooltip" data-original-title="Share Results" rel="tooltip" data-placement="bottom"><span class="fa fa-paper-plane fa-fw"></span></a>
 						{% endif %}
 					</td>
 				</tr>
@@ -46,17 +46,17 @@
 			<div class="panel-body">
 				<dl class="dl-horizontal">
 					<dt>Owner:</dt>
-					<dd>{{ course_users['own'][0].name }} ({{ course_users['own'][0].email }})</dd>
+					<dd><i class="fa fa-user fa-fw"></i> {{ course_users['own'][0].name }} ({{ course_users['own'][0].email }})</dd>
 					{% if course_users['edit'] %}
 					<dt>Editors:</dt>
 						{% for user in course_users['edit'] %}
-							<dd>{{ user.name }} ({{ user.email }})</dd>
+							<dd><i class="fa fa-user fa-fw"></i> {{ user.name }} ({{ user.email }})</dd>
 						{% endfor %}
 					{% endif %}
 					{% if course_users['view'] %}
 					<dt>Can View:</dt>
 						{% for user in course_users['view'] %}
-							<dd>{{ user.name }} ({{ user.email }})</dd>
+							<dd><i class="fa fa-user fa-fw"></i> {{ user.name }} ({{ user.email }})</dd>
 						{% endfor %}
 					{% endif %}
 				</dl>
