@@ -2,7 +2,7 @@
   file: path=/var/log/apache2/{{ item }} state=directory owner=www-data group=adm mode=755
   with_items:
     - api
-    - myautota
+    - bubbleck
 
 - name: Get rid of old sites-enabled files
   file: name={{ item }} state=absent
@@ -15,20 +15,20 @@
   notify: reload apache2
 
 - name: Check out latest web repository
-  subversion: repo=https://github.com/taylorreece/myautota/trunk/web dest=/var/www/myautota
+  subversion: repo=https://github.com/taylorreece/bubbleck/trunk/web dest=/var/www/bubbleck
   notify: reload apache2
 
 - name: Upload up Apache conf files
   template: src={{ ANSIBLE_ROOT }}/templates/apache2/{{ item }}.j2 dest=/etc/apache2/sites-available/{{ item }} owner=root group=root mode=644 backup=yes
   with_items:
-    - 000-myautota.conf
+    - 000-bubbleck.conf
     - 001-api.conf
   notify: reload apache2
 
 - name: Create symbolic links in sites-enabled
   file: src=/etc/apache2/sites-available/{{ item }} dest=/etc/apache2/sites-enabled/{{ item }} state='link' owner=root group=root mode=777
   with_items:
-    - 000-myautota.conf
+    - 000-bubbleck.conf
     - 001-api.conf
   notify: reload apache2
 
@@ -47,10 +47,10 @@
 - name: Move SSL Certificates to the correct place
   copy: src={{ ANSIBLE_ROOT }}/files/apache2/ssl/{{ item }} dest=/etc/ssl/{{ item }}
   with_items:
-    - myautota.com.ca-bundle
-    - myautota.com.crt
+    - bubbleck.com.ca-bundle
+    - bubbleck.com.crt
   notify: reload apache2
 
 - name: Move the SSL key into place
-  copy: src={{ ANSIBLE_ROOT }}/files/apache2/ssl/myautota.com.key dest=/etc/ssl/private/myautota.com.key
+  copy: src={{ ANSIBLE_ROOT }}/files/apache2/ssl/bubbleck.com.key dest=/etc/ssl/private/bubbleck.com.key
   notify: reload apache2

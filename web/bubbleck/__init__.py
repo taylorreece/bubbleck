@@ -2,7 +2,7 @@
 # Before anything, make sure the web service is running
 # against the correct schema version.
 schema_version = 1
-from mat import database
+from bck import database
 try:
 	if schema_version != int(database.MatDB().getSchemaVersion()):
 		exit('Schema version of the database is incorrect.  Expecting %s, but got %s' % (schema_version,database.MatDB().getSchemaVersion()))
@@ -18,29 +18,29 @@ from flask import render_template
 from flask import request
 from flask import session
 from flask import url_for
-from myautota.helper_functions import anonymous_required
-from myautota.helper_functions import login_required
-from myautota.helper_functions import load_user
-from mat import matconfig
-from mat import user
+from bubbleck.helper_functions import anonymous_required
+from bubbleck.helper_functions import login_required
+from bubbleck.helper_functions import load_user
+from bck import bckconfig
+from bck import user
 
 # Import some routes that were broken out:
-from myautota.routes_admin import routes_admin
-from myautota.routes_course import routes_course
-from myautota.routes_exam import routes_exam
-from myautota.routes_user import routes_user
+from bubbleck.routes_admin import routes_admin
+from bubbleck.routes_course import routes_course
+from bubbleck.routes_exam import routes_exam
+from bubbleck.routes_user import routes_user
 
 # Set up the app
 app = Flask(__name__)
-app.secret_key = matconfig.webapp_secret_key 
+app.secret_key = bckconfig.webapp_secret_key 
 app.register_blueprint(routes_admin)
 app.register_blueprint(routes_course)
 app.register_blueprint(routes_exam)
 app.register_blueprint(routes_user)
 
 # For recaptcha
-app.config['RECAPTCHA_PUBLIC_KEY'] = matconfig.recaptcha_public_key
-app.config['RECAPTCHA_PRIVATE_KEY'] = matconfig.recaptcha_private_key
+app.config['RECAPTCHA_PUBLIC_KEY'] = bckconfig.recaptcha_public_key
+app.config['RECAPTCHA_PRIVATE_KEY'] = bckconfig.recaptcha_private_key
 
 # ===================================================
 @app.before_request

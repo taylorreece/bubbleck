@@ -4,9 +4,9 @@ if input("Do you understand that this script will clear all data tables and run 
 	exit()
 
 import sys
-import matconfig
+import bckconfig
 import hashlib
-from mat import course, database, exam, matconfig, section, studentexam, user
+from bck import course, database, exam, bckconfig, section, studentexam, user
 db = database.MatDB()
 
 # Clear data tables
@@ -29,7 +29,7 @@ u2.save()
 u3.save()
 u4.save()
 u4.save() # Yes, twice: should run an update the second time.
-assert hashlib.md5(('1234' + matconfig.password_salt).encode('utf-8')).hexdigest() == u1.password
+assert hashlib.md5(('1234' + bckconfig.password_salt).encode('utf-8')).hexdigest() == u1.password
 assert user.getUserByID(u1.usersid).teachername == 'Mr. First1'
 
 # Create some courses

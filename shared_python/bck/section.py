@@ -1,12 +1,12 @@
 #!/usr/bin/python3
-from mat.database import MatDB
-from mat.matobject import MatObject
+from bck.database import MatDB
+from bck.matobject import BckObject
 db = MatDB()
 
 def getSectionByID(sectionsid):
 	return Section.getSectionByID(Section(),sectionsid)
 
-class Section(MatObject):
+class Section(BckObject):
 	active = None
 	created_at = None
 	coursesid = None

@@ -2,22 +2,22 @@
   authorized_key: user=root key="{{ lookup('file', item) }}"
   with_fileglob: ANSIBLE_ROOT + "/files/keys/*/*.pub"
 
-- name: Create matadmin Group
-  group: name=matadmin
+- name: Create bckadmin Group
+  group: name=bckadmin
   ignore_errors: yes
 
 - name: Create users
   user: name={{ item.username }} state=present createhome=yes shell=/bin/bash
-  with_items: matadmins
+  with_items: bckadmins
 
-- name: Add users to matadmin group
-  user: name={{ item.username }} groups="{{ item.username }},matadmin"
-  with_items: matadmins
+- name: Add users to bckadmin group
+  user: name={{ item.username }} groups="{{ item.username }},bckadmin"
+  with_items: bckadmins
 
 - name: Set up keys for users
   authorized_key: "user={{ item.0.username }} key='{{ lookup('file',item.1) }}'"
   with_subelements: 
-     - matadmins
+     - bckadmins
      - ssh_keys
 
 #===============================================================================

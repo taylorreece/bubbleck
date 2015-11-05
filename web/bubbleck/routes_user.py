@@ -8,16 +8,16 @@ from flask import request
 from flask import render_template
 from flask import session
 from flask import url_for
-from mat import user
-from myautota.helper_functions import anonymous_required
-from myautota.helper_functions import login_required
-from myautota.helper_functions import load_user 
-from myautota.helper_functions import queueEmail
-from myautota.forms import ChangePasswordForm
-from myautota.forms import ForgottenPasswordForm
-from myautota.forms import LoginForm
-from myautota.forms import RegisterForm
-from myautota.forms import UserForm
+from bck import user
+from bubbleck.helper_functions import anonymous_required
+from bubbleck.helper_functions import login_required
+from bubbleck.helper_functions import load_user 
+from bubbleck.helper_functions import queueEmail
+from bubbleck.forms import ChangePasswordForm
+from bubbleck.forms import ForgottenPasswordForm
+from bubbleck.forms import LoginForm
+from bubbleck.forms import RegisterForm
+from bubbleck.forms import UserForm
 
 routes_user = Blueprint('routes_user', __name__)
 
@@ -89,7 +89,7 @@ def forgot():
 				subject = 'myAutoTA Password Reset',
 				body = '''
 Dear %s,
-	You, or someone pretending to be you, has requested that your password for myautota.com be reset.  If you did not make this request, ignore this email.  Everything is fine.  If you did make this request, please visit %s%s to reset your password.
+	You, or someone pretending to be you, has requested that your password for bubbleck.com be reset.  If you did not make this request, ignore this email.  Everything is fine.  If you did make this request, please visit %s%s to reset your password.
 	Cheers,
 		Taylor
 					''' % (u.teachername, request.url_root[:-1], url_for('routes_user.passwordreset',reset_key=reset_key)),

@@ -6,13 +6,13 @@ from flask import redirect
 from flask import request
 from flask import render_template
 from flask import url_for
-from mat import course
-from mat import section
-from mat import user
-from myautota.helper_functions import login_required
-from myautota.helper_functions import require_course_role
-from myautota.forms import CourseForm
-from myautota.forms import NewCourseForm
+from bck import course
+from bck import section
+from bck import user
+from bubbleck.helper_functions import login_required
+from bubbleck.helper_functions import require_course_role
+from bubbleck.forms import CourseForm
+from bubbleck.forms import NewCourseForm
 
 routes_course = Blueprint('routes_course', __name__)
 

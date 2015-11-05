@@ -1,7 +1,7 @@
 #!/usr/bin/python3
-from mat import exam, section
-from mat.database import MatDB
-from mat.matobject import MatObject
+from bck import exam, section
+from bck.database import MatDB
+from bck.matobject import BckObject
 db = MatDB()
 
 def getAllCourses():
@@ -16,7 +16,7 @@ def getAllCourses():
 def getCourseByID(coursesid):
 	return Course.getCourseByID(Course(),coursesid)
 
-class Course(MatObject):
+class Course(BckObject):
 	active = True
 	coursesid = None
 	created_at = None

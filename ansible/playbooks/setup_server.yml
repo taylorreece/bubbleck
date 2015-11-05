@@ -2,7 +2,7 @@
 # This playbook calls in to setup_database_server.yml task, which calls in into setup_server.yml.
 # It'll install all base packages, set up postgresql, etc.
 
-- name: Setup MyAutoTA servers
+- name: Setup BubbleCK servers
   hosts: "{{ hosts }}"
   remote_user: root
 

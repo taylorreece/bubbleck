@@ -3,9 +3,9 @@
 
 import smtplib
 
-from mat import database
-from mat import matconfig
-from mat import user
+from bck import database
+from bck import bckconfig
+from bck import user
 
 db = database.MatDB()
 
@@ -14,7 +14,7 @@ def sendEmails():
 	query = 'SELECT * FROM email_users WHERE sent_at IS NULL'
 	emails = db.queryDictList(query)
 	for email in emails:
-		message = "From: %s\r\n" % matconfig.smtp_username
+		message = "From: %s\r\n" % bckconfig.smtp_username
 		to  = ['']
 		cc  = ['']
 		bcc = ['']
@@ -34,11 +34,11 @@ def sendEmails():
 			message = message + "Subject: %s\r\n\r\n" % email['subject']
 		if email['body']:
 			message = message + email['body']
-		server = smtplib.SMTP('%s:%s' % (matconfig.smtp_server, matconfig.smtp_port))
-		if matconfig.smtp_use_tls:
+		server = smtplib.SMTP('%s:%s' % (bckconfig.smtp_server, bckconfig.smtp_port))
+		if bckconfig.smtp_use_tls:
 			server.starttls()
-		server.login(matconfig.smtp_username, matconfig.smtp_password)
-		server.sendmail(matconfig.smtp_username, to + cc + bcc, message)
+		server.login(bckconfig.smtp_username, bckconfig.smtp_password)
+		server.sendmail(bckconfig.smtp_username, to + cc + bcc, message)
 		server.quit()
 		print('Sent email (id=%s) successfully' % email['emailsid'])
 		query = 'UPDATE email_users SET sent_at=NOW() WHERE emailsid=%s'

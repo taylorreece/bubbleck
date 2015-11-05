@@ -6,9 +6,9 @@ from flask import request
 from flask import session
 from flask import url_for
 from functools import wraps
-from mat import course
-from mat import database
-from mat import user
+from bck import course
+from bck import database
+from bck import user
 
 # ===================================================
 def admin_required(f):

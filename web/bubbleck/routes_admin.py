@@ -6,9 +6,9 @@ from flask import request
 from flask import render_template
 from flask import session
 from flask import url_for
-from myautota.helper_functions import admin_required
-from myautota.helper_functions import login_required
-from myautota.helper_functions import load_user
+from bubbleck.helper_functions import admin_required
+from bubbleck.helper_functions import login_required
+from bubbleck.helper_functions import load_user
 
 routes_admin = Blueprint('routes_admin', __name__)
 

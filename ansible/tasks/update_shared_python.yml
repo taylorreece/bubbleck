@@ -1,9 +1,9 @@
 - name: Check out shared python packages
-  subversion: repo=https://github.com/taylorreece/myautota/trunk/shared_python/{{ item }} dest=/usr/lib/python3.4/{{ item }}
+  subversion: repo=https://github.com/taylorreece/bubbleck/trunk/shared_python/{{ item }} dest=/usr/lib/python3.4/{{ item }}
   with_items:
-    - mat
+    - bck
     - wtforms
     - flask_wtf
 
 - name: Upload global variables file for python packages
-  template: "src={{ ANSIBLE_ROOT }}/templates/matconfig.py.j2 dest=/usr/lib/python3.4/mat/matconfig.py mode=644"
+  template: "src={{ ANSIBLE_ROOT }}/templates/bckconfig.py.j2 dest=/usr/lib/python3.4/bck/bckconfig.py mode=644"

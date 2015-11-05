@@ -1,14 +1,14 @@
 #!/usr/bin/python3
 import random
-from mat import studentexam
-from mat.database import MatDB
-from mat.matobject import MatObject
+from bck import studentexam
+from bck.database import MatDB
+from bck.matobject import BckObject
 db = MatDB()
 
 def getExamByID(examsid):
 	return Exam.getExamByID(Exam(),examsid)
 
-class Exam(MatObject):
+class Exam(BckObject):
 	active = None
 	answers = None
 	coursesid = None

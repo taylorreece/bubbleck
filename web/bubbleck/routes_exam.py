@@ -5,8 +5,8 @@ from flask import redirect
 from flask import request
 from flask import render_template
 from flask import url_for
-from myautota.helper_functions import login_required
-from myautota.helper_functions import require_course_role
+from bubbleck.helper_functions import login_required
+from bubbleck.helper_functions import require_course_role
 
 routes_exam = Blueprint('routes_exam', __name__)
 

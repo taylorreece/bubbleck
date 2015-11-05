@@ -4,17 +4,17 @@
     - postgresql
 
 - name: Set up admin database user
-  postgresql_user: name={{ mat_db_admin_username }} password={{ mat_db_admin_password }} role_attr_flags=CREATEDB,SUPERUSER,CREATEROLE,LOGIN,NOINHERIT
+  postgresql_user: name={{ bck_db_admin_username }} password={{ bck_db_admin_password }} role_attr_flags=CREATEDB,SUPERUSER,CREATEROLE,LOGIN,NOINHERIT
   sudo: yes
   sudo_user: postgres
 
 - name: Set up database user
-  postgresql_user: name={{ mat_db_username }} password={{ mat_db_password }} role_attr_flags=NOSUPERUSER,INHERIT,NOCREATEDB,NOCREATEROLE
+  postgresql_user: name={{ bck_db_username }} password={{ bck_db_password }} role_attr_flags=NOSUPERUSER,INHERIT,NOCREATEDB,NOCREATEROLE
   sudo: yes
   sudo_user: postgres
 
-- name: Ensure mat database exists and belongs to proper user
-  postgresql_db: db={{ mat_db_name }} encoding=utf-8 owner={{ mat_db_username }}
+- name: Ensure bck database exists and belongs to proper user
+  postgresql_db: db={{ bck_db_name }} encoding=utf-8 owner={{ bck_db_username }}
   sudo: yes
   sudo_user: postgres
   notify:

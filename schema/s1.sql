@@ -16,7 +16,7 @@ CREATE TABLE email_users (
 	updated_at	TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 CREATE TRIGGER update_email_users_updated_at BEFORE UPDATE ON email_users FOR EACH ROW EXECUTE PROCEDURE update_updated_at_column();
-ALTER TABLE email_users OWNER TO mat;
+ALTER TABLE email_users OWNER TO bck;
 
 CREATE TABLE password_reset (
 	resetid		SERIAL PRIMARY KEY,
@@ -37,7 +37,7 @@ CREATE TABLE subscriptions (
 	updated_at	TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 CREATE TRIGGER update_subscriptions_updated_at BEFORE UPDATE ON subscriptions FOR EACH ROW EXECUTE PROCEDURE update_updated_at_column();
-ALTER TABLE subscriptions OWNER TO mat;
+ALTER TABLE subscriptions OWNER TO bck;
 
 SELECT update_setting('schema','version','1');
 

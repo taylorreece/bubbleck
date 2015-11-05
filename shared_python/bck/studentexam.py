@@ -1,9 +1,9 @@
 #!/usr/bin/python3
-from mat.database import MatDB
-from mat.matobject import MatObject
+from bck.database import MatDB
+from bck.matobject import BckObject
 db = MatDB()
 
-class StudentExam(MatObject):
+class StudentExam(BckObject):
 	active = None
 	answers = None
 	created_at = None

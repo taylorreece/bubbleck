@@ -1,0 +1,31 @@
+<VirtualHost *:80>
+    ServerName bubbleck.com
+    redirect permanent / https://www.bubbleck.com:{{ https_port }}/
+</VirtualHost>
+
+<VirtualHost *:80>
+    ServerName www.bubbleck.com
+    redirect permanent / https://www.bubbleck.com:{{ https_port }}/
+</VirtualHost>
+
+<VirtualHost *:443>
+    SSLEngine On
+    SSLCertificateFile /etc/ssl/bubbleck.com.crt
+    SSLCertificateKeyFile /etc/ssl/private/bubbleck.com.key
+    SSLCertificateChainFile /etc/ssl/bubbleck.com.ca-bundle
+
+    ServerName www.bubbleck.com
+
+    WSGIDaemonProcess bubbleck user=www-data group=www-data threads=5
+    WSGIScriptAlias / /var/www/bubbleck/bubbleck.wsgi
+
+    <Directory /var/www/bubbleck>
+        WSGIProcessGroup bubbleck
+        WSGIApplicationGroup %{GLOBAL}
+        Order deny,allow
+        Allow from all
+    </Directory>
+
+    ErrorLog /var/log/apache2/bubbleck/error.log
+    CustomLog /var/log/apache2/bubbleck/access.log combined
+</VirtualHost>

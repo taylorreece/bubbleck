@@ -2,7 +2,7 @@
 import glob
 import os
 import psycopg2
-from mat import database
+from bck import database
 
 db = database.MatDB()
 

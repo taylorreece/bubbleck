@@ -1,8 +1,8 @@
 #!/usr/bin/python3
 import uuid
-from mat import course, matconfig
-from mat.database import MatDB
-from mat.matobject import MatObject
+from bck import course, bckconfig
+from bck.database import MatDB
+from bck.matobject import BckObject
 db = MatDB()
 
 
@@ -41,7 +41,7 @@ def getUserBySessionID(sessionid, ipaddress=None):
 # ===========================================================
 def getUserByEmailAndPassword(email,password):
 	query = 'SELECT * FROM users WHERE email=%s AND password=MD5(%s) AND active'
-	result = db.queryOneRec(query, (email, password+matconfig.password_salt))
+	result = db.queryOneRec(query, (email, password+bckconfig.password_salt))
 	if result:
 		return User(**result)
 	else:
@@ -62,7 +62,7 @@ def getUsersidByEmail(email):
 	return db.queryOneVal(query, (email,))
 
 # ===========================================================
-class User(MatObject):
+class User(BckObject):
 	active = True
 	created_at = None
 	email = None
@@ -103,7 +103,7 @@ class User(MatObject):
 						(self.email, 
 						 self.name, 
 						 self.teachername, 
-						 self.password_plaintext + matconfig.password_salt, 
+						 self.password_plaintext + bckconfig.password_salt, 
 						 self.active,
 						 self.is_admin,
 						 self.usersid)
@@ -128,7 +128,7 @@ class User(MatObject):
 					(self.email,
 					 self.name,
 					 self.teachername,
-					 self.password_plaintext + matconfig.password_salt,
+					 self.password_plaintext + bckconfig.password_salt,
 					 self.is_admin)
 				)
 			self.setAttributes(result)
@@ -142,7 +142,7 @@ class User(MatObject):
 	# ===========================================================
 	def checkPassword(self,password_plaintext):
 		''' Check if the password supplied is the users current password '''
-		return db.queryOneVal("SELECT MD5(%s)=password FROM users WHERE usersid=%s", (password_plaintext + matconfig.password_salt, self.usersid))
+		return db.queryOneVal("SELECT MD5(%s)=password FROM users WHERE usersid=%s", (password_plaintext + bckconfig.password_salt, self.usersid))
 		
 	# ===========================================================
 	def getCourses(self):
