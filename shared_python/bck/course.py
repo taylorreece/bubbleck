@@ -1,8 +1,8 @@
 #!/usr/bin/python3
 from bck import exam, section
-from bck.database import MatDB
-from bck.matobject import BckObject
-db = MatDB()
+from bck.database import BckDB
+from bck.bckobject import BckObject
+db = BckDB()
 
 def getAllCourses():
 	''' Get all course objects, return them in a list '''

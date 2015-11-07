@@ -7,7 +7,7 @@ import sys
 import bckconfig
 import hashlib
 from bck import course, database, exam, bckconfig, section, studentexam, user
-db = database.MatDB()
+db = database.BckDB()
 
 # Clear data tables
 db.queryNoResults('DELETE FROM sessions')

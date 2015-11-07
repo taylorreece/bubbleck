@@ -1,7 +1,7 @@
 #!/usr/bin/python3
-from bck.database import MatDB
-from bck.matobject import BckObject
-db = MatDB()
+from bck.database import BckDB
+from bck.bckobject import BckObject
+db = BckDB()
 
 def getSectionByID(sectionsid):
 	return Section.getSectionByID(Section(),sectionsid)

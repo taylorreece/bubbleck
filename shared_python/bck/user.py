@@ -1,9 +1,9 @@
 #!/usr/bin/python3
 import uuid
 from bck import course, bckconfig
-from bck.database import MatDB
-from bck.matobject import BckObject
-db = MatDB()
+from bck.database import BckDB
+from bck.bckobject import BckObject
+db = BckDB()
 
 
 # ===========================================================

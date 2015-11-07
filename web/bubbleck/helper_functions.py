@@ -109,7 +109,7 @@ def require_course_role(roles, json=False):
 
 # ===================================================
 def queueEmail(usersid=None, additional_to=None, additional_cc=None, additional_bcc=None, subject=None, body=None, show_as_web_msg=True):
-	db = database.MatDB()	
+	db = database.BckDB()	
 	db.queryNoResults('''INSERT INTO email_users (usersid, additional_to, additional_cc, additional_bcc, subject, body, show_as_web_msg) 
 				VALUES (%s,%s,%s,%s,%s,%s,%s)''',
 			(usersid, additional_to, additional_cc, additional_bcc, subject, body, show_as_web_msg))	

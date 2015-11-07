@@ -7,7 +7,7 @@ from bck import database
 from bck import bckconfig
 from bck import user
 
-db = database.MatDB()
+db = database.BckDB()
 
 #===================================
 def sendEmails():

@@ -1,9 +1,9 @@
 #!/usr/bin/python3
 import random
 from bck import studentexam
-from bck.database import MatDB
-from bck.matobject import BckObject
-db = MatDB()
+from bck.database import BckDB
+from bck.bckobject import BckObject
+db = BckDB()
 
 def getExamByID(examsid):
 	return Exam.getExamByID(Exam(),examsid)

@@ -4,8 +4,8 @@
 schema_version = 1
 from bck import database
 try:
-	if schema_version != int(database.MatDB().getSchemaVersion()):
-		exit('Schema version of the database is incorrect.  Expecting %s, but got %s' % (schema_version,database.MatDB().getSchemaVersion()))
+	if schema_version != int(database.BckDB().getSchemaVersion()):
+		exit('Schema version of the database is incorrect.  Expecting %s, but got %s' % (schema_version,database.BckDB().getSchemaVersion()))
 except TypeError:
 	exit('Could not identify schema version.')
 

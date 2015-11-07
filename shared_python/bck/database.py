@@ -2,7 +2,7 @@ import psycopg2
 import psycopg2.extras
 from bck.bckconfig import dbname, dbuser, dbhost, dbpass
 
-class MatDB:
+class BckDB:
 	_db_conn = None
 	_db_cur = None
 

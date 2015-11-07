@@ -4,7 +4,7 @@ import os
 import psycopg2
 from bck import database
 
-db = database.MatDB()
+db = database.BckDB()
 
 try:
 	schemaVersion = db.getSchemaVersion()
