@@ -1,0 +1,10 @@
+{% extends "layout.html" %}
+{% import '_macros.html' as macros %}
+{% block title %}Delete {{ g.current_course.name }}?{% endblock %}
+{% block content %}
+<div class="row">
+	<div class="col-lg-12">
+		<h2 class="page-header">{{ g.current_course.name }}: {{ g.current_exam.name }}</h2>
+	</div><!-- /.col-lg-12 -->
+</div>
+{% endblock %}

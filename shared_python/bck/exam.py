@@ -101,6 +101,11 @@ class Exam(BckObject):
 		return sharekey
 
 	# ===========================================================
+	def deactivate(self):
+		query = 'UPDATE exams SET active=false WHERE examsid=%s'
+		return db.queryNoResults(query, (self.examsid,))
+
+	# ===========================================================
 	def deactivateShareKey(self,key):
 		query = 'UPDATE examshares SET active=False WHERE key=%s AND examsid=%s'
 		db.queryNoResults(query,(key, self.examsid))

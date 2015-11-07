@@ -90,7 +90,7 @@
 				<div class="sidebar-nav navbar-collapse">
 					<ul class="nav" id="side-menu">
 						<li><a href="{{ url_for('routes_user.dashboard') }}"><i class="fa fa-dashboard fa-fw"></i> Dashboard</a></li>
-						<li><a href="#"><i class="fa fa-university fa-fw"></i> My Courses<span class="fa arrow"></span></a>
+						<li><a href="#"><i class="fa fa-university fa-fw"></i> My Courses <span class="badge">{{ g.current_user.getCourses()|length }}</span><span class="fa arrow"></span></a>
 							<ul class="nav nav-second-level">
 							{% for course in g.current_user.getCourses() %}
 								<li><a href="{{ url_for('routes_course.view', coursesid=course.coursesid) }}"><i class="fa fa-files-o fa-fw"></i> {{ course.name }}</a></li>

@@ -8,6 +8,7 @@ from flask import url_for
 from functools import wraps
 from bck import course
 from bck import database
+from bck import exam
 from bck import user
 
 # ===================================================
@@ -39,18 +40,23 @@ def anonymous_required(f):
 		g.current_user = user.User()
 		return f(*args, **kwargs)
 	return decorated_function
-	
+
 # ===================================================
-def login_required(f):
+def load_exam(f):
 	@wraps(f)
 	def decorated_function(*args, **kwargs):
-		g.current_user = None
-		if 'sessionid' in session: 
-			g.current_user = user.getUserBySessionID(str(session['sessionid']),request.remote_addr)
-		if g.current_user is None:
-			flash('info|You need to log in to access ' + request.url)
-			return redirect(url_for('routes_user.login', next=request.url))
-		g.current_user.logged_in = True
+		try:
+			e = exam.getExamByID(kwargs['examsid'])
+		except KeyError:
+			flash('warning|No exam key was specified.')
+			return redirect(url_for('routes_user.dashboard'))
+		if not e:
+			flash('warning|Exam not found.')
+			return redirect(url_for('routes_user.dashboard'))
+		if e.coursesid != int(kwargs['coursesid']):
+			flash('warning|The courses id does not match the exams id.')
+			return redirect(url_for('routes_user.dashboard'))
+		g.current_exam = e	# Some stuff
 		return f(*args, **kwargs)
 	return decorated_function
 
@@ -65,6 +71,20 @@ def load_user(f):
 			g.current_user = user.User() # Set a blank user
 		else:
 			g.current_user.logged_in = True
+		return f(*args, **kwargs)
+	return decorated_function
+	
+# ===================================================
+def login_required(f):
+	@wraps(f)
+	def decorated_function(*args, **kwargs):
+		g.current_user = None
+		if 'sessionid' in session: 
+			g.current_user = user.getUserBySessionID(str(session['sessionid']),request.remote_addr)
+		if g.current_user is None:
+			flash('info|You need to log in to access ' + request.url)
+			return redirect(url_for('routes_user.login', next=request.url))
+		g.current_user.logged_in = True
 		return f(*args, **kwargs)
 	return decorated_function
 

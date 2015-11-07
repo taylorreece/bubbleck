@@ -52,8 +52,8 @@ c1.addOrUpdateRole(u3.usersid, 'edit')
 c2.addOrUpdateRole(u1.usersid, 'own')
 c2.addOrUpdateRole(u3.usersid, 'edit')
 c3.addOrUpdateRole(u1.usersid, 'own')
-c3.addOrUpdateRole(u1.usersid, 'own')
 c3.addOrUpdateRole(u1.usersid, 'edit')
+c3.addOrUpdateRole(u1.usersid, 'own')
 c4.addOrUpdateRole(u2.usersid, 'own')
 assert c4.getRole(u2.usersid) == 'own'
 
