@@ -86,7 +86,7 @@ def forgot():
 			reset_key = u.generatePasswordResetKey()
 			queueEmail(
 				usersid = usersid,
-				subject = 'myAutoTA Password Reset',
+				subject = 'BubbleCK Password Reset',
 				body = '''
 Dear %s,
 	You, or someone pretending to be you, has requested that your password for bubbleck.com be reset.  If you did not make this request, ignore this email.  Everything is fine.  If you did make this request, please visit %s%s to reset your password.

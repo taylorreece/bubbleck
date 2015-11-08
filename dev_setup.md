@@ -4,7 +4,7 @@ Windows development setup:
  2. Install Postgresql 9.4.4 from http://www.enterprisedb.com/products-services-training/pgdownload#windows
  3. Install whatever text editor you like (gVim, Notepad++, Sublime, etc).
  4. Install psycopg2 package from http://www.stickpeople.com/projects/python/win-psycopg/
- 5. Check out the myAutoTA repository from https://github.com/taylorreece/bubbleck 
+ 5. Check out the BubbleCK repository from https://github.com/taylorreece/bubbleck 
  6. Edit/add the following environment variables:
 	* Append ";C:\Python34;C:\Python34\Scripts" to PATH
 	* Create a new variable PYTHONPATH "C:\bubbleck\shared_python\;C:\bubbleck\shared_python\bck\;."

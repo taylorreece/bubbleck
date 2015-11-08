@@ -44,7 +44,7 @@ class RegisterForm(UserForm):
 				])
 	confirm     = PasswordField(u'Confirm Password')
 	geography   = StringField(u'Geographic Region')
-	hearabout   = StringField(u'How did you find myAutoTA?')
+	hearabout   = StringField(u'How did you find BubbleCK?')
 	recaptcha   = RecaptchaField(u'Are You Human?')
 
 # ===================================================
