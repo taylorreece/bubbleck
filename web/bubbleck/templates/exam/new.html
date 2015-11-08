@@ -68,6 +68,14 @@
 							  <option>No</option>
 							</select>
 						</div>
+						<div class="input-group" id="show_directions">
+							<label>Show Directions </label><br>
+							<select class="form-control" id='directionsSwitch'>
+							  <option selected>Yes</option>
+							  <option>No</option>
+							</select>
+						</div>
+
 						<hr>
 						<div class="input-group">
 							<span class="btn btn-success" id="generateexam">Generate Exam <span class="glyphicon glyphicon-export"></span></span>
@@ -93,6 +101,7 @@
 						<div class="col-md-6 text-center col-md-offset-3">
 							<h2 id="previewExamName">Exam Name</h2>
 							<div id="previewOverallScore">Score: ___ / <span id="previewPointTotal">0</span></div>
+							<div id="previewDirections">Don't mess this up, kid.</div>
 						</div>
 						<div class="col-md-3">
 							CHANGE THIS QR<img src="http://bubblecheck.reecemath.com/img/sampleqr.png">						</div>
@@ -139,163 +148,181 @@
 
 {% endblock %}
 {% block customjs %}
-		<script>
-		var currentQuestions = []; // Holds all current questions.
-		var maxRows = 30;
-		var maxCols = 3;
-		var teacherSwitch = true;
-		var courseSwitch = true;
-		var pointsSwitch = true;
-		var letters = '.ABCDEFGHIJKLMNOPQRSTUVWXYZ';
-		
-		function okayToSubmit(){
-			if($('#examname').val() == '') {
-				alert('You need an exam name');
-				return false;
-			}
-			if(currentQuestions.length == 0){
-				alert('Exams need at least one question.');
-				return false;
-			}
-			return true;
+	<script src="{{ url_for('static',filename='js/toastr.min.js') }}"></script>
+	<script>
+	var currentQuestions = []; // Holds all current questions.
+	var maxRows = 30;
+	var maxCols = 3;
+	var teacherSwitch = true;
+	var courseSwitch = true;
+	var pointsSwitch = true;
+	var directionsSwitch = true;
+	var letters = '.ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+	
+	function okayToSubmit(){
+		if($('#examname').val() == '') {
+			alert('You need an exam name');
+			return false;
 		}
+		if(currentQuestions.length == 0){
+			alert('Exams need at least one question.');
+			return false;
+		}
+		return true;
+	}
+	
+	$('#teacherSwitch').change(function () {
+		if(teacherSwitch){
+			$('#previewTeacherName').fadeOut();
+		} else {
+			$('#previewTeacherName').fadeIn();
+		}
+		teacherSwitch = !teacherSwitch;
+	});
+	
+	$('#courseSwitch').change(function () {
+		if(courseSwitch){
+			$('#previewCourseName').fadeOut();
+		} else {
+			$('#previewCourseName').fadeIn();
+		}
+		courseSwitch = !courseSwitch;
+	});
+	
+	$('#pointsSwitch').change(function () {
+		if(pointsSwitch){
+			$('#previewOverallScore').fadeOut();
+		} else {
+			$('#previewOverallScore').fadeIn();
+		}
+		pointsSwitch = !pointsSwitch;
+	});
 		
-		$('#teacherSwitch').change(function () {
-			console.log("Switching...");
-			if(teacherSwitch){
-				$('#previewTeacherName').fadeOut();
-			} else {
-				$('#previewTeacherName').fadeIn();
-			}
-			teacherSwitch = !teacherSwitch;
-		});
-		
-		$('#courseSwitch').change(function () {
-			console.log("Switching...");
-			if(courseSwitch){
-				$('#previewCourseName').fadeOut();
-			} else {
-				$('#previewCourseName').fadeIn();
-			}
-			courseSwitch = !courseSwitch;
-		});
-		
-		$('#pointsSwitch').change(function () {
-			console.log("Switching...");
-			if(pointsSwitch){
-				$('#previewOverallScore').fadeOut();
-			} else {
-				$('#previewOverallScore').fadeIn();
-			}
-			pointsSwitch = !pointsSwitch;
-		});
-		
-		$('#examname').on('change keyup paste', function(){
-			$('#previewExamName').html($('#examname').val());
-		});
-		
-		$('#questiontype').change( function() {
-			generatePreview(currentQuestions);
-		});
+	$('#directionsSwitch').change(function () {
+		if(directionsSwitch){
+			$('#previewDirections').fadeOut();
+		} else {
+			$('#previewDirections').fadeIn();
+		}
+		directionsSwitch = !directionsSwitch;
+	});
 
-		function updateDropdowns(emptyCols, emptyRows){
-			var rowsRequiredByType = Math.ceil(letters.indexOf($('#questiontype').val()) / 6.0);
-			if($('#questiontype').val() == ".") rowsRequiredByType = 1;
-			var maxNumToAdd = Math.floor(maxRows / rowsRequiredByType) * emptyCols + Math.floor(emptyRows / rowsRequiredByType);
-			numQuestionsToAdd = $('#numquestions').val();
-			$('#numquestions').empty();
-			$('#numquestions').append('<option value="#"># of Questions to Add... </option>');
-			for(i = 1; i <= maxNumToAdd; i++){
-				$('#numquestions').append('<option value="' + i + '">' + i + '</option>');
-			}
-			//Select previously selected number, if possible, or else largest:
-			if( $('#numquestions option[value=' + numQuestionsToAdd + ']').length == 0){
-				$('#numquestions option:last').attr("selected", "selected");
-			} else {
-				$('#numquestions').val(numQuestionsToAdd);
-			}
+	$('#examname').on('change keyup paste', function(){
+		$('#previewExamName').html($('#examname').val());
+	});
+	
+	$('#questiontype').change( function() {
+		generatePreview(currentQuestions);
+	});
+
+	function updateDropdowns(emptyCols, emptyRows){
+		var rowsRequiredByType = Math.ceil(letters.indexOf($('#questiontype').val()) / 6.0);
+		if($('#questiontype').val() == ".") rowsRequiredByType = 1;
+		var maxNumToAdd = Math.floor(maxRows / rowsRequiredByType) * emptyCols + Math.floor(emptyRows / rowsRequiredByType);
+		numQuestionsToAdd = $('#numquestions').val();
+		$('#numquestions').empty();
+		$('#numquestions').append('<option value="#"># of Questions to Add... </option>');
+		for(i = 1; i <= maxNumToAdd; i++){
+			$('#numquestions').append('<option value="' + i + '">' + i + '</option>');
 		}
-		
-		function generatePreview(questions){
-			$('#previewColumn1').html('');
-			$('#previewColumn2').html('');
-			$('#previewColumn3').html('');
-			var rowsNeeded = 0;
-			var curCol = 1;
-			var curRow = 0;
-			var choiceText = "";
-			for( var i = 0; i < questions.length; i++){
-				choiceText = "";
-				if(questions[i] == "."){
-					rowsNeeded = 1;
-					choiceText = "&#9417; &#9403;";
-				} else {
-					rowsNeeded = Math.ceil(letters.indexOf(questions[i]) / 6.0);
-					for(var j = 0; j < letters.indexOf(questions[i]); j++){
-						choiceText += "&#" + (j+9398) + "; "; // 9398 is 'A' with a circle around it.
-						if(((j+1)%6 == 0) && (j != letters.indexOf(questions[i])-1) && (j != 0)) {
-							choiceText += "<br>";
-						}
+		//Select previously selected number, if possible, or else largest:
+		if( $('#numquestions option[value=' + numQuestionsToAdd + ']').length == 0){
+			$('#numquestions option:last').attr("selected", "selected");
+		} else {
+			$('#numquestions').val(numQuestionsToAdd);
+		}
+	}
+	
+	function generatePreview(questions){
+		$('#previewColumn1').html('');
+		$('#previewColumn2').html('');
+		$('#previewColumn3').html('');
+		var rowsNeeded = 0;
+		var curCol = 1;
+		var curRow = 0;
+		var choiceText = "";
+		for( var i = 0; i < questions.length; i++){
+			choiceText = "";
+			if(questions[i] == "."){
+				rowsNeeded = 1;
+				choiceText = "&#9417; &#9403;";
+			} else {
+				rowsNeeded = Math.ceil(letters.indexOf(questions[i]) / 6.0);
+				for(var j = 0; j < letters.indexOf(questions[i]); j++){
+					choiceText += "&#" + (j+9398) + "; "; // 9398 is 'A' with a circle around it.
+					if(((j+1)%6 == 0) && (j != letters.indexOf(questions[i])-1) && (j != 0)) {
+						choiceText += "<br>";
 					}
 				}
-
-				if(rowsNeeded + curRow > maxRows){ // We're going off the column; start a new one.
-					curCol++;
-					curRow = 0;
-					if(curCol > 3) { 
-						alert("We're going off the page.... Taylor must have miscalculated something... please tell him exactly what you were doing: taylor@reecemath.com");
-					}
-				}
-				curRow += rowsNeeded;
-				newRow = $( ' <div class="row"> ');
-				newRow.append( '<div class="col-sm-1"><span id="' + i + '" class="glyphicon glyphicon-remove deletePreviewQuestion"></span></div>' );
-				newRow.append( '<div class="col-sm-1">' + (i+1) + '.</div>' );
-				newRow.append( '<div class="col-sm-9">' + choiceText + '</div>' );
-				$('#previewColumn' + curCol).append( newRow );
 			}
-			
-			$('#previewPointTotal').html( questions.length );
-			
-			$('.deletePreviewQuestion').click( function() {
-					currentQuestions.splice(this.id, 1); // Delete this from overall array.
-					generatePreview(currentQuestions);
+
+			if(rowsNeeded + curRow > maxRows){ // We're going off the column; start a new one.
+				curCol++;
+				curRow = 0;
+				if(curCol > 3) { 
+					alert("We're going off the page.... Taylor must have miscalculated something... please tell him exactly what you were doing: taylor@reecemath.com");
+				}
+			}
+			curRow += rowsNeeded;
+			newRow = $( ' <div class="row"> ');
+			newRow.append( '<div class="col-sm-1"><span id="' + i + '" class="fa fa-times deletePreviewQuestion"></span></div>' );
+			newRow.append( '<div class="col-sm-1">' + (i+1) + '.</div>' );
+			newRow.append( '<div class="col-sm-9">' + choiceText + '</div>' );
+			$('#previewColumn' + curCol).append( newRow );
+		}
+		
+		$('#previewPointTotal').html( questions.length );
+		
+		$('.deletePreviewQuestion').click( function() {
+				currentQuestions.splice(this.id, 1); // Delete this from overall array.
+				generatePreview(currentQuestions);
+		});
+		
+		updateDropdowns(3-curCol, 30-curRow);
+	} // Generate preview
+	
+	$('#addquestions').click( function() {
+		numQuestionsToAdd = $('#numquestions').val();
+		questionToAddType = $('#questiontype').val();
+		if(questionToAddType == "?" || numQuestionsToAdd == "#") return;
+		for( var i = 0; i < numQuestionsToAdd; i++ ){
+			currentQuestions.push(questionToAddType);
+		}
+		generatePreview(currentQuestions);
+	});
+	
+	$('#generateexam').click( function(){ // Post data; get back result.
+		if(okayToSubmit()){
+			$('#loadingModal').modal('show');
+			url = "{{ url_for('routes_exam.new', coursesid = g.current_course.coursesid) }}"	
+			$.ajax({
+				method: "POST",
+				url: url,
+				data: {
+					'layout'		: currentQuestions.join(''),
+					'name'			: $('#examname').val(),
+					'show_teachername' 	: teacherSwitch,
+					'show_coursename'	: courseSwitch,
+					'show_points'		: pointsSwitch,
+					'show_directions'	: directionsSwitch,
+				},
+				success: function(result) {
+					if(result['status'] == 'success'){
+						window.location = "{{ url_for('routes_exam.view', coursesid = g.current_course.coursesid) }}" + result['examsid'];
+					} else {
+						toastr['error'](result['message'],'Error');
+						$('#loadingModal').modal('hide');	
+					}
+				},
+				error: function(xhr) {
+					toastr['error']('Error: ' + xhr.status + ' ' + xhr.statusText,'Error');
+					$('#loadingModal').modal('hide');	
+				}
 			});
-			
-			updateDropdowns(3-curCol, 30-curRow);
-		} // Generate preview
-		
-		$('#addquestions').click( function() {
-			numQuestionsToAdd = $('#numquestions').val();
-			questionToAddType = $('#questiontype').val();
-			if(questionToAddType == "?" || numQuestionsToAdd == "#") return;
-			for( var i = 0; i < numQuestionsToAdd; i++ ){
-				currentQuestions.push(questionToAddType);
-			}
-			generatePreview(currentQuestions);
-		});
-		
-		$('#generateexam').click( function(){ // Post data; get back result.
-			if(okayToSubmit()){
-				$('#loadingModal').modal('show');
-				
-				var posting = $.post( "/exam/add", {
-						'questions[]'	: currentQuestions,
-						'examname'		: $('#examname').val(),
-						'teacherName' 	: teacherSwitch,
-						'courseName'	: courseSwitch,
-						'pointsPossible': pointsSwitch,
-						'courseID'		: 68				});
-				
-				posting.done(function(data) {
-					window.location = "/exam/" + data;
-				});
-				
-				posting.fail(function(){
-					alert("An error occured.  Please let Taylor (taylor@reecemath.com) know what you were doing, and he'll sort it out.");
-				});
-			} 
-		});
-	</script>
+		} 
+	});
+	toastr.options.positionClass = 'toast-top-center';
+</script>
 {% endblock %}
 
 {% block customcss %}
@@ -305,4 +332,5 @@
 	cursor:pointer;
 }
 </style>
+<link href="{{ url_for('static', filename='css/toastr.min.css') }}" rel="stylesheet">
 {% endblock %}

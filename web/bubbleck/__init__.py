@@ -42,9 +42,11 @@ app.register_blueprint(routes_user)
 app.config['RECAPTCHA_PUBLIC_KEY'] = bckconfig.recaptcha_public_key
 app.config['RECAPTCHA_PRIVATE_KEY'] = bckconfig.recaptcha_private_key
 
+
 # ===================================================
 @app.before_request
 def beforerequest():
+	g.sitename = 'Ⓑubble&#x2714;'
 	session.permanent = True
 	app.permanent_session_lifetime = timedelta(days=365)
 

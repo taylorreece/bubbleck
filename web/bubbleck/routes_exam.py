@@ -1,10 +1,14 @@
 from flask import Blueprint
 from flask import flash
 from flask import g
+from flask import jsonify
 from flask import redirect
 from flask import request
 from flask import render_template
 from flask import url_for
+
+from bck import exam
+
 from bubbleck.helper_functions import load_exam
 from bubbleck.helper_functions import login_required
 from bubbleck.helper_functions import require_course_role
@@ -25,10 +29,33 @@ def delete(coursesid,examsid):
 		return render_template('exam/delete.html')
 
 # ===================================================
-@routes_exam.route('/exam/new/<coursesid>')
+@routes_exam.route('/exam/new/<coursesid>', methods=('GET','POST'))
 @login_required
 @require_course_role(roles=('edit','own'))
 def new(coursesid):
+	if request.method == 'POST':
+		try:
+			e = exam.Exam()
+			e.coursesid		= coursesid
+			e.layout 		= request.form['layout']
+			e.name			= request.form['name']
+			e.show_coursename 	= request.form['show_coursename']
+			e.show_directions 	= request.form['show_directions']
+			e.show_points 		= request.form['show_points']
+			e.show_teachername 	= request.form['show_teachername']
+			e.save()
+		except Exception as err:
+			print(err)
+			ret = {
+				'status'  : 'error',
+				'message' : 'There was an error parsing your input.  You really shouldn\'t see this error.  Please contact Taylor (taylor@reecemath.com), taking note of what you were doing that resulted in this error.'
+			}
+			return jsonify(**ret)
+		ret = {
+			'status'  : 'success',
+			'examsid' : e.examsid,
+		}
+		return jsonify(**ret)
 	return render_template('exam/new.html')
 
 # ===================================================
@@ -40,11 +67,12 @@ def pdf(coursesid,examsid):
 	return "Viewing PDF of %s" % examsid
 
 # ===================================================
-@routes_exam.route('/view/<coursesid>/<examsid>')
+@routes_exam.route('/exam/view/<coursesid>/')
+@routes_exam.route('/exam/view/<coursesid>/<examsid>')
 @login_required
 @require_course_role(roles=('view','edit','own'))
 @load_exam
-def view(coursesid,examsid):
+def view(coursesid,examsid=''):
 	return render_template('exam/view.html')
 
 # ===================================================

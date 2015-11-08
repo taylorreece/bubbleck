@@ -33,12 +33,14 @@
 					</td>
 				</tr>
 			{% endfor %}
+			{% if g.current_course.getRole(g.current_user.usersid) in ('edit','own') %}
 				<tr>
 					<td>
 						<a href="{{ url_for('routes_exam.new', coursesid=g.current_course.coursesid) }}" class="btn btn-link"><i class="fa fa-plus-circle fa-fw"></i> New Exam</a>
 					</td>
 					<td></td>
 				</tr>
+			{% endif %}
 			</table>
 		</div><!-- panel -->
 	</div> <!-- col-md-8 -->

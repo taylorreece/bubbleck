@@ -1,4 +1,4 @@
-from flask import request
+from flask import request, g
 from wtforms import BooleanField
 from wtforms import FieldList
 from wtforms import Form
@@ -44,7 +44,7 @@ class RegisterForm(UserForm):
 				])
 	confirm     = PasswordField(u'Confirm Password')
 	geography   = StringField(u'Geographic Region')
-	hearabout   = StringField(u'How did you find BubbleCK?')
+	hearabout   = StringField(u'How did you find Bubble&#x2714;')
 	recaptcha   = RecaptchaField(u'Are You Human?')
 
 # ===================================================
