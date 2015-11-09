@@ -87,13 +87,23 @@
 		</div>
 		
 		<div class="col-md-9">
-			<div class="panel panel-default">
+			<div class="panel panel-default" style="max-width: 800px">
 				<div class="panel-heading">Live Preview</div>
 				
 				<div class="panel-body">
 					<div class="row">
 						<div class="col-md-12 text-center">
-							<h4>Name: ______________________ Hour: ___________ Date: _________</h4>
+							<div class="row">
+								<div class="col-sm-6">
+									<h4>Name: ______________________</h4>
+								</div>
+								<div class="col-sm-3">
+									<h4>Hour: ___________</h4>
+								</div>
+								<div class="col-sm-3">
+									<h4>Date: _________</h4>
+								</div>
+							</div>
 						</div>
 					</div>
 					
@@ -104,10 +114,11 @@
 							<div id="previewDirections">Don't mess this up, kid.</div>
 						</div>
 						<div class="col-md-3">
-							CHANGE THIS QR<img src="http://bubblecheck.reecemath.com/img/sampleqr.png">						</div>
+							<img src="{{ url_for('static', filename='img/qrcode.jpg') }}" style="width: 100px; heigth: 100px">
+						</div>
 					</div>
 					
-					<div class="row" style="min-height: 400px">
+					<div class="row" style="min-height: 600px;">
 						<div class="col-md-4" id="previewColumn1">
 						</div>
 						<div class="col-md-4" id="previewColumn2">
@@ -118,10 +129,10 @@
 					<hr>
 					<div class="row">
 						<div class="col-md-6 text-center">
-							&nbsp;<span id="previewCourseName">Discrete Math</span>
+							&nbsp;<span id="previewCourseName">{{ g.current_course.name }}</span>
 						</div>
 						<div class="col-md-6 text-center">
-							&nbsp;<span id="previewTeacherName">Mr. Reecef</span>
+							&nbsp;<span id="previewTeacherName">{{ g.current_user.teachername }}</span>
 						</div>
 						&nbsp;
 					</div>
@@ -138,7 +149,8 @@
 			<h4 class="modal-title" id="myModalLabel">Generating Exam...</h4>
 		  </div>
 		  <div class="modal-body text-center">
-			<img src="http://bubblecheck.reecemath.com/img/loading/life.gif">		  </div>
+			<img src="{{ url_for('static', filename='img/life.gif') }}">
+		  </div>
 		  <div class="modal-footer">
 			You will be redirected in a moment.
 		  </div>
