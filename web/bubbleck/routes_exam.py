@@ -2,6 +2,7 @@ from flask import Blueprint
 from flask import flash
 from flask import g
 from flask import jsonify
+from flask import make_response
 from flask import redirect
 from flask import request
 from flask import render_template
@@ -12,6 +13,8 @@ from bck import exam
 from bubbleck.helper_functions import load_exam
 from bubbleck.helper_functions import login_required
 from bubbleck.helper_functions import require_course_role
+
+from reportlab.pdfgen import canvas
 
 routes_exam = Blueprint('routes_exam', __name__)
 
@@ -68,7 +71,23 @@ def new(coursesid):
 @require_course_role(roles=('view','edit','own'))
 @load_exam
 def pdf(coursesid,examsid):
-	return "Viewing PDF of %s" % examsid
+	# TODO: Obviously fix this up to generate actual PDFs; this is just a proof of concept
+	from io import BytesIO
+	output = BytesIO()
+
+	p = canvas.Canvas(output)
+	p.drawString(100, 100, 'Hello')
+	p.showPage()
+	p.save()
+
+	pdf_out = output.getvalue()
+	output.close()
+
+	response = make_response(pdf_out)
+	response.headers['Content-Disposition'] = "filename='sakulaci.pdf"
+	response.mimetype = 'application/pdf'
+
+	return response
 
 # ===================================================
 @routes_exam.route('/exam/view/<coursesid>/')
@@ -87,5 +106,4 @@ def view(coursesid,examsid=''):
 def share(coursesid,examsid):
 	return "Sharing exam %s" % examsid
 	#return render_template('exam/share.html')
-
 
