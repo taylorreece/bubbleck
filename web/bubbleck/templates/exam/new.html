@@ -7,7 +7,7 @@
 		<h2 class="page-header">{{ g.current_course.name }}: Create New Exam</h2>
 	</div><!-- /.col-lg-12 -->
 </div>
-	<div class="row"><div class="col-md-12">
+	<div class="row">
 		<div class="col-md-3">
 			<div class="panel panel-default">
 				<div class="panel-heading">
@@ -41,7 +41,7 @@
 
 						<br>
 
-						<span id="addquestions" class="btn btn-primary btn-sm">Add Questions >></span>
+						<span id="addquestions" class="btn btn-primary">Add Questions >></span>
 						
 						<hr>
 						
@@ -81,10 +81,28 @@
 							<span class="btn btn-success" id="generateexam">Generate Exam <span class="glyphicon glyphicon-export"></span></span>
 						</div>
 					</div>
-
+				</div> <!-- panel body -->
+			</div> <!-- Exam Editor Panel -->
+			{% if exam_format_import %}
+			<div class="panel panel-default">
+				<div class="panel-heading">
+					Import Exam Layout
 				</div>
-			</div>
-		</div>
+				<div class="panel-body">
+					<div class="input-group">
+						<label>Choose an exam layout to import...</label>
+						<select class="form-control" id="exam_format_import">
+						{% for efi in exam_format_import %}
+							<option value="{{ efi.exam_layout }}">{{ efi.course_name }} \ {{ efi.exam_name }}</option>
+						{% endfor %}
+						</select>
+					</div>
+					<br>
+					<span id="do_exam_format_import" class="btn btn-primary">Import Exam >></span>
+				</div>
+			</div> <!-- Import exam panel -->
+			{% endif %}
+		</div> <!-- col-md-3 -->
 		
 		<div class="col-md-9">
 			<div class="panel panel-default" style="max-width: 800px">
@@ -138,7 +156,7 @@
 					</div>
 				</div><!--Panel-body -->
 			</div><!--Panel -->
-		</div>
+		</div><!-- col-md-9 -->
 	</div>
 </div>
 	<!-- Modal -->
@@ -333,7 +351,13 @@
 			});
 		} 
 	});
+
 	toastr.options.positionClass = 'toast-top-center';
+
+	$('#do_exam_format_import').click( function(){
+		currentQuestions = $('#exam_format_import').val().split('');
+		generatePreview(currentQuestions);
+	});
 </script>
 {% endblock %}
 

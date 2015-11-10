@@ -56,7 +56,11 @@ def new(coursesid):
 			'examsid' : e.examsid,
 		}
 		return jsonify(**ret)
-	return render_template('exam/new.html')
+	exam_format_import = []
+	for c in g.current_user.getCourses():
+		for e in c.getExams():
+			exam_format_import.append({ 'course_name' : c.name, 'exam_layout' : e.layout, 'exam_name' : e.name})	
+	return render_template('exam/new.html', exam_format_import = exam_format_import)
 
 # ===================================================
 @routes_exam.route('/exam/<coursesid>/<examsid>/pdf')
