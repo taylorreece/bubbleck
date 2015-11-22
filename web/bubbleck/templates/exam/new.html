@@ -7,7 +7,7 @@
 		<h2 class="page-header">{{ g.current_course.name }}: Create New Exam</h2>
 	</div><!-- /.col-lg-12 -->
 </div>
-	<div class="row"><div class="col-md-12">
+	<div class="row">
 		<div class="col-md-3">
 			<div class="panel panel-default">
 				<div class="panel-heading">
@@ -41,7 +41,7 @@
 
 						<br>
 
-						<span id="addquestions" class="btn btn-primary btn-sm">Add Questions >></span>
+						<span id="addquestions" class="btn btn-primary">Add Questions >></span>
 						
 						<hr>
 						
@@ -81,19 +81,47 @@
 							<span class="btn btn-success" id="generateexam">Generate Exam <span class="glyphicon glyphicon-export"></span></span>
 						</div>
 					</div>
-
+				</div> <!-- panel body -->
+			</div> <!-- Exam Editor Panel -->
+			{% if exam_format_import %}
+			<div class="panel panel-default">
+				<div class="panel-heading">
+					Import Exam Layout
 				</div>
-			</div>
-		</div>
+				<div class="panel-body">
+					<div class="input-group">
+						<label>Choose an exam layout to import...</label>
+						<select class="form-control" id="exam_format_import">
+						{% for efi in exam_format_import %}
+							<option value="{{ efi.exam_layout }}">{{ efi.course_name }} \ {{ efi.exam_name }}</option>
+						{% endfor %}
+						</select>
+					</div>
+					<br>
+					<span id="do_exam_format_import" class="btn btn-primary">Import Exam >></span>
+				</div>
+			</div> <!-- Import exam panel -->
+			{% endif %}
+		</div> <!-- col-md-3 -->
 		
 		<div class="col-md-9">
-			<div class="panel panel-default">
+			<div class="panel panel-default" style="max-width: 800px">
 				<div class="panel-heading">Live Preview</div>
 				
 				<div class="panel-body">
 					<div class="row">
 						<div class="col-md-12 text-center">
-							<h4>Name: ______________________ Hour: ___________ Date: _________</h4>
+							<div class="row">
+								<div class="col-sm-6">
+									<h4>Name: ______________________</h4>
+								</div>
+								<div class="col-sm-3">
+									<h4>Hour: ___________</h4>
+								</div>
+								<div class="col-sm-3">
+									<h4>Date: _________</h4>
+								</div>
+							</div>
 						</div>
 					</div>
 					
@@ -104,10 +132,11 @@
 							<div id="previewDirections">Don't mess this up, kid.</div>
 						</div>
 						<div class="col-md-3">
-							CHANGE THIS QR<img src="http://bubblecheck.reecemath.com/img/sampleqr.png">						</div>
+							<img src="{{ url_for('static', filename='img/qrcode.jpg') }}" style="width: 100px; heigth: 100px">
+						</div>
 					</div>
 					
-					<div class="row" style="min-height: 400px">
+					<div class="row" style="min-height: 600px;">
 						<div class="col-md-4" id="previewColumn1">
 						</div>
 						<div class="col-md-4" id="previewColumn2">
@@ -118,16 +147,16 @@
 					<hr>
 					<div class="row">
 						<div class="col-md-6 text-center">
-							&nbsp;<span id="previewCourseName">Discrete Math</span>
+							&nbsp;<span id="previewCourseName">{{ g.current_course.name }}</span>
 						</div>
 						<div class="col-md-6 text-center">
-							&nbsp;<span id="previewTeacherName">Mr. Reecef</span>
+							&nbsp;<span id="previewTeacherName">{{ g.current_user.teachername }}</span>
 						</div>
 						&nbsp;
 					</div>
 				</div><!--Panel-body -->
 			</div><!--Panel -->
-		</div>
+		</div><!-- col-md-9 -->
 	</div>
 </div>
 	<!-- Modal -->
@@ -138,7 +167,8 @@
 			<h4 class="modal-title" id="myModalLabel">Generating Exam...</h4>
 		  </div>
 		  <div class="modal-body text-center">
-			<img src="http://bubblecheck.reecemath.com/img/loading/life.gif">		  </div>
+			<img src="{{ url_for('static', filename='img/life.gif') }}">
+		  </div>
 		  <div class="modal-footer">
 			You will be redirected in a moment.
 		  </div>
@@ -321,7 +351,13 @@
 			});
 		} 
 	});
+
 	toastr.options.positionClass = 'toast-top-center';
+
+	$('#do_exam_format_import').click( function(){
+		currentQuestions = $('#exam_format_import').val().split('');
+		generatePreview(currentQuestions);
+	});
 </script>
 {% endblock %}
 

@@ -7,5 +7,6 @@
     - postgresql-client
     - python3-flask
     - python3-jinja2
+    - python3-reportlab
 
 - include: "{{ ANSIBLE_ROOT }}/tasks/update_apache2.yml"

@@ -46,7 +46,7 @@ app.config['RECAPTCHA_PRIVATE_KEY'] = bckconfig.recaptcha_private_key
 # ===================================================
 @app.before_request
 def beforerequest():
-	g.sitename = 'Ⓑubble&#x2714;'
+	g.sitename = '&#x24b7;U&#x24b7;&#x24b7;L&#x24ba;&#x2714;'
 	session.permanent = True
 	app.permanent_session_lifetime = timedelta(days=365)
 
