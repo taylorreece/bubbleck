@@ -14,8 +14,6 @@ from bubbleck.helper_functions import load_exam
 from bubbleck.helper_functions import login_required
 from bubbleck.helper_functions import require_course_role
 
-from reportlab.pdfgen import canvas
-
 routes_exam = Blueprint('routes_exam', __name__)
 
 # ===================================================
@@ -72,16 +70,26 @@ def new(coursesid):
 @load_exam
 def pdf(coursesid,examsid):
 	# TODO: Obviously fix this up to generate actual PDFs; this is just a proof of concept
+	from reportlab.pdfgen import canvas
+	from reportlab.lib.pagesizes import letter
+	from pyPdf import PdfFileWriter, PdfFileReader
 	from io import BytesIO
+
 	output = BytesIO()
 
-	p = canvas.Canvas(output)
+	p = canvas.Canvas(output, pagesize=letter)
 	p.drawString(100, 100, 'Hello')
-	p.showPage()
 	p.save()
 
-	pdf_out = output.getvalue()
-	output.close()
+	output.seek(0)
+	new_pdf = PdfFileReader(output)
+	existing_pdf = PdfFileReader(open('/home/treece/src/web/bubbleck/res/Template.pdf', 'rb'))
+	out = PdfFileWriter()
+	page = existing_pdf.getPage(0)
+	page.mergePage(new_pdf.getPage(0))
+	out.addPage(page)
+	a = BytesIO()
+	pdf_out = out.write(a)
 
 	response = make_response(pdf_out)
 	response.headers['Content-Disposition'] = "filename='sakulaci.pdf"
