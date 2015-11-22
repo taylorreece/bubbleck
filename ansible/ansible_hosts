@@ -44,7 +44,7 @@ roles = ['appserver']
 127.0.0.1
 
 [linode]
-bck-prod-0
+linode
 
 [linode:vars]
 https_port = 443

@@ -1,7 +1,6 @@
 - name: Set Up Apache2 Log Directories
   file: path=/var/log/apache2/{{ item }} state=directory owner=www-data group=adm mode=755
   with_items:
-    - api
     - bubbleck
 
 - name: Get rid of old sites-enabled files
@@ -22,14 +21,12 @@
   template: src={{ ANSIBLE_ROOT }}/templates/apache2/{{ item }}.j2 dest=/etc/apache2/sites-available/{{ item }} owner=root group=root mode=644 backup=yes
   with_items:
     - 000-bubbleck.conf
-    - 001-api.conf
   notify: reload apache2
 
 - name: Create symbolic links in sites-enabled
   file: src=/etc/apache2/sites-available/{{ item }} dest=/etc/apache2/sites-enabled/{{ item }} state='link' owner=root group=root mode=777
   with_items:
     - 000-bubbleck.conf
-    - 001-api.conf
   notify: reload apache2
 
 - name: Enable Specific Modules

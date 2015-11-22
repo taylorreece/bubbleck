@@ -1,7 +1,15 @@
 ANSIBLE_ROOT: [[pwd RIGHT NOW]]
+bck_db_name: bck
 bck_db_username: bck
-bck_db_password: [[INSERT PASSWORD HERE]]
+bck_db_password: 
 bck_db_admin_username: bckadmin
-bck_db_admin_password: [[INSERT PASSWORD HERE]]
-bck_password_salt: [[INSERT SALT HERE]] 
-webapp_secret_key: [[INSERT SECRET KEY HERE]]
+bck_db_admin_password: 
+bck_password_salt: 
+recaptcha_private_key: [[GET FROM GOOGLE]]
+recaptcha_public_key: [[https://www.google.com/recaptcha/intro/index.html]]
+smtp_password:
+smtp_port:
+smtp_server:
+smtp_use_ssl: True
+smtp_username:
+webapp_secret_key: 

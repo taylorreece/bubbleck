@@ -2,8 +2,13 @@
   subversion: repo=https://github.com/taylorreece/bubbleck/trunk/shared_python/{{ item }} dest=/usr/lib/python3.4/{{ item }}
   with_items:
     - bck
+
+- name: Using pip to install some other required, non-apt packages
+  pip: name={{ item }} executable=pip3
+  with_items:
+    - flask-wtf
+    - reportlab
     - wtforms
-    - flask_wtf
 
 - name: Upload global variables file for python packages
   template: "src={{ ANSIBLE_ROOT }}/templates/bckconfig.py.j2 dest=/usr/lib/python3.4/bck/bckconfig.py mode=644"
