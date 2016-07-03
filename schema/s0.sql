@@ -9,7 +9,6 @@ BEGIN
 	RETURN NEW;	
 END;
 $$ language 'plpgsql';
-ALTER FUNCTION update_updated_at_column() OWNER TO bck;
 
 --
 -- Settings table holds all site-config settings 
@@ -24,7 +23,6 @@ CREATE TABLE settings (
 );
 CREATE TRIGGER update_settings_updated_at BEFORE UPDATE ON settings FOR EACH ROW EXECUTE PROCEDURE update_updated_at_column();
 ALTER TABLE settings ADD UNIQUE (category, name);
-ALTER TABLE settings OWNER TO bck;
 
 --
 -- Stores simple users data; login data, etc, will be in another table
@@ -40,7 +38,6 @@ CREATE TABLE users (
 	updated_at	TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 CREATE TRIGGER update_users_updated_at BEFORE UPDATE ON users FOR EACH ROW EXECUTE PROCEDURE update_updated_at_column();
-ALTER TABLE users OWNER TO bck;
 
 --
 -- Stores Course data
@@ -52,12 +49,10 @@ CREATE TABLE courses (
 	updated_at	TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 CREATE TRIGGER update_courses_updated_at BEFORE UPDATE ON courses FOR EACH ROW EXECUTE PROCEDURE update_updated_at_column();
-ALTER TABLE courses OWNER TO bck;
 
 -- 
 -- Pivot table between courses and users
 CREATE TYPE course_role AS ENUM('own','edit','view');
-ALTER TYPE course_role OWNER TO bck;
 CREATE TABLE courses_users (
 	usersid		INTEGER NOT NULL REFERENCES users(usersid),
 	coursesid	INTEGER NOT NULL REFERENCES courses(coursesid),
@@ -67,7 +62,6 @@ CREATE TABLE courses_users (
 );
 ALTER TABLE courses_users ADD UNIQUE (usersid, coursesid);
 CREATE TRIGGER update_courses_users_updated_at BEFORE UPDATE ON courses_users FOR EACH ROW EXECUTE PROCEDURE update_updated_at_column();
-ALTER TABLE courses_users OWNER TO bck;
 
 --
 -- Exams, which are tied to courses
@@ -86,7 +80,6 @@ CREATE TABLE exams (
 	updated_at	TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 CREATE TRIGGER update_exams_updated_at BEFORE UPDATE ON exams FOR EACH ROW EXECUTE PROCEDURE update_updated_at_column();
-ALTER TABLE exams OWNER TO bck;
 
 --
 -- Exam results can be shared with others using special keys
@@ -99,7 +92,6 @@ CREATE TABLE examshares (
 	updated_at	TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 CREATE TRIGGER update_examshares_updated_at BEFORE UPDATE ON examshares FOR EACH ROW EXECUTE PROCEDURE update_updated_at_column();
-ALTER TABLE examshares OWNER TO bck;
 
 --
 -- Courses can have multiple sections
@@ -112,7 +104,6 @@ CREATE TABLE sections (
 	updated_at	TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 CREATE TRIGGER update_sections_updated_at BEFORE UPDATE ON sections FOR EACH ROW EXECUTE PROCEDURE update_updated_at_column();
-ALTER TABLE sections OWNER TO bck;
 
 --
 -- Student exams are owned by a section, and by an exam
@@ -126,7 +117,6 @@ CREATE TABLE studentexams (
 	updated_at	TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 CREATE TRIGGER update_studentexams_updated_at BEFORE UPDATE ON studentexams FOR EACH ROW EXECUTE PROCEDURE update_updated_at_column();
-ALTER TABLE studentexams OWNER TO bck;
 
 --
 -- Keeps track of users' sessions.  Designed so that one user can have multiple sessions.
@@ -137,7 +127,6 @@ CREATE TABLE sessions (
 	updated_at	TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 ALTER TABLE sessions ADD UNIQUE (usersid, sessionid);
-ALTER TABLE sessions OWNER TO bck;
 
 -- This function returns true if a userid/sessionid pair exists, and false otherwise.
 -- If true, it updates the updated_at timestamp.  This will be helpful later as a cron job will delete
@@ -153,7 +142,6 @@ BEGIN
 	RETURN FALSE;
 END;
 $$ LANGUAGE plpgsql;
-ALTER FUNCTION check_user_session(INTEGER,INTEGER) OWNER TO bck;
 
 -- 
 -- Clears out old settings, creates new with given category,name,value
@@ -167,7 +155,6 @@ BEGIN
 	INSERT INTO settings (category,name,value) VALUES (c,n,v);
 END;
 $$ LANGUAGE plpgsql;
-ALTER FUNCTION update_setting(TEXT,TEXT,TEXT) OWNER TO bck;
 
 -- SET SCHEMA VERSION:
 SELECT update_setting('schema','version','0');
