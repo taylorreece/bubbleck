@@ -1,6 +1,9 @@
-#!/usr/bin/python3
+#!../venv/bin/python3
 import glob
 import os
+import sys
+sys.path.append('.')
+sys.path.append('..')
 import psycopg2
 from bck import database
 

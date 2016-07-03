@@ -26,6 +26,8 @@ CREATE TABLE password_reset (
 	created_at	TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
 	updated_at	TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
+CREATE TRIGGER update_email_users_updated_at BEFORE UPDATE ON email_users FOR EACH ROW EXECUTE PROCEDURE update_updated_at_column();
+ALTER TABLE email_users OWNER TO bck;
 
 
 CREATE TABLE subscriptions (

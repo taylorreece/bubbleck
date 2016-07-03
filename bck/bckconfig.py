@@ -1,0 +1,13 @@
+dbhost='localhost'
+dbname='taylorreece'
+dbpass=None
+dbuser='taylorreece'
+password_salt='1234'
+recaptcha_public_key='6LcbYyITAAAAALhzzSsYM6XYXbft_UZn-Xji-Txo'
+recaptcha_private_key='6LcbYyITAAAAABMXdG2JUB8vrVQ7swTyLONXPUPa'
+webapp_secret_key='1234'
+smtp_password = '{{ smtp_password }}'
+smtp_port = '{{ smtp_port }}'
+smtp_server = '{{ smtp_server }}'
+smtp_use_tls = False
+smtp_username = '{{ smtp_username }}'
