@@ -185,28 +185,27 @@ def register():
 		flash('info|A user account for %s has been created.  Please log in.' % form.email.data)
 	
 		return redirect(url_for('routes_user.login'))
-	oauthProviders = {	
+	oauth_providers = {	
 		'facebook'    : 'Facebook',
 		'google-plus' : 'Google',
 		'twitter'     : 'Twitter'	
 	}
-	return render_template('user/register.html', form=form, oauthProviders=oauthProviders)
+	return render_template('user/register.html', form=form, oauth_providers=oauth_providers)
 
 # ===================================================
 @routes_user.route('/user/settings', methods=('GET', 'POST'))
 @login_required
 def settings():
 	userform = UserForm(request.form)
-	if request.method == 'POST':
-		if userform.validate():
-			try:
-				g.current_user.email       = userform.email.data
-				g.current_user.name        = userform.name.data
-				g.current_user.teachername = userform.teachername.data
-				g.current_user.save()
-			except:
-				return "An error occured while updating your account.  Please contact taylor (taylor@reecemath.com) for details."
-			flash('info|Account Updated')
+	if request.method == 'POST' userform.validate():
+		try:
+			g.current_user.email       = userform.email.data
+			g.current_user.name        = userform.name.data
+			g.current_user.teachername = userform.teachername.data
+			g.current_user.save()
+		except:
+			return "An error occured while updating your account.  Please contact taylor (taylor@reecemath.com) for details."
+		flash('info|Account Updated')
 	else:
 		userform.email.data       = g.current_user.email
 		userform.name.data        = g.current_user.name

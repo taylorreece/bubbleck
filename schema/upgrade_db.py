@@ -1,4 +1,5 @@
-#!../venv/bin/python3
+#!/usr/bin/python3
+
 import glob
 import os
 import sys
@@ -10,20 +11,20 @@ from bck import database
 db = database.BckDB()
 
 try:
-	schemaVersion = db.getSchemaVersion()
+	schemaVersion = db.get_schema_version()
 except psycopg2.ProgrammingError:
 	schemaVersion = -1
 
-def applySchema():
+def apply_schema():
 	try:
-		schemaVersion = db.getSchemaVersion()
+		schemaVersion = db.get_schema_version()
 	except psycopg2.ProgrammingError:
 		schemaVersion = -1
 	nextFile = 's%s.sql' % str(int(schemaVersion) + 1)
 	if os.path.isfile(nextFile):
 		print("Applying %s..." % nextFile)
 		f = open(nextFile, 'r')
-		db.runFile(f)
-		applySchema()
+		db.run_file(f)
+		apply_schema()
 
-applySchema()
+apply_schema()

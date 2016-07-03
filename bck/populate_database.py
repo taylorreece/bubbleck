@@ -4,20 +4,19 @@ if input("Do you understand that this script will clear all data tables and run 
 	exit()
 
 import sys
-import bckconfig
 import hashlib
 from bck import course, database, exam, bckconfig, section, studentexam, user
 db = database.BckDB()
 
 # Clear data tables
-db.queryNoResults('DELETE FROM sessions')
-db.queryNoResults('DELETE FROM studentexams')
-db.queryNoResults('DELETE FROM sections')
-db.queryNoResults('DELETE FROM examshares')
-db.queryNoResults('DELETE FROM exams')
-db.queryNoResults('DELETE FROM courses_users')
-db.queryNoResults('DELETE FROM courses')
-db.queryNoResults('DELETE FROM users')
+db.query_no_results('DELETE FROM sessions')
+db.query_no_results('DELETE FROM studentexams')
+db.query_no_results('DELETE FROM sections')
+db.query_no_results('DELETE FROM examshares')
+db.query_no_results('DELETE FROM exams')
+db.query_no_results('DELETE FROM courses_users')
+db.query_no_results('DELETE FROM courses')
+db.query_no_results('DELETE FROM users')
 
 # Create some users
 u1 = user.User(email='test1@test.com',name='First1 Last',teachername='Mr. First1',password_plaintext='1234', is_admin=True)

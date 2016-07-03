@@ -16,7 +16,7 @@ class Section(BckObject):
 
 	# ===========================================================
 	def __init__(self, *args, **kwargs):
-		self.setAttributes(kwargs)
+		self.set_attributes(kwargs)
 
 	# ===========================================================
 	def save(self):
@@ -27,28 +27,28 @@ class Section(BckObject):
 						     active=%s
 					WHERE sectionsid=%s 
 					RETURNING updated_at'''
-			result = db.queryOneRec(query, (self.name, 
+			result = db.query_one_rec(query, (self.name, 
 							self.coursesid,
 							self.active,
 							self.sectionsid)
 			)
-			self.setAttributes(result)
+			self.set_attributes(result)
 		else:
 			query = ''' INSERT INTO sections 
 					(name,coursesid)
 					VALUES (%s,%s)
 					RETURNING created_at, updated_at, sectionsid, active'''
-			result = db.queryOneRec(query, (self.name,
+			result = db.query_one_rec(query, (self.name,
 							self.coursesid)
 			)
-			self.setAttributes(result)
+			self.set_attributes(result)
 
 	# ===========================================================
 	def getSectionByID(self,sectionsid):
 		self.sectionsid = sectionsid
-		result = db.queryOneRec('SELECT * FROM sections WHERE sectionsid=%s',(self.sectionsid,))
+		result = db.query_one_rec('SELECT * FROM sections WHERE sectionsid=%s',(self.sectionsid,))
 		if result:
-			self.setAttributes(result)
+			self.set_attributes(result)
 			return self
 		else:
 			return None 
@@ -56,5 +56,5 @@ class Section(BckObject):
 	# ===========================================================
 	def deactivate(self):
 		query = 'UPDATE sections SET active=false WHERE sectionsid=%s'
-		return db.queryNoResults(query, (self.sectionsid,))
+		return db.query_no_results(query, (self.sectionsid,))
 

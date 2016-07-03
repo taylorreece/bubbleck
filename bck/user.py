@@ -17,10 +17,10 @@ def getUsersByID(usersids=None):
 	ret = []
 	if usersids:
 		query = 'SELECT * FROM users WHERE usersid IN %s AND active'
-		result = db.queryDictList(query, (usersids,))
+		result = db.query_dict_list(query, (usersids,))
 	else: 
 		query = 'SELECT * FROM users WHERE active'
-		result = db.queryDictList(query)
+		result = db.query_dict_list(query)
 	for r in result:
 		ret.append(User(**r))
 	return ret
@@ -32,7 +32,7 @@ def getUserByID(usersid):
 # ===========================================================
 def getUserBySessionID(sessionid, ipaddress=None):
 	# Update the user with their new IP.  updated_at will track last login time
-	usersid = db.queryOneVal('UPDATE sessions SET ipaddress=%s, updated_at=NOW() WHERE sessionid=%s RETURNING usersid',(ipaddress,sessionid))
+	usersid = db.query_one_val('UPDATE sessions SET ipaddress=%s, updated_at=NOW() WHERE sessionid=%s RETURNING usersid',(ipaddress,sessionid))
 	if usersid:
 		return getUserByID(usersid)
 	else:
@@ -41,7 +41,7 @@ def getUserBySessionID(sessionid, ipaddress=None):
 # ===========================================================
 def getUserByEmailAndPassword(email,password):
 	query = 'SELECT * FROM users WHERE email=%s AND password=MD5(%s) AND active'
-	result = db.queryOneRec(query, (email, password+bckconfig.password_salt))
+	result = db.query_one_rec(query, (email, password+bckconfig.password_salt))
 	if result:
 		return User(**result)
 	else:
@@ -50,7 +50,7 @@ def getUserByEmailAndPassword(email,password):
 # ===========================================================
 def getUserByResetKey(reset_key):
 	query = 'SELECT * FROM users WHERE usersid=(SELECT usersid FROM password_reset WHERE key=%s)'
-	result = db.queryOneRec(query, (reset_key,))
+	result = db.query_one_rec(query, (reset_key,))
 	if result:
 		return User(**result)
 	else:
@@ -59,7 +59,7 @@ def getUserByResetKey(reset_key):
 # ===========================================================
 def getUsersidByEmail(email):
 	query = 'SELECT usersid FROM users WHERE email=%s AND active'
-	return db.queryOneVal(query, (email,))
+	return db.query_one_val(query, (email,))
 
 # ===========================================================
 class User(BckObject):
@@ -78,14 +78,14 @@ class User(BckObject):
 
 	# ===========================================================
 	def __init__(self, *args, **kwargs):
-		self.setAttributes(kwargs)
+		self.set_attributes(kwargs)
 		
 	# ===========================================================
 	def getUserByID(self,usersid):
 		self.usersid = usersid
-		result = db.queryOneRec('SELECT * FROM users WHERE usersid=%s AND active',(self.usersid,))
+		result = db.query_one_rec('SELECT * FROM users WHERE usersid=%s AND active',(self.usersid,))
 		if result:
-			self.setAttributes(result)
+			self.set_attributes(result)
 			self._updateSessions()
 			return self
 		else:
@@ -96,7 +96,7 @@ class User(BckObject):
 		if self.usersid:
 			# A user already exists; we're updating it.
 			if self.password_plaintext:
-				result = db.queryOneRec(
+				result = db.query_one_rec(
 						'''UPDATE users SET email=%s, name=%s, teachername=%s, password=MD5(%s), active=%s, is_admin=%s
 							WHERE usersid=%s
 							RETURNING updated_at, password''',
@@ -108,20 +108,20 @@ class User(BckObject):
 						 self.is_admin,
 						 self.usersid)
 					)
-				self.setAttributes(result)
+				self.set_attributes(result)
 				self.updated_at = result['updated_at']
 			else:
-				result = db.queryOneRec(
+				result = db.query_one_rec(
 						'''UPDATE users SET email=%s, name=%s, teachername=%s, active=%s, is_admin=%s
 							WHERE usersid=%s
 							RETURNING updated_at''',
 						(self.email, self.name, self.teachername, self.active, self.is_admin, self.usersid)
 					)
-				self.setAttributes(result)
+				self.set_attributes(result)
 				
 		else: 
 			# It's a new users; insert it
-			result = db.queryOneRec(
+			result = db.query_one_rec(
 					'''INSERT INTO users (email,name,teachername,password,is_admin) 
 						VALUES (%s,%s,%s,MD5(%s),%s)
 						RETURNING usersid,created_at,updated_at,password,active''',
@@ -131,7 +131,7 @@ class User(BckObject):
 					 self.password_plaintext + bckconfig.password_salt,
 					 self.is_admin)
 				)
-			self.setAttributes(result)
+			self.set_attributes(result)
 		self._updateSessions()
 
 	# ===========================================================
@@ -142,7 +142,7 @@ class User(BckObject):
 	# ===========================================================
 	def checkPassword(self,password_plaintext):
 		''' Check if the password supplied is the users current password '''
-		return db.queryOneVal("SELECT MD5(%s)=password FROM users WHERE usersid=%s", (password_plaintext + bckconfig.password_salt, self.usersid))
+		return db.query_one_val("SELECT MD5(%s)=password FROM users WHERE usersid=%s", (password_plaintext + bckconfig.password_salt, self.usersid))
 		
 	# ===========================================================
 	def getCourses(self):
@@ -153,7 +153,7 @@ class User(BckObject):
 					ON c.coursesid = cu.coursesid 
 				WHERE cu.usersid=%s AND c.active
 				ORDER BY c.coursesid;'''
-		courses = db.queryDictList(query,(self.usersid,))
+		courses = db.query_dict_list(query,(self.usersid,))
 		for c in courses:
 			ret.append(course.Course(**c))
 		return ret
@@ -163,34 +163,34 @@ class User(BckObject):
 		assert self.usersid
 		sessionid = str(self.usersid) + str(uuid.uuid4())
 		query = 'INSERT INTO sessions (usersid, sessionid, ipaddress) VALUES (%s,%s,%s)'
-		db.queryNoResults(query, (self.usersid, sessionid, ipaddress))
+		db.query_no_results(query, (self.usersid, sessionid, ipaddress))
 		self._updateSessions()
 		return sessionid
 
 	# ===========================================================
 	def closeSession(self, sessionid):
 		query = 'DELETE FROM sessions WHERE sessionid=%s AND usersid=%s RETURNING 1'
-		return db.queryOneRec(query, (sessionid,self.usersid))
+		return db.query_one_rec(query, (sessionid,self.usersid))
 
 	# ===========================================================
 	def getSubscriptionExpiration(self):
 		query = 'SELECT NOW()>expiration AS expired, expiration FROM subscriptions WHERE usersid=%s AND active'
-		return db.queryOneRec(query, (self.usersid,))
+		return db.query_one_rec(query, (self.usersid,))
 		
 	# ===========================================================
 	def deactivate(self):
 		query = 'UPDATE users SET active=false WHERE usersid=%s'
-		return db.queryNoResults(query, (self.usersid,))
+		return db.query_no_results(query, (self.usersid,))
 
 	# ===========================================================
 	def generatePasswordResetKey(self):
 		reset_key = str(self.usersid) + 'p' + str(uuid.uuid4())
 		query = 'INSERT INTO password_reset (usersid, key) VALUES (%s,%s)'
-		db.queryNoResults(query, (self.usersid, reset_key))
+		db.query_no_results(query, (self.usersid, reset_key))
 		return reset_key
 
 	# ===========================================================
 	def _updateSessions(self):
 		query = 'SELECT * FROM sessions WHERE usersid=%s ORDER BY updated_at DESC'
-		self.sessions = db.queryDictList(query, (self.usersid,))
+		self.sessions = db.query_dict_list(query, (self.usersid,))
 		 

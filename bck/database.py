@@ -2,7 +2,7 @@ import psycopg2
 import psycopg2.extras
 from bck.bckconfig import dbname, dbuser, dbhost, dbpass
 
-class BckDB:
+class BckDB(object):
 	_db_conn = None
 	_db_cur = None
 
@@ -22,12 +22,12 @@ class BckDB:
 		self._db_conn.close()
 
 	# ===========================================================
-	def getSchemaVersion(self):
+	def get_schema_version(self):
 		query = "SELECT value FROM settings WHERE category='schema' AND name='version'"
-		return self.queryOneVal(query)
+		return self.query_one_val(query)
 
 	# ===========================================================
-	def runFile(self,f):
+	def run_file(self,f):
 		self.query(query = f.read(), args=None, return_results=False)
 
 	# ===========================================================
@@ -45,14 +45,14 @@ class BckDB:
 		return
 	
 	# ===========================================================
-	def queryNoResults(self,query,args=None):
+	def query_no_results(self,query,args=None):
 		'''
 		For UPDATEs, DELETEs, etc that don't need results returned
 		'''
 		self.query(query,args,return_results=False)
 
 	# ===========================================================
-	def queryOneVal(self,query,args=None):
+	def query_one_val(self,query,args=None):
 		''' 
 		For snagging a single value from the database
 		For example, SELECT value FROM settings WHERE name=blah
@@ -64,14 +64,14 @@ class BckDB:
 			return None
 
 	# ===========================================================
-	def queryOneRec(self,query,args=None):
+	def query_one_rec(self,query,args=None):
 		'''
 		Grabs a single record.  e.g. SELECT * FROM users WHERE usersid=1
 		'''
 		return self.query(query,args,one_record=True)
 	
 	# ===========================================================
-	def queryDictList(self,query,args=None):
+	def query_dict_list(self,query,args=None):
 		'''
 		Grabs multiple records; returns list of dictionaries.
 		e.g. SELECT * FROM users
@@ -79,7 +79,7 @@ class BckDB:
 		return self.query(query,args)
 		
 	# ===========================================================
-	def queryOneValList(self,query,args=None):
+	def query_one_val_list(self,query,args=None):
 		'''
 		For snagging a list of values from the database.  Returns a list instead of a dict.
 		Fore example, SELECT coursesid FROM courses WHERE usersid=1

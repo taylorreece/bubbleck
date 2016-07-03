@@ -8,7 +8,7 @@ def getAllCourses():
 	''' Get all course objects, return them in a list '''
 	ret = []
 	query = 'SELECT * FROM courses;'
-	result = db.queryDictList(query)
+	result = db.query_dict_list(query)
 	for r in result:
 		ret.append(course(**r))
 	return ret
@@ -25,7 +25,7 @@ class Course(BckObject):
 	
 	# ===========================================================
 	def __init__(self, *args, **kwargs):
-		self.setAttributes(kwargs)
+		self.set_attributes(kwargs)
 
 	# ===========================================================
 	def addOrUpdateRole(self,usersid, role):
@@ -33,14 +33,14 @@ class Course(BckObject):
 		self.removeRoles(usersid)
 		query = '''INSERT INTO courses_users (coursesid, usersid, role)
 				VALUES (%s,%s,%s)'''
-		db.queryNoResults(query, (self.coursesid,usersid,role))
+		db.query_no_results(query, (self.coursesid,usersid,role))
 		
 	# ===========================================================
 	def getCourseByID(self,coursesid):
 		self.coursesid = coursesid
-		result = db.queryOneRec('SELECT * FROM courses WHERE coursesid=%s',(self.coursesid,))
+		result = db.query_one_rec('SELECT * FROM courses WHERE coursesid=%s',(self.coursesid,))
 		if result:
-			self.setAttributes(result)
+			self.set_attributes(result)
 			return self
 		else:
 			return None
@@ -49,7 +49,7 @@ class Course(BckObject):
 	def getExams(self):
 		ret = []
 		query = 'SELECT * FROM exams WHERE coursesid=%s AND active'
-		exams = db.queryDictList(query,(self.coursesid,))
+		exams = db.query_dict_list(query,(self.coursesid,))
 		for e in exams:
 			ret.append(exam.Exam(**e))
 		return ret
@@ -57,13 +57,13 @@ class Course(BckObject):
 	# ===========================================================
 	def getRole(self, usersid):
 		query = 'SELECT role FROM courses_users WHERE usersid=%s AND coursesid=%s'
-		return db.queryOneVal(query, (usersid, self.coursesid))
+		return db.query_one_val(query, (usersid, self.coursesid))
 
 	# ===========================================================
 	def getSections(self):
 		ret = []
 		query = 'SELECT * FROM sections WHERE coursesid=%s AND active ORDER BY sectionsid'
-		sections = db.queryDictList(query,(self.coursesid,))
+		sections = db.query_dict_list(query,(self.coursesid,))
 		for e in sections:
 			ret.append(section.Section(**e))
 		return ret
@@ -74,13 +74,13 @@ class Course(BckObject):
 		Returns a list of permissions in the form [['usersid':'123','role':'view'],[...]]
 		'''
 		query = "SELECT usersid,role FROM courses_users WHERE coursesid=%s ORDER BY role='view', role='edit', role='own'"
-		return db.queryDictList(query,(self.coursesid,))
+		return db.query_dict_list(query,(self.coursesid,))
 
 	# ===========================================================
 	def removeRoles(self,usersid):
 		''' Removes all roles for a particular user for this course '''
 		query = 'DELETE FROM courses_users WHERE coursesid=%s AND usersid=%s'
-		db.queryNoResults(query, (self.coursesid, usersid)) 
+		db.query_no_results(query, (self.coursesid, usersid)) 
 	
 	# ===========================================================
 	def save(self):
@@ -89,17 +89,17 @@ class Course(BckObject):
 			query = ''' UPDATE courses SET name=%s, active=%s
 					WHERE coursesid=%s 
 					RETURNING updated_at'''
-			result = db.queryOneRec(query, (self.name, self.active, self.coursesid))
-			self.setAttributes(result)
+			result = db.query_one_rec(query, (self.name, self.active, self.coursesid))
+			self.set_attributes(result)
 		else:
 			query = ''' INSERT INTO courses (name)
 					VALUES (%s)
 					RETURNING created_at, updated_at, coursesid, active'''
-			result = db.queryOneRec(query,(self.name,))
-			self.setAttributes(result)
+			result = db.query_one_rec(query,(self.name,))
+			self.set_attributes(result)
 
 	# ===========================================================
 	def deactivate(self):
 		query = 'UPDATE courses SET active=false WHERE coursesid=%s'
-		return db.queryNoResults(query, (self.coursesid,))
+		return db.query_no_results(query, (self.coursesid,))
 

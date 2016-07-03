@@ -137,20 +137,19 @@ def removesection(coursesid, sectionsid=None):
 @require_course_role(roles=('edit','own'))
 def settings(coursesid=None):
 	courseform = CourseForm(request.form)
-	if request.method == 'POST':
-		if courseform.validate():
-			try:
-				g.current_course.name = courseform.name.data
-				g.current_course.save()
-				i = 0
-				for section in g.current_course.getSections():
-					if section.name != courseform.sections[i].data:
-						section.name = courseform.sections[i].data
-						section.save()
-					i = i + 1
-			except:
-				return "An error occured while updating this course.  Please contact Taylor (taylor@reecemath.com) for details."
-			flash('info|Course Updated')
+	if request.method == 'POST' and courseform.validate():
+		try:
+			g.current_course.name = courseform.name.data
+			g.current_course.save()
+			i = 0
+			for section in g.current_course.getSections():
+				if section.name != courseform.sections[i].data:
+					section.name = courseform.sections[i].data
+					section.save()
+				i = i + 1
+		except:
+			return "An error occured while updating this course.  Please contact Taylor (taylor@reecemath.com) for details."
+		flash('info|Course Updated')
 	else:
 		courseform.name.data = g.current_course.name
 	roles = g.current_course.getUserRoles()

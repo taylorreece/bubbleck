@@ -14,7 +14,7 @@ class StudentExam(BckObject):
 	
 	# ===========================================================
 	def __init__(self, *args, **kwargs):
-		self.setAttributes(kwargs)
+		self.set_attributes(kwargs)
 
 	# ===========================================================
 	def save(self):
@@ -26,20 +26,20 @@ class StudentExam(BckObject):
 						     active=%s
 					WHERE studentexamsid=%s 
 					RETURNING updated_at'''
-			result = db.queryOneRec(query, (self.answers, 
+			result = db.query_one_rec(query, (self.answers, 
 							self.examsid,
 							self.sectionsid,
 							self.active,
 							self.studentexamsid)
 			)
-			self.setAttributes(result)
+			self.set_attributes(result)
 		else:
 			query = ''' INSERT INTO studentexams 
 					(answers,examsid,sectionsid)
 					VALUES (%s,%s,%s)
 					RETURNING created_at, updated_at, studentexamsid, active'''
-			result = db.queryOneRec(query, (self.answers,
+			result = db.query_one_rec(query, (self.answers,
 							self.examsid,
 							self.sectionsid)
 			)
-			self.setAttributes(result)
+			self.set_attributes(result)

@@ -25,9 +25,9 @@
 				Alternative registration options
 			</div>
 			<div class="panel-body">
-				{% for key in oauthProviders  %}
+				{% for key in oauth_providers  %}
 				<a class="btn btn-block btn-social btn-{{ key }}">
-					<i class="fa fa-{{ key }}"></i> Register with {{ oauthProviders[key] }}
+					<i class="fa fa-{{ key }}"></i> Register with {{ oauth_providers[key] }}
 				</a>
 				{% endfor %}
 			</div>

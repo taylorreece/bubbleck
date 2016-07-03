@@ -24,14 +24,14 @@ class Exam(BckObject):
 
 	# ===========================================================
 	def __init__(self, *args, **kwargs):
-		self.setAttributes(kwargs)
+		self.set_attributes(kwargs)
 
 	# ===========================================================
 	def getExamByID(self,examsid):
 		self.examsid = examsid
-		result = db.queryOneRec('SELECT * FROM exams WHERE examsid=%s',(self.examsid,))
+		result = db.query_one_rec('SELECT * FROM exams WHERE examsid=%s',(self.examsid,))
 		if result:
-			self.setAttributes(result)
+			self.set_attributes(result)
 			return self
 		else:
 			return None
@@ -51,7 +51,7 @@ class Exam(BckObject):
 						     active=%s
 					WHERE examsid=%s 
 					RETURNING updated_at'''
-			result = db.queryOneRec(query, (self.name, 
+			result = db.query_one_rec(query, (self.name, 
 							self.coursesid,
 							self.answers, 
 							self.layout, 
@@ -62,13 +62,13 @@ class Exam(BckObject):
 							self.active,
 							self.examsid)
 			)
-			self.setAttributes(result)
+			self.set_attributes(result)
 		else:
 			query = ''' INSERT INTO exams 
 					(name,coursesid,answers,layout,show_coursename,show_directions,show_points,show_teachername)
 					VALUES (%s,%s,%s,%s,%s,%s,%s,%s)
 					RETURNING created_at, updated_at, examsid, active'''
-			result = db.queryOneRec(query, (self.name,
+			result = db.query_one_rec(query, (self.name,
 							self.coursesid,
 							self.answers,
 							self.layout, 
@@ -77,17 +77,17 @@ class Exam(BckObject):
 							self.show_points,
 							self.show_teachername)
 			)
-			self.setAttributes(result)
+			self.set_attributes(result)
 
 	# ===========================================================
 	def getShareKeys(self):
 		query = 'SELECT key FROM examshares WHERE examsid=%s AND active'
-		return db.queryOneValList(query,(self.examsid,))
+		return db.query_one_vallist(query,(self.examsid,))
 
 	# ===========================================================
 	def getDeactivatedKeys(self):
 		query = 'SELECT key FROM examshares WHERE examsid=%s AND NOT active'
-		return db.queryOneValList(query,(self.examsid,))
+		return db.query_one_vallist(query,(self.examsid,))
 	
 	# ===========================================================
 	def addShareKey(self):
@@ -97,29 +97,29 @@ class Exam(BckObject):
 		# Is this right way to do it?  Hell no.  Is it the fast way?  Yeah....
 		sharekey = '%010d' % self.examsid + ''.join(random.choice(ALPHABET) for i in range(16))
 		query = 'INSERT INTO examshares (examsid, key) VALUES (%s,%s)'
-		db.queryNoResults(query,(self.examsid,sharekey))
+		db.query_no_results(query,(self.examsid,sharekey))
 		return sharekey
 
 	# ===========================================================
 	def deactivate(self):
 		query = 'UPDATE exams SET active=false WHERE examsid=%s'
-		return db.queryNoResults(query, (self.examsid,))
+		return db.query_no_results(query, (self.examsid,))
 
 	# ===========================================================
 	def deactivateShareKey(self,key):
 		query = 'UPDATE examshares SET active=False WHERE key=%s AND examsid=%s'
-		db.queryNoResults(query,(key, self.examsid))
+		db.query_no_results(query,(key, self.examsid))
 
 	# ===========================================================
 	def activateShareKey(self,key):
 		query = 'UPDATE examshares SET active=True WHERE key=%s AND examsid=%s'
-		db.queryNoResults(query,(key, self.examsid))
+		db.query_no_results(query,(key, self.examsid))
 
 	# ===========================================================
 	def getStudentExams(self):
 		ret = []
 		query = 'SELECT * FROM studentexams WHERE examsid=%s AND active'
-		studentexams = db.queryDictList(query,(self.examsid,))
+		studentexams = db.query_dict_list(query,(self.examsid,))
 		for s in studentexams:
 			ret.append(studentexam.StudentExam(**s))
 		return ret
