@@ -197,7 +197,7 @@ def register():
 @login_required
 def settings():
 	userform = UserForm(request.form)
-	if request.method == 'POST' userform.validate():
+	if request.method == 'POST' and userform.validate():
 		try:
 			g.current_user.email       = userform.email.data
 			g.current_user.name        = userform.name.data

@@ -17,6 +17,7 @@ def getCourseByID(coursesid):
 	return Course.getCourseByID(Course(),coursesid)
 
 class Course(BckObject):
+	''' An object representation of a course instance '''
 	active = True
 	coursesid = None
 	created_at = None
@@ -29,6 +30,7 @@ class Course(BckObject):
 
 	# ===========================================================
 	def addOrUpdateRole(self,usersid, role):
+		''' Takes a usersid and role, and adds that role to this course instance '''
 		assert role in ('view','edit','own')
 		self.removeRoles(usersid)
 		query = '''INSERT INTO courses_users (coursesid, usersid, role)
@@ -37,6 +39,7 @@ class Course(BckObject):
 		
 	# ===========================================================
 	def getCourseByID(self,coursesid):
+		''' Returns the course that matches provided id number '''
 		self.coursesid = coursesid
 		result = db.query_one_rec('SELECT * FROM courses WHERE coursesid=%s',(self.coursesid,))
 		if result:
@@ -47,6 +50,7 @@ class Course(BckObject):
 
 	# ===========================================================
 	def getExams(self):
+		''' Returns a list of exams associated with this course instance '''
 		ret = []
 		query = 'SELECT * FROM exams WHERE coursesid=%s AND active'
 		exams = db.query_dict_list(query,(self.coursesid,))
@@ -61,6 +65,7 @@ class Course(BckObject):
 
 	# ===========================================================
 	def getSections(self):
+		''' Returns a list of sections associated with this course instance '''
 		ret = []
 		query = 'SELECT * FROM sections WHERE coursesid=%s AND active ORDER BY sectionsid'
 		sections = db.query_dict_list(query,(self.coursesid,))

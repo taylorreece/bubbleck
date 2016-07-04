@@ -10,7 +10,7 @@ from bck import user
 db = database.BckDB()
 
 #===================================
-def sendEmails():
+def send_emails():
 	query = 'SELECT * FROM email_users WHERE sent_at IS NULL'
 	emails = db.queryDictList(query)
 	for email in emails:
@@ -45,4 +45,4 @@ def sendEmails():
 		db.queryNoResults(query,(email['emailsid'],))
 
 
-sendEmails()
+send_emails()

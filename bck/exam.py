@@ -9,6 +9,7 @@ def getExamByID(examsid):
 	return Exam.getExamByID(Exam(),examsid)
 
 class Exam(BckObject):
+	''' An object representation of an exam instance '''
 	active = None
 	answers = None
 	coursesid = None

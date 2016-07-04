@@ -3,6 +3,7 @@ import psycopg2.extras
 from bck.bckconfig import dbname, dbuser, dbhost, dbpass
 
 class BckDB(object):
+	''' Database object used by the other classes to interface with the database '''
 	_db_conn = None
 	_db_cur = None
 

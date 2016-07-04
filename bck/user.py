@@ -63,6 +63,7 @@ def getUsersidByEmail(email):
 
 # ===========================================================
 class User(BckObject):
+	''' An object representation of a user instance '''
 	active = True
 	created_at = None
 	email = None

@@ -7,6 +7,7 @@ def getSectionByID(sectionsid):
 	return Section.getSectionByID(Section(),sectionsid)
 
 class Section(BckObject):
+	''' An object representation of a section instance '''
 	active = None
 	created_at = None
 	coursesid = None

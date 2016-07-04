@@ -4,6 +4,7 @@ from bck.bckobject import BckObject
 db = BckDB()
 
 class StudentExam(BckObject):
+	''' An object representation of a scanned in student exam '''
 	active = None
 	answers = None
 	created_at = None

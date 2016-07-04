@@ -11,16 +11,16 @@ from bck import database
 db = database.BckDB()
 
 try:
-	schemaVersion = db.get_schema_version()
+	schema_version = db.get_schema_version()
 except psycopg2.ProgrammingError:
-	schemaVersion = -1
+	schema_version = -1
 
 def apply_schema():
 	try:
-		schemaVersion = db.get_schema_version()
+		schema_version = db.get_schema_version()
 	except psycopg2.ProgrammingError:
-		schemaVersion = -1
-	nextFile = 's%s.sql' % str(int(schemaVersion) + 1)
+		schema_version = -1
+	nextFile = 's{0}.sql'.format(str(int(schema_version) + 1))
 	if os.path.isfile(nextFile):
 		print("Applying %s..." % nextFile)
 		f = open(nextFile, 'r')
