@@ -6,6 +6,7 @@ from bck.bckobject import BckObject
 db = BckDB()
 
 def getExamByID(examsid):
+	''' Returns an exam object given an examsid '''
 	return Exam.getExamByID(Exam(),examsid)
 
 class Exam(BckObject):
@@ -92,6 +93,7 @@ class Exam(BckObject):
 	
 	# ===========================================================
 	def addShareKey(self):
+		''' Adds a key that allows non-users to view an exam results '''
 		ALPHABET = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
 		# a key is comprised of the examsid, with leading zeros to make it 10 digits
 		# plus a jumble of 16 random figures.  In theory, there'll never be collision.
@@ -118,6 +120,7 @@ class Exam(BckObject):
 
 	# ===========================================================
 	def getStudentExams(self):
+		''' Return a list of student exams associated with this exam. '''
 		ret = []
 		query = 'SELECT * FROM studentexams WHERE examsid=%s AND active'
 		studentexams = db.query_dict_list(query,(self.examsid,))

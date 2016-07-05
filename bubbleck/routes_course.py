@@ -22,6 +22,7 @@ routes_course = Blueprint('routes_course', __name__)
 @login_required
 @require_course_role(roles=('edit','own'), json=True)
 def addsection(coursesid, section_name=None):
+	''' Add a section to an existing course '''
 	if section_name:
 		s = section.Section(name=section_name, coursesid=g.current_course.coursesid)
 		s.save()
@@ -41,6 +42,7 @@ def addsection(coursesid, section_name=None):
 @login_required
 @require_course_role(roles=('own',))
 def delete(coursesid=None):
+	''' Delete a course '''
 	if request.args.get('confirm') == 'yes':
 		g.current_course.deactivate()
 		flash('success|%s has been deleted' % g.current_course.name)
@@ -52,6 +54,7 @@ def delete(coursesid=None):
 @routes_course.route('/course/new', methods=('GET','POST'))
 @login_required
 def new():
+	''' Create a new course '''
 	form = NewCourseForm(request.form)
 	if request.method == 'POST' and form.validate():
 		c = course.Course(name=form.name.data)
@@ -73,6 +76,7 @@ def new():
 @login_required
 @require_course_role(roles=('edit','own'))
 def processPermissionChange(coursesid=None, usersid=None, role=None):
+	''' Add or remove permissions to a user for a course '''
 	result = {}
 	if role == 'remove':
 		if g.current_course.getRole(usersid) == 'own':
@@ -116,6 +120,7 @@ def processPermissionChange(coursesid=None, usersid=None, role=None):
 @login_required
 @require_course_role(roles=('edit','own'), json=True)
 def removesection(coursesid, sectionsid=None):
+	''' Deletes a section from a course, provided the user is an editor of the course '''
 	ret = {}
 	s = section.getSectionByID(sectionsid)
 	if not s:
@@ -136,6 +141,7 @@ def removesection(coursesid, sectionsid=None):
 @login_required
 @require_course_role(roles=('edit','own'))
 def settings(coursesid=None):
+	''' Edit course settings '''
 	courseform = CourseForm(request.form)
 	if request.method == 'POST' and courseform.validate():
 		try:
@@ -170,6 +176,7 @@ def settings(coursesid=None):
 @login_required
 @require_course_role(roles=('view','edit','own'))
 def view(coursesid=None):
+	''' Default course view '''
 	roles = g.current_course.getUserRoles()
 	course_users = {
 		'own':[user.getUserByID(key) for key,value in roles if value=='own'],

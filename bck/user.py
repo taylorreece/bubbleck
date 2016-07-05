@@ -27,10 +27,12 @@ def getUsersByID(usersids=None):
 
 # ===========================================================
 def getUserByID(usersid):
+	''' Given a usersid, get the associated user object '''
 	return User.getUserByID(User(),usersid)
 
 # ===========================================================
 def getUserBySessionID(sessionid, ipaddress=None):
+	''' Given a session id, get the associated user '''
 	# Update the user with their new IP.  updated_at will track last login time
 	usersid = db.query_one_val('UPDATE sessions SET ipaddress=%s, updated_at=NOW() WHERE sessionid=%s RETURNING usersid',(ipaddress,sessionid))
 	if usersid:
@@ -40,6 +42,7 @@ def getUserBySessionID(sessionid, ipaddress=None):
 
 # ===========================================================
 def getUserByEmailAndPassword(email,password):
+	''' Validate an email/password; get the user object associated with it, if exists '''
 	query = 'SELECT * FROM users WHERE email=%s AND password=MD5(%s) AND active'
 	result = db.query_one_rec(query, (email, password+bckconfig.password_salt))
 	if result:
@@ -49,6 +52,7 @@ def getUserByEmailAndPassword(email,password):
 
 # ===========================================================
 def getUserByResetKey(reset_key):
+	''' Used if a user has requested a password reset '''
 	query = 'SELECT * FROM users WHERE usersid=(SELECT usersid FROM password_reset WHERE key=%s)'
 	result = db.query_one_rec(query, (reset_key,))
 	if result:
@@ -58,6 +62,7 @@ def getUserByResetKey(reset_key):
 
 # ===========================================================
 def getUsersidByEmail(email):
+	''' Get user objects by email address '''
 	query = 'SELECT usersid FROM users WHERE email=%s AND active'
 	return db.query_one_val(query, (email,))
 

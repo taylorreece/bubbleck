@@ -113,7 +113,7 @@ def require_course_role(roles, json=False):
 						jsonret['status'] = 'error'
 						jsonret['message'] = 'You do not have permission to make this change'
 						return jsonify(**jsonret)
-					flash('warning|You do not have permission to access that course.  You have role "%s", but require "%s".' % (role,'" or "'.join(roles)))
+					flash('warning|You do not have permission to access that course.  You have role "{0}", but require "{1}".'.format((role,'" or "'.join(roles))))
 					return redirect(url_for('routes_user.dashboard'))	
 			else:
 				if json:

@@ -33,6 +33,7 @@ class BckDB(object):
 
 	# ===========================================================
 	def query(self,query,args,one_record=False,return_results=True):
+		''' Basic function that taps in to postgres to run a query with some set of args '''
 		self._connect()
 		result = self._db_cur.execute(query,args)
 		if return_results:

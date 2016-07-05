@@ -20,10 +20,10 @@ def apply_schema():
 		schema_version = db.get_schema_version()
 	except psycopg2.ProgrammingError:
 		schema_version = -1
-	nextFile = 's{0}.sql'.format(str(int(schema_version) + 1))
-	if os.path.isfile(nextFile):
-		print("Applying %s..." % nextFile)
-		f = open(nextFile, 'r')
+	next_file = 's{0}.sql'.format(str(int(schema_version) + 1))
+	if os.path.isfile(next_file):
+		print("Applying {0}...".format(next_file))
+		f = open(next_file, 'r')
 		db.run_file(f)
 		apply_schema()
 

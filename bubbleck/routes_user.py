@@ -25,6 +25,7 @@ routes_user = Blueprint('routes_user', __name__)
 @routes_user.route('/user/settings/changepassword', methods=('GET','POST'))
 @login_required
 def changepassword():
+	''' Change a users password '''
 	result = {}
 	form = ChangePasswordForm(request.form)
 	if form.validate():
@@ -47,6 +48,7 @@ def changepassword():
 @routes_user.route('/user/closesession/<sessionid>')
 @login_required
 def closesession(sessionid=None):
+	''' User can close an open session (not the current session, but another one) '''
 	result = {}
 	if g.current_user.closeSession(sessionid):
 		result['status'] = 'success'
@@ -60,6 +62,7 @@ def closesession(sessionid=None):
 @routes_user.route('/user/settings/deactivate', methods=('GET','POST'))
 @login_required
 def deactivate():
+	''' Deactivate an account '''
 	if request.args.get('confirm') == 'yes':
 		g.current_user.deactivate()
 		flash('success|Your account has been deactivated')
@@ -71,12 +74,14 @@ def deactivate():
 @routes_user.route('/home')
 @login_required
 def dashboard():
+	''' Default user dashboard '''
 	return render_template('user/dashboard.html')
 
 # ===================================================
 @routes_user.route('/user/forgot', methods=('GET','POST'))
 @anonymous_required
 def forgot():
+	''' Forgot my password dialogue '''
 	form = ForgottenPasswordForm(request.form)
 	if request.method == 'POST' and form.validate():
 		email = form.email.data,
@@ -108,6 +113,7 @@ Dear %s,
 @routes_user.route('/ajax/userbyemail/<email>')
 @login_required
 def getUsersidByEmail(email=None):
+	''' Get a userid by email ; called out by the client '''
 	result = {}
 	if email:
 		usersid = user.getUsersidByEmail(email)
@@ -126,6 +132,7 @@ def getUsersidByEmail(email=None):
 @routes_user.route('/user/login', methods=('GET', 'POST'))
 @anonymous_required
 def login():
+	''' Login dialogue '''
 	form = LoginForm(request.form)
 	if request.method == 'POST' and form.validate():
 		g.current_user = user.getUserByEmailAndPassword(form.email.data,form.password.data)
@@ -141,6 +148,7 @@ def login():
 @routes_user.route('/user/logout')
 @login_required
 def logout():
+	''' Logout dialogue '''
 	g.current_user.closeSession(session['sessionid'])
 	g.current_user = None
 	flash('info|You have been logged out.')
@@ -150,6 +158,7 @@ def logout():
 @routes_user.route('/user/reset/<reset_key>', methods=('GET', 'POST'))
 @load_user
 def passwordreset(reset_key):
+	''' Password reset dialogue '''
 	form = ChangePasswordForm(request.form)	
 	u = user.getUserByResetKey(reset_key)
 	if u:
@@ -170,6 +179,7 @@ def passwordreset(reset_key):
 @routes_user.route('/user/register', methods=('GET', 'POST'))
 @anonymous_required
 def register():
+	''' Register form '''
 	form = RegisterForm(request.form)
 	if request.method == 'POST' and form.validate():
 		try:
@@ -196,6 +206,7 @@ def register():
 @routes_user.route('/user/settings', methods=('GET', 'POST'))
 @login_required
 def settings():
+	''' User settings form '''
 	userform = UserForm(request.form)
 	if request.method == 'POST' and userform.validate():
 		try:
@@ -225,6 +236,7 @@ def settings():
 @routes_user.route('/user/settings/subscribe')
 @login_required
 def subscribe():
+	''' Users can subscribe to the site, paying money for disabling of ads, access to mobile app '''
 	# TODO: Create a subscription page, tie in to paypal, etc.
 	return "not yet implemented"
 

@@ -14,7 +14,7 @@ def send_emails():
 	query = 'SELECT * FROM email_users WHERE sent_at IS NULL'
 	emails = db.queryDictList(query)
 	for email in emails:
-		message = "From: %s\r\n" % bckconfig.smtp_username
+		message = "From: {0}\r\n".format(bckconfig.smtp_username)
 		to  = ['']
 		cc  = ['']
 		bcc = ['']
@@ -24,24 +24,24 @@ def send_emails():
 		if email['additional_to']:	
 			to  = to + email['additional_to'].split(',')
 		if to:
-			message = message + "To: %s\r\n" % ','.join(to)
+			message = message + "To: {0}\r\n".format(','.join(to))
 		if email['additional_cc']:
 			cc  = email['additional_cc'].split(',')
-			message = message + "CC: %s\r\n" % ','.join(cc)
+			message = message + "CC: {0}\r\n".format(','.join(cc))
 		if email['additional_bcc']:
 			bcc  = email['additional_bcc'].split(',')
 		if email['subject']:
-			message = message + "Subject: %s\r\n\r\n" % email['subject']
+			message = message + "Subject: {0}\r\n\r\n".format(email['subject'])
 		if email['body']:
 			message = message + email['body']
-		server = smtplib.SMTP('%s:%s' % (bckconfig.smtp_server, bckconfig.smtp_port))
+		server = smtplib.SMTP('{0}:{1}'.format(bckconfig.smtp_server, bckconfig.smtp_port))
 		if bckconfig.smtp_use_tls:
 			server.starttls()
 		server.login(bckconfig.smtp_username, bckconfig.smtp_password)
 		server.sendmail(bckconfig.smtp_username, to + cc + bcc, message)
 		server.quit()
-		print('Sent email (id=%s) successfully' % email['emailsid'])
-		query = 'UPDATE email_users SET sent_at=NOW() WHERE emailsid=%s'
+		print('Sent email (id={0}) successfully'.format(email['emailsid']))
+		query = 'UPDATE email_users SET sent_at=NOW() WHERE emailsid={0}'.format(emailsid)
 		db.queryNoResults(query,(email['emailsid'],))
 
 

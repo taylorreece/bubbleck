@@ -5,7 +5,7 @@ schema_version = 1
 from bck import database
 try:
 	if schema_version != int(database.BckDB().get_schema_version()):
-		exit('Schema version of the database is incorrect.  Expecting %s, but got %s' % (schema_version,database.BckDB().getSchemaVersion()))
+		exit('Schema version of the database is incorrect.  Expecting {0}, but got {1}'.format(schema_version,database.BckDB().getSchemaVersion()))
 except TypeError:
 	exit('Could not identify schema version.')
 

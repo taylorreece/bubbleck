@@ -34,6 +34,7 @@ def delete(coursesid,examsid):
 @login_required
 @require_course_role(roles=('edit','own'))
 def new(coursesid):
+	''' Dialogue to create a new exam '''
 	if request.method == 'POST':
 		try:
 			e = exam.Exam()
@@ -69,6 +70,7 @@ def new(coursesid):
 @require_course_role(roles=('view','edit','own'))
 @load_exam
 def pdf(coursesid,examsid):
+	''' Creates a blank PDF of this exam '''
 	# TODO: Obviously fix this up to generate actual PDFs; this is just a proof of concept
 	from reportlab.pdfgen import canvas
 	from reportlab.lib.pagesizes import letter
