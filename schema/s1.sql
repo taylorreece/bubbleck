@@ -25,7 +25,7 @@ CREATE TABLE password_reset (
 	created_at	TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
 	updated_at	TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
-CREATE TRIGGER update_email_users_updated_at BEFORE UPDATE ON email_users FOR EACH ROW EXECUTE PROCEDURE update_updated_at_column();
+CREATE TRIGGER update_password_reset_updated_at BEFORE UPDATE ON email_users FOR EACH ROW EXECUTE PROCEDURE update_updated_at_column();
 
 
 CREATE TABLE subscriptions (
@@ -39,4 +39,3 @@ CREATE TABLE subscriptions (
 CREATE TRIGGER update_subscriptions_updated_at BEFORE UPDATE ON subscriptions FOR EACH ROW EXECUTE PROCEDURE update_updated_at_column();
 
 SELECT update_setting('schema','version','1');
-

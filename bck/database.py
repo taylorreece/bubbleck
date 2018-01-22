@@ -45,17 +45,17 @@ class BckDB(object):
 		if return_results:
 			return ret
 		return
-	
+
 	# ===========================================================
 	def query_no_results(self,query,args=None):
 		'''
-		For UPDATEs, DELETEs, etc that don't need results returned
+		For UPDATEs, DELETEs, etc that dont need results returned
 		'''
 		self.query(query,args,return_results=False)
 
 	# ===========================================================
 	def query_one_val(self,query,args=None):
-		''' 
+		'''
 		For snagging a single value from the database
 		For example, SELECT value FROM settings WHERE name=blah
 		'''
@@ -71,7 +71,7 @@ class BckDB(object):
 		Grabs a single record.  e.g. SELECT * FROM users WHERE usersid=1
 		'''
 		return self.query(query,args,one_record=True)
-	
+
 	# ===========================================================
 	def query_dict_list(self,query,args=None):
 		'''
@@ -79,7 +79,7 @@ class BckDB(object):
 		e.g. SELECT * FROM users
 		'''
 		return self.query(query,args)
-		
+
 	# ===========================================================
 	def query_one_val_list(self,query,args=None):
 		'''
@@ -91,4 +91,3 @@ class BckDB(object):
 			return [x[0] for x in ret]
 		except:
 			return None
-

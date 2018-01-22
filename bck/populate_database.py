@@ -1,4 +1,4 @@
-#!/usr/bin/python3
+#!/usr/bin/env python3
 
 if input("Do you understand that this script will clear all data tables and run a series of unit tests? (y/N) ").lower() != 'y':
 	exit()
@@ -60,7 +60,7 @@ assert c4.getRole(u2.usersid) == 'own'
 e1 = exam.Exam(name='Exam 1', coursesid=c1.coursesid, layout='DDDD', show_coursename=True, show_directions=True, show_points=False, show_teachername=True)
 e2 = exam.Exam(name='Exam 2', coursesid=c1.coursesid, layout='CCCC', show_coursename=True, show_directions=True, show_points=False, show_teachername=True)
 e3 = exam.Exam(name='Exam 3', coursesid=c2.coursesid, layout='EDDD', show_coursename=True, show_directions=True, show_points=False, show_teachername=True)
-e1.save() 
+e1.save()
 e2.save()
 e3.save()
 e3.save() # yes, twice: should run an UPDATE the second time

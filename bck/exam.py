@@ -51,14 +51,14 @@ class Exam(BckObject):
 						     show_points=%s,
 						     show_teachername=%s,
 						     active=%s
-					WHERE examsid=%s 
+					WHERE examsid=%s
 					RETURNING updated_at'''
-			result = db.query_one_rec(query, (self.name, 
+			result = db.query_one_rec(query, (self.name,
 							self.coursesid,
-							self.answers, 
-							self.layout, 
-							self.show_coursename, 
-							self.show_directions, 
+							self.answers,
+							self.layout,
+							self.show_coursename,
+							self.show_directions,
 							self.show_points,
 							self.show_teachername,
 							self.active,
@@ -66,16 +66,16 @@ class Exam(BckObject):
 			)
 			self.set_attributes(result)
 		else:
-			query = ''' INSERT INTO exams 
+			query = ''' INSERT INTO exams
 					(name,coursesid,answers,layout,show_coursename,show_directions,show_points,show_teachername)
 					VALUES (%s,%s,%s,%s,%s,%s,%s,%s)
 					RETURNING created_at, updated_at, examsid, active'''
 			result = db.query_one_rec(query, (self.name,
 							self.coursesid,
 							self.answers,
-							self.layout, 
-							self.show_coursename, 
-							self.show_directions, 
+							self.layout,
+							self.show_coursename,
+							self.show_directions,
 							self.show_points,
 							self.show_teachername)
 			)
@@ -84,13 +84,13 @@ class Exam(BckObject):
 	# ===========================================================
 	def getShareKeys(self):
 		query = 'SELECT key FROM examshares WHERE examsid=%s AND active'
-		return db.query_one_vallist(query,(self.examsid,))
+		return db.query_one_val_list(query,(self.examsid,))
 
 	# ===========================================================
 	def getDeactivatedKeys(self):
 		query = 'SELECT key FROM examshares WHERE examsid=%s AND NOT active'
-		return db.query_one_vallist(query,(self.examsid,))
-	
+		return db.query_one_val_list(query,(self.examsid,))
+
 	# ===========================================================
 	def addShareKey(self):
 		''' Adds a key that allows non-users to view an exam results '''
